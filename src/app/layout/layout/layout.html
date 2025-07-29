@@ -1,0 +1,64 @@
+<mat-sidenav-container class="sidenav-container">
+  <!-- Sidebar Navigation -->
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+      [attr.role]="(mobileQuery.matches ? 'dialog' : 'navigation')"
+      [mode]="(mobileQuery.matches ? 'over' : 'side')"
+      [opened]="false">
+    
+    <!-- Logo/Brand Section -->
+    <div class="sidenav-header">
+      <div class="brand-container">
+        <mat-icon class="brand-icon">business</mat-icon>
+        <span class="brand-text">Ergo Pride</span>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <mat-nav-list class="nav-list">
+      <a mat-list-item 
+         *ngFor="let item of navItems" 
+         [routerLink]="item.route" 
+         routerLinkActive="active-link"
+         class="nav-item"
+         (click)="mobileQuery.matches ? drawer.close() : null">
+        <mat-icon matListItemIcon>{{item.icon}}</mat-icon>
+        <span matListItemTitle>{{item.name}}</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Main Content Area -->
+  <mat-sidenav-content class="sidenav-content">
+    <!-- Top Toolbar -->
+    <mat-toolbar color="primary" class="toolbar">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        class="menu-toggle-button">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      
+      <span class="toolbar-title">Ergo Pride</span>
+      
+      <span class="toolbar-spacer"></span>
+      
+      <!-- User Menu -->
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-button">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Sair</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+
+    <!-- Page Content -->
+    <div class="content-container">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

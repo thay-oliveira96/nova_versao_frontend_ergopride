@@ -1,0 +1,60 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%); // Gradiente de fundo bonito
+  }
+  
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px; // Cantos arredondados
+  
+    mat-card-header {
+      text-align: center;
+      margin-bottom: 20px;
+      .mat-card-title {
+        font-size: 2em;
+        font-weight: bold;
+        color: #3f51b5; // Cor primária do Material
+      }
+    }
+  
+    mat-card-content {
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px; // Espaçamento entre os campos
+  
+        .full-width {
+          width: 100%;
+        }
+  
+        button {
+          padding: 10px 0;
+          font-size: 1.1em;
+          margin-top: 10px;
+          border-radius: 8px; // Cantos arredondados para o botão
+        }
+  
+        mat-spinner {
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+  
+  // Estilos para o SnackBar (mensagens de notificação)
+  .snackbar-error {
+    background-color: #f44336 !important; // Vermelho para erro
+    color: white !important;
+  }
+  
+  .snackbar-warning {
+    background-color: #ff9800 !important; // Laranja para aviso
+    color: white !important;
+  }
+  
