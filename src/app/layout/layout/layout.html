@@ -1,19 +1,15 @@
 <mat-sidenav-container class="sidenav-container">
-  <!-- Sidebar Navigation -->
   <mat-sidenav #drawer class="sidenav" fixedInViewport
       [attr.role]="(mobileQuery.matches ? 'dialog' : 'navigation')"
       [mode]="(mobileQuery.matches ? 'over' : 'side')"
       [opened]="false">
     
-    <!-- Logo/Brand Section -->
     <div class="sidenav-header">
       <div class="brand-container">
         <mat-icon class="brand-icon">business</mat-icon>
-        <span class="brand-text">Ergo Pride</span>
-      </div>
+        <span class="brand-text">{{ 'layout.brandName' | transloco }}</span> </div>
     </div>
 
-    <!-- Navigation Menu -->
     <mat-nav-list class="nav-list">
       <a mat-list-item 
          *ngFor="let item of navItems" 
@@ -22,14 +18,11 @@
          class="nav-item"
          (click)="mobileQuery.matches ? drawer.close() : null">
         <mat-icon matListItemIcon>{{item.icon}}</mat-icon>
-        <span matListItemTitle>{{item.name}}</span>
-      </a>
+        <span matListItemTitle>{{item.nameKey | transloco}}</span> </a>
     </mat-nav-list>
   </mat-sidenav>
 
-  <!-- Main Content Area -->
   <mat-sidenav-content class="sidenav-content">
-    <!-- Top Toolbar -->
     <mat-toolbar color="primary" class="toolbar">
       <button
         type="button"
@@ -40,23 +33,26 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       
-      <span class="toolbar-title">Ergo Pride</span>
+      <span class="toolbar-title">{{ 'layout.toolbarTitle' | transloco }}</span> <span class="toolbar-spacer"></span>
       
-      <span class="toolbar-spacer"></span>
-      
-      <!-- User Menu -->
+      <mat-form-field appearance="outline" class="language-selector">
+        <mat-select [value]="activeLang" (selectionChange)="changeLanguage($event.value)">
+          <mat-option *ngFor="let lang of availableLangs" [value]="lang.id">
+            {{ lang.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
       <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-button">
         <mat-icon>account_circle</mat-icon>
       </button>
       <mat-menu #userMenu="matMenu">
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
-          <span>Sair</span>
-        </button>
+          <span>{{ 'layout.userMenu.logout' | transloco }}</span> </button>
       </mat-menu>
     </mat-toolbar>
 
-    <!-- Page Content -->
     <div class="content-container">
       <router-outlet></router-outlet>
     </div>

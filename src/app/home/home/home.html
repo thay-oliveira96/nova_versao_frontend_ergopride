@@ -1,29 +1,27 @@
 <div class="home-container">
-  <!-- Welcome Section -->
   <div class="welcome-section">
     <mat-card class="welcome-card">
       <mat-card-content>
         <div class="welcome-content">
           <mat-icon class="welcome-icon">dashboard</mat-icon>
           <div class="welcome-text">
-            <h1>Bem-vindo ao Ergo Pride</h1>
-            <p>Sistema de gerenciamento empresarial</p>
+            <h1>{{ 'home.welcomeSection.title' | transloco }}</h1>
+            <p>{{ 'home.welcomeSection.subtitle' | transloco }}</p>
           </div>
         </div>
       </mat-card-content>
     </mat-card>
   </div>
 
-  <!-- Quick Access Cards -->
   <div class="quick-access-section">
-    <h2>Acesso Rápido</h2>
+    <h2>{{ 'home.quickAccess.title' | transloco }}</h2>
     <div class="cards-grid">
       <mat-card class="quick-card" routerLink="/departamentos">
         <mat-card-content>
           <div class="card-content">
             <mat-icon class="card-icon">business</mat-icon>
-            <h3>Departamentos</h3>
-            <p>Gerencie os departamentos da empresa</p>
+            <h3>{{ 'home.quickAccess.departments.title' | transloco }}</h3>
+            <p>{{ 'home.quickAccess.departments.description' | transloco }}</p>
           </div>
         </mat-card-content>
       </mat-card>
@@ -32,8 +30,8 @@
         <mat-card-content>
           <div class="card-content">
             <mat-icon class="card-icon">people</mat-icon>
-            <h3>Funcionários</h3>
-            <p>Gerencie o quadro de funcionários</p>
+            <h3>{{ 'home.quickAccess.employees.title' | transloco }}</h3>
+            <p>{{ 'home.quickAccess.employees.description' | transloco }}</p>
           </div>
         </mat-card-content>
       </mat-card>
@@ -42,8 +40,8 @@
         <mat-card-content>
           <div class="card-content">
             <mat-icon class="card-icon">assessment</mat-icon>
-            <h3>Relatórios</h3>
-            <p>Visualize relatórios e estatísticas</p>
+            <h3>{{ 'home.quickAccess.reports.title' | transloco }}</h3>
+            <p>{{ 'home.quickAccess.reports.description' | transloco }}</p>
           </div>
         </mat-card-content>
       </mat-card>
@@ -52,33 +50,32 @@
         <mat-card-content>
           <div class="card-content">
             <mat-icon class="card-icon">settings</mat-icon>
-            <h3>Configurações</h3>
-            <p>Configure o sistema</p>
+            <h3>{{ 'home.quickAccess.settings.title' | transloco }}</h3>
+            <p>{{ 'home.quickAccess.settings.description' | transloco }}</p>
           </div>
         </mat-card-content>
       </mat-card>
     </div>
   </div>
 
-  <!-- System Info -->
   <div class="system-info-section">
     <mat-card class="info-card">
       <mat-card-header>
-        <mat-card-title>Informações do Sistema</mat-card-title>
+        <mat-card-title>{{ 'home.systemInfo.title' | transloco }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div class="info-grid">
           <div class="info-item">
-            <span class="info-label">Versão:</span>
+            <span class="info-label">{{ 'home.systemInfo.version' | transloco }}:</span>
             <span class="info-value">1.0.0</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Última atualização:</span>
+            <span class="info-label">{{ 'home.systemInfo.lastUpdate' | transloco }}:</span>
             <span class="info-value">{{ getCurrentDate() | date:'dd/MM/yyyy' }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Status:</span>
-            <span class="info-value status-online">Online</span>
+            <span class="info-label">{{ 'home.systemInfo.status' | transloco }}:</span>
+            <span class="info-value status-online">{{ 'home.systemInfo.statusOnline' | transloco }}</span>
           </div>
         </div>
       </mat-card-content>

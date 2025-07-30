@@ -1,0 +1,45 @@
+{
+    "layout": {
+      "brandName": "Ergo Pride",
+      "menu": {
+        "home": "Início",
+        "departments": "Departamentos"
+      },
+      "userMenu": {
+        "logout": "Sair"
+      },
+      "toolbarTitle": "Ergo Pride"
+    },
+    "home": {
+      "welcomeSection": {
+        "title": "Bem-vindo ao Ergo Pride",
+        "subtitle": "Sistema de gerenciamento empresarial"
+      },
+      "quickAccess": {
+        "title": "Acesso Rápido",
+        "departments": {
+          "title": "Departamentos",
+          "description": "Gerencie os departamentos da empresa"
+        },
+        "employees": {
+          "title": "Funcionários",
+          "description": "Gerencie o quadro de funcionários"
+        },
+        "reports": {
+          "title": "Relatórios",
+          "description": "Visualize relatórios e estatísticas"
+        },
+        "settings": {
+          "title": "Configurações",
+          "description": "Configure o sistema"
+        }
+      },
+      "systemInfo": {
+        "title": "Informações do Sistema",
+        "version": "Versão",
+        "lastUpdate": "Última atualização",
+        "status": "Status",
+        "statusOnline": "Online"
+      }
+    }
+  }
