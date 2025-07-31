@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { isPlatformBrowser } from '@angular/common';
 
 import { jwtDecode } from 'jwt-decode'; // Certifique-se de que está instalado: npm install jwt-decode
+import { environment } from '../../environments/environments'; // <<-- CORRIGIDO: Removido o 's' extra em 'environments'
 
 interface AuthResponse {
   username?: string;
@@ -28,9 +29,10 @@ interface RefreshResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  // URLs completas. Se estiver usando um proxy Angular, configure-o.
-  private loginUrl = 'http://localhost:8080/auth/signin';
-  private refreshUrl = 'http://localhost:8080/auth/refresh'; // Base para o endpoint com {username}
+  private baseUrl = environment.apiUrl;
+  // REMOVIDO: URLs fixas, agora usamos baseUrl
+  // private loginUrl = 'http://localhost:8080/auth/signin';
+  // private refreshUrl = 'http://localhost:8080/auth/refresh'; 
   private TOKEN_KEY = 'jwt_token'; // Para o access token
   private REFRESH_TOKEN_KEY = 'jwt_refresh_token'; // Para o refresh token
   private platformId = inject(PLATFORM_ID);
@@ -61,7 +63,8 @@ export class AuthService {
 
   login(credentials: any): Observable<AuthResponse> {
     console.log('AuthService: Iniciando processo de login');
-    return this.http.post<AuthResponse>(this.loginUrl, credentials).pipe(
+    // USANDO baseUrl PARA CONSTRUIR A URL DE LOGIN
+    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/signin`, credentials).pipe(
       tap(response => {
         console.log('AuthService: Resposta de login recebida:', response);
 
@@ -100,8 +103,8 @@ export class AuthService {
     const headers = {
         'Authorization': `Bearer ${currentRefreshToken}`
     };
-    // Método PUT e username na URL
-    return this.http.put<RefreshResponse>(`${this.refreshUrl}/${username}`, {}, { headers }).pipe(
+    // USANDO baseUrl PARA CONSTRUIR A URL DE REFRESH
+    return this.http.put<RefreshResponse>(`${this.baseUrl}/auth/refresh/${username}`, {}, { headers }).pipe(
       tap(response => {
         console.log('AuthService: Resposta de refresh token recebida:', response);
         const newAccessToken = response.acessToken; // Espera o novo access token

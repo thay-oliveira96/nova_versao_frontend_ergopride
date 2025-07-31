@@ -41,5 +41,23 @@
         "status": "Status",
         "statusOnline": "Online"
       }
+    },
+    "departamentos" : {
+      "titulo": "Gerenciamento de Departamentos",
+      "buscar": "Buscar departamentos",
+      "digite": "Digite para filtrar...",
+      "umDepartamento": "departamento",
+      "countDepartamentos": "detartamento(s)",
+      "descricao": "Descrição",
+      "observacao": "Observação",
+      "acoes": "Ações",
+      "btnNovo": "Novo Departamento",
+      "btnCancelar": "Cancelar",
+      "btnCriar": "Criar",
+      "tituloForm": "Departamento",
+      "novo": "Novo",
+      "editar": "Editar",
+      "placeholderDescricao": "Qual a descrição do departamento? Por exemplo Recursos Humanos",
+      "placeholderObservacao": "Insira uma observação do departamento"
     }
   }

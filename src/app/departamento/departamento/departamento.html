@@ -4,11 +4,11 @@
     <div class="header-content">
       <div class="title-section">
         <mat-icon class="title-icon">business</mat-icon>
-        <h1>Gerenciamento de Departamentos</h1>
+        <h1>{{'departamentos.titulo' | transloco }}</h1>
       </div>
       <button mat-raised-button color="primary" (click)="showCreateForm()" class="add-button">
         <mat-icon>add</mat-icon>
-        Novo Departamento
+        {{'departamentos.btnNovo' | transloco }}
       </button>
     </div>
   </div>
@@ -17,26 +17,17 @@
   <div class="form-section" *ngIf="showForm">
     <mat-card class="form-card">
       <mat-card-header>
-        <mat-card-title>{{ editingId ? 'Editar' : 'Novo' }} Departamento</mat-card-title>
+        <mat-card-title>
+          {{ editingId ? ('departamentos.editar' | transloco) : ('departamentos.novo' | transloco) }}
+          {{ 'departamentos.tituloForm' | transloco }}
+        </mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <form [formGroup]="departamentoForm" (ngSubmit)="onSubmit()" class="form">
+          <!-- Campo Descrição -->
           <div class="form-row">
             <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Nome do Departamento</mat-label>
-              <input matInput formControlName="nome" placeholder="Ex: Recursos Humanos">
-              <mat-error *ngIf="departamentoForm.get('nome')?.hasError('required')">
-                {{ getErrorMessage('nome') }}
-              </mat-error>
-              <mat-error *ngIf="departamentoForm.get('nome')?.hasError('minlength')">
-                {{ getErrorMessage('nome') }}
-              </mat-error>
-            </mat-form-field>
-          </div>
-
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Descrição</mat-label>
+              <mat-label>{{'departamentos.descricao' | transloco}}</mat-label>
               <textarea matInput formControlName="descricao" rows="3" 
                         placeholder="Descreva as responsabilidades do departamento"></textarea>
               <mat-error *ngIf="departamentoForm.get('descricao')?.hasError('required')">
@@ -48,15 +39,16 @@
             </mat-form-field>
           </div>
 
+          <!-- Campo Observação -->
           <div class="form-row">
             <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Responsável</mat-label>
-              <input matInput formControlName="responsavel" placeholder="Nome do responsável">
-              <mat-error *ngIf="departamentoForm.get('responsavel')?.hasError('required')">
-                {{ getErrorMessage('responsavel') }}
+              <mat-label>Observação</mat-label>
+              <input matInput formControlName="observacao" placeholder="Observações adicionais">
+              <mat-error *ngIf="departamentoForm.get('observacao')?.hasError('required')">
+                {{ getErrorMessage('observacao') }}
               </mat-error>
-              <mat-error *ngIf="departamentoForm.get('responsavel')?.hasError('minlength')">
-                {{ getErrorMessage('responsavel') }}
+              <mat-error *ngIf="departamentoForm.get('observacao')?.hasError('minlength')">
+                {{ getErrorMessage('observacao') }}
               </mat-error>
             </mat-form-field>
           </div>
@@ -102,10 +94,10 @@
         <!-- Data Table -->
         <div class="table-container" *ngIf="!loading">
           <table mat-table [dataSource]="dataSource" matSort class="data-table">
-            <!-- Nome Column -->
-            <ng-container matColumnDef="nome">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Nome </th>
-              <td mat-cell *matCellDef="let row"> {{ row.nome }} </td>
+            <!-- ID Column -->
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+              <td mat-cell *matCellDef="let row"> {{ row.id }} </td>
             </ng-container>
 
             <!-- Descrição Column -->
@@ -114,16 +106,10 @@
               <td mat-cell *matCellDef="let row"> {{ row.descricao }} </td>
             </ng-container>
 
-            <!-- Responsável Column -->
-            <ng-container matColumnDef="responsavel">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Responsável </th>
-              <td mat-cell *matCellDef="let row"> {{ row.responsavel }} </td>
-            </ng-container>
-
-            <!-- Data Criação Column -->
-            <ng-container matColumnDef="dataCriacao">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Data de Criação </th>
-              <td mat-cell *matCellDef="let row"> {{ row.dataCriacao | date:'dd/MM/yyyy' }} </td>
+            <!-- Observação Column -->
+            <ng-container matColumnDef="observacao">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Observação </th>
+              <td mat-cell *matCellDef="let row"> {{ row.observacao }} </td>
             </ng-container>
 
             <!-- Ações Column -->
@@ -156,7 +142,7 @@
           </mat-paginator>
 
           <!-- No Data Message -->
-          <div class="no-data" *ngIf="dataSource.data.length === 0">
+          <div class="no-data" *ngIf="dataSource.data.length === 0 && !loading">
             <mat-icon>business_off</mat-icon>
             <p>Nenhum departamento encontrado</p>
             <button mat-raised-button color="primary" (click)="showCreateForm()">

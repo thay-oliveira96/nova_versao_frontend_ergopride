@@ -41,5 +41,23 @@
       "status": "Status",
       "statusOnline": "Online"
     }
-  }
+  },
+  "departamentos": {
+      "titulo": "Department Management",
+      "buscar": "Search departments",
+      "digite": "Type to filter...",
+      "umDepartamento": "department",
+      "countDepartamentos": "department(s)",
+      "descricao": "Description",
+      "observacao": "Observation",
+      "acoes": "Actions",
+      "btnNovo": "New Department",
+      "btnCancelar": "Cancel",
+      "btnCriar": "Create",
+      "tituloForm": "Department",
+      "novo": "New",
+      "editar": "Edit",
+      "placeholderDescricao": "What is the department's description? For example, Human Resources",
+      "placeholderObservacao": "Insert a department observation"
+    }
 }
