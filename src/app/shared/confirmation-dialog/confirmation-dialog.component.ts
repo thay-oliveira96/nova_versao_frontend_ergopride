@@ -4,6 +4,7 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 export interface ConfirmationDialogData {
   title: string;
@@ -16,16 +17,17 @@ export interface ConfirmationDialogData {
   imports: [
     CommonModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    TranslocoModule
   ],
   template: `
-    <h2 mat-dialog-title>{{ data.title }}</h2>
+    <h2 mat-dialog-title>{{ data.title | transloco }}</h2>
     <mat-dialog-content class="mat-typography">
-      <p>{{ data.message }}</p>
+      <p>{{ data.message | transloco }}</p>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button (click)="onNoClick()">Não</button>
-      <button mat-raised-button color="warn" (click)="onYesClick()" cdkFocusInitial>Sim</button>
+      <button mat-button (click)="onNoClick()">{{ 'global.cancelar' | transloco }}</button>
+      <button mat-raised-button color="warn" (click)="onYesClick()" cdkFocusInitial>{{ 'global.excluir' | transloco }}</button>
     </mat-dialog-actions>
   `,
   styles: [`
@@ -37,7 +39,8 @@ export interface ConfirmationDialogData {
 export class ConfirmationDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmationDialogData
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmationDialogData,
+    private translocoService: TranslocoService // Opcional, mas útil se precisar de traduções no código
   ) {}
 
   onNoClick(): void {

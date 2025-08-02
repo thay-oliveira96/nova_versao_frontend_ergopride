@@ -53,11 +53,40 @@
       "acoes": "Actions",
       "btnNovo": "New Department",
       "btnCancelar": "Cancel",
-      "btnCriar": "Create",
       "tituloForm": "Department",
       "novo": "New",
       "editar": "Edit",
       "placeholderDescricao": "What is the department's description? For example, Human Resources",
-      "placeholderObservacao": "Insert a department observation"
+      "placeholderObservacao": "Insert a department observation",
+      "carrgeando":"fetching departments...",
+      "nenhum": "No departments found",
+      "criarPrimeiro": "Create first department",
+      "porFavorPreencha": "Please fill in all the required and valid fields.",
+      "confirmarExclusao": "Confirm Deletion",
+      "mensagemExclusao": "Are you sure you want to delete this department?",
+      "departamentoCarregadoSucesso": "Departments loaded successfully!",
+      "erroCarregar": "Error loading departments: ",
+      "erroCarregaConexao": "Error loading departments. Check your connection or permissions.",
+      "erroCarregarEdicao": "Error loading department for editing: ",
+      "autalizadoComSucesso": "Department updated successfully!",
+      "erroAtualizar": "Error updating department. Check the data or permissions",
+      "erroAoCriar": "Error creating department.",
+      "erroAoCriarConxao": "Error creating department. Check the data or permissions.",
+      "excluidoComSucesso": "Department deleted successfully!",
+      "erroAoExcluir": "Error deleting department: ",
+      "erroAoExcluirConexao": "Error deleting department. Please try again."
+    },
+    "global": {
+      "sim": "Yes",
+      "nao": "No",
+      "excluir": "Delete",
+      "cancelar": "Cancel",
+      "fechar": "Close",
+      "btnCriar": "Create",
+      "btnAtualizar": "Update"
+    },
+    "errosGlobais": {
+      "campoObrigatorio": "Fill in required field",
+      "campoDeveTerTamnaho": "The field must have at least: "
     }
 }

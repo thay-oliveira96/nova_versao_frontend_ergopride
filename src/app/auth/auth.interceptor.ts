@@ -38,15 +38,18 @@ export function AuthInterceptor(
           isRefreshing = true;
           refreshTokenSubject.next(null); // Limpa o subject para novas notificações
 
+          // AQUI: Usamos os métodos do serviço para obter os tokens e o username
           const username = authService.getUsernameFromAccessToken();
           const currentRefreshToken = authService.getRefreshToken();
 
           if (username && currentRefreshToken) {
             console.log('AuthInterceptor: Token expirado, tentando refresh...');
+            // AQUI: Usa o novo método requestRefreshToken do AuthService
             return authService.requestRefreshToken(username, currentRefreshToken).pipe(
               switchMap((response: any) => {
                 isRefreshing = false;
                 const newAccessToken = response.acessToken; // Assume que a resposta de refresh tem 'acessToken'
+                authService.saveAccessToken(newAccessToken); // Salva o novo token
                 refreshTokenSubject.next(newAccessToken); // Notifica com o novo token
                 console.log('AuthInterceptor: Token refrescado com sucesso. Re-tentando requisição original.');
                 return next(addTokenHeader(request, newAccessToken)); // Re-tenta a requisição original com o novo token

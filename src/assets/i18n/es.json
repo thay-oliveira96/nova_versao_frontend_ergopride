@@ -57,7 +57,36 @@
       "tituloForm": "Departamento",
       "novo": "Nuevo",
       "editar": "Editar",
-       "placeholderDescricao": "¿Cuál es la descripción del departamento? Por ejemplo, Recursos Humanos",
-      "placeholderObservacao": "Inserte una observación del departamento"
-    }
+      "placeholderDescricao": "¿Cuál es la descripción del departamento? Por ejemplo, Recursos Humanos",
+      "placeholderObservacao": "Inserte una observación del departamento",
+      "carrgeando":"cargando departamentos...",
+      "nenhum": "No se encontraron departamentos",
+      "criarPrimeiro": "Crear primer departamento",
+      "porFavorPreencha": "Por favor, complete todos los campos obligatorios y válidos.",
+      "confirmarExclusao": "Confirmar Eliminación",
+      "mensagemExclusao": "¿Estás seguro de que quieres eliminar este departamento?",
+      "departamentoCarregadoSucesso": "¡Departamentos cargados con éxito!",
+      "erroCarregar": "Error al cargar departamentos: ",
+      "erroCarregaConexao": "Error al cargar los departamentos. Verifique su conexión o permisos.",
+      "erroCarregarEdicao": "Error al cargar departamento para editar: ",
+      "autalizadoComSucesso": "¡Departamento actualizado con éxito!",
+      "erroAtualizar": "Error al actualizar el departamento. Verifique los datos o los permisos",
+      "erroAoCriar": "Error creating department.",
+      "erroAoCriarConxao": "Error creating department. Check the data or permissions.",
+      "excluidoComSucesso": "¡Departamento eliminado con éxito!",
+      "erroAoExcluir": "Error al eliminar el departamento: ",
+      "erroAoExcluirConexao": "Error al eliminar el departamento. Por favor, inténtelo de nuevo."
+    },
+    "global": {
+      "sim": "Si",
+      "nao": "No",
+      "excluir": "Eliminar",
+      "cancelar": "Cancelar",
+      "fechar": "Date",
+      "btnAtualizar": "Update"
+    },
+    "errosGlobais": {
+        "campoObrigatorio": "Complete el campo obligatorio",
+        "campoDeveTerTamnaho": "El campo debe tener al menos: "
+  }
   }

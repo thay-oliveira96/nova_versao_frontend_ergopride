@@ -59,7 +59,7 @@
             </button>
             <button type="submit" mat-raised-button color="primary" 
                     [disabled]="departamentoForm.invalid" class="submit-button">
-              {{ editingId ? 'Atualizar' : 'Criar' }}
+              {{ editingId ? ('global.btnAtualizar' | transloco) : ('global.btnCriar' | transloco) }}
             </button>
           </div>
         </form>
@@ -75,20 +75,20 @@
         <div class="table-header">
           <div class="search-section">
             <mat-form-field appearance="outline" class="search-field">
-              <mat-label>Buscar departamentos</mat-label>
-              <input matInput (keyup)="applyFilter($event)" placeholder="Digite para filtrar...">
+              <mat-label>{{'departamentos.buscar' | transloco}}</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="departamentos.digite | transloco">
               <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
           </div>
           <div class="table-info">
-            <span class="total-count">{{ dataSource.data.length }} departamento(s)</span>
+            <span class="total-count">{{ dataSource.data.length }} {{'departamentos.countDepartamentos' | transloco}}</span>
           </div>
         </div>
 
         <!-- Loading Spinner -->
         <div class="loading-container" *ngIf="loading">
           <mat-spinner diameter="40"></mat-spinner>
-          <p>Carregando departamentos...</p>
+          <p>{{'departamentos.carrgeando' | transloco}}</p>
         </div>
 
         <!-- Data Table -->
@@ -102,19 +102,19 @@
 
             <!-- Descrição Column -->
             <ng-container matColumnDef="descricao">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Descrição </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'departamentos.descricao' | transloco}} </th>
               <td mat-cell *matCellDef="let row"> {{ row.descricao }} </td>
             </ng-container>
 
             <!-- Observação Column -->
             <ng-container matColumnDef="observacao">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Observação </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'departamentos.observacao' | transloco}} </th>
               <td mat-cell *matCellDef="let row"> {{ row.observacao }} </td>
             </ng-container>
 
             <!-- Ações Column -->
             <ng-container matColumnDef="acoes">
-              <th mat-header-cell *matHeaderCellDef> Ações </th>
+              <th mat-header-cell *matHeaderCellDef> {{'departamentos.acoes' | transloco}} </th>
               <td mat-cell *matCellDef="let row">
                 <div class="action-buttons">
                   <button mat-icon-button color="primary" 
@@ -123,6 +123,7 @@
                     <mat-icon>edit</mat-icon>
                   </button>
                   <button mat-icon-button color="warn" 
+                  *ngIf="canDelete"
                           (click)="deleteDepartamento(row.id!)" 
                           matTooltip="Excluir departamento">
                     <mat-icon>delete</mat-icon>
@@ -144,9 +145,9 @@
           <!-- No Data Message -->
           <div class="no-data" *ngIf="dataSource.data.length === 0 && !loading">
             <mat-icon>business_off</mat-icon>
-            <p>Nenhum departamento encontrado</p>
+            <p>{{'departamentos.nenhum' | transloco}}</p>
             <button mat-raised-button color="primary" (click)="showCreateForm()">
-              Criar primeiro departamento
+              {{'departamento.criarPrimeiro' | transloco}}
             </button>
           </div>
         </div>

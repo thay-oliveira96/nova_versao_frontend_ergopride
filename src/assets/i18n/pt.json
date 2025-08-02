@@ -53,11 +53,42 @@
       "acoes": "Ações",
       "btnNovo": "Novo Departamento",
       "btnCancelar": "Cancelar",
-      "btnCriar": "Criar",
       "tituloForm": "Departamento",
       "novo": "Novo",
       "editar": "Editar",
       "placeholderDescricao": "Qual a descrição do departamento? Por exemplo Recursos Humanos",
-      "placeholderObservacao": "Insira uma observação do departamento"
+      "placeholderObservacao": "Insira uma observação do departamento",
+      "carrgeando":"carregando departamentos...",
+      "nenhum": "Nenhum departamento encontrado",
+      "criarPrimeiro": "Criar primeiro departamento",
+      "porFavorPreencha": "Por favor, preencha todos os campos obrigatórios e válidos.",
+      "confirmarExclusao": "Confirmar Exclusão",
+      "mensagemExclusao": "Tem certeza que deseja excluir este departamento?",
+      "departamentoCarregadoSucesso": "Departamentos carregados com sucesso!",
+      "erroCarregar": "Erro ao carregar departamentos: ",
+      "erroCarregaConexao": "Erro ao carregar departamentos. Verifique sua conexão ou permissões.",
+      "erroCarregarEdicao": "Erro ao carregar departamento para edição: ",
+      "autalizadoComSucesso": "Departamento atualizado com sucesso!",
+      "erroAtualizar": "Erro ao atualizar departamento. Verifique os dados ou permissões",
+      "erroAoCriar": "Erro ao criar departamento.",
+      "erroAoCriarConxao": "Erro ao criar departamento. Verifique os dados ou permissões.",
+      "excluidoComSucesso": "Departamento excluído com sucesso!",
+      "erroAoExcluir": "Erro ao excluir departamento: ",
+      "erroAoExcluirConexao": "Erro ao excluir departamento. Tente novamente."
+    },
+    "global" : {
+      "sim": "Sim",
+      "nao": "Não",
+      "excluir": "Excluir",
+      "cancelar": "Cancelar",
+      "fechar": "Fechar",
+      "btnCriar": "Criar",
+      "btnAtualizar": "Atualizar"
+    },
+
+    "errosGlobais" : {
+      "campoObrigatorio": "Preencha campo obrigatório",
+      "campoDeveTerTamnaho": "O Campo deve ter pelo menos: "
     }
+
   }

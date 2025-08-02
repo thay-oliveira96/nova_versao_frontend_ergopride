@@ -1,10 +1,10 @@
-// src/app/departamento/departamento.component.ts
-
-import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
 
 // Angular Material Modules
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -23,7 +23,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DepartamentoService } from '../../services/departamento.service';
 import { DepartamentoDTO } from '../../models/departamento.model';
 import { ConfirmationDialogComponent } from '../../shared/confirmation-dialog/confirmation-dialog.component';
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-departamento',
@@ -47,11 +48,7 @@ import { TranslocoModule } from '@jsverse/transloco';
   templateUrl: './departamento.html',
   styleUrl: './departamento.scss'
 })
-export class DepartamentoComponent implements OnInit, AfterViewInit {
-  // Colunas a serem exibidas na tabela: id, descricao, observacao e acoes
-  displayedColumns: string[] = ['id', 'descricao', 'observacao', 'acoes'];
-  dataSource = new MatTableDataSource<DepartamentoDTO>([]);
-  
+export class DepartamentoComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -61,23 +58,46 @@ export class DepartamentoComponent implements OnInit, AfterViewInit {
   editingId: number | null = null;
   
   departamentoForm: FormGroup;
+  displayedColumns: string[] = ['id', 'descricao', 'observacao', 'acoes'];
+  dataSource = new MatTableDataSource<DepartamentoDTO>([]);
+
+  public canDelete: boolean = false;
+  private authSubscription!: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private departamentoService: DepartamentoService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private translocoService: TranslocoService,
+    private authService: AuthService
   ) {
-    // Inicializa o formulário com os novos campos: descricao e observacao
     this.departamentoForm = this.fb.group({
       descricao: ['', [Validators.required, Validators.minLength(10)]],
       observacao: ['', [Validators.required, Validators.minLength(3)]]
     });
   }
-
+  
   ngOnInit(): void {
-    this.loadDepartamentos();
+    // NOVO: A lógica agora depende do estado de login
+    this.authSubscription = this.authService.isLoggedIn().pipe(
+      filter(isLoggedIn => isLoggedIn), // Espera até que o usuário esteja logado
+      switchMap(() => this.authService.getUserRole()) // Troca para o observable da role
+    ).subscribe(role => {
+      // Quando a role estiver disponível, a permissão é definida
+      this.canDelete = (role !== 'APPROVER');
+      console.log('Permissão de deletar atualizada:', this.canDelete);
+
+      // Carrega os departamentos apenas depois que o login é confirmado
+      this.loadDepartamentos();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 
   ngAfterViewInit() {
@@ -95,27 +115,20 @@ export class DepartamentoComponent implements OnInit, AfterViewInit {
       next: (data) => {
         this.departamentos = data;
         this.dataSource.data = this.departamentos;
-        setTimeout(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        }, 0);
-        this.snackBar.open('Departamentos carregados com sucesso!', 'Fechar', { duration: 2000 });
+        this.loading = false;
+        this.cdr.detectChanges();
+        this.snackBar.open(this.translocoService.translate('departamentos.departamentoCarregadoSucesso'), this.translocoService.translate('global.fechar'), { duration: 2000 });
       },
       error: (err) => {
-        console.error('Erro ao carregar departamentos:', err);
-        setTimeout(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        }, 0);
-        this.snackBar.open('Erro ao carregar departamentos. Verifique sua conexão ou permissões.', 'Fechar', { duration: 5000, panelClass: ['snackbar-error'] });
+        console.error(this.translocoService.translate('departamentos.erroCarregar'), err);
+        this.loading = false;
+        this.cdr.detectChanges();
+        this.snackBar.open(this.translocoService.translate('departamentos.erroCarregaConexao'), this.translocoService.translate('global.fechar'), { duration: 5000, panelClass: ['snackbar-error'] });
       }
     });
   }
-
-  /**
-   * Aplica filtro na tabela de departamentos.
-   * @param event Evento de digitação no campo de busca.
-   */
+  
+  // O restante dos métodos (applyFilter, showCreateForm, showEditForm, etc.) permanece inalterado
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -125,19 +138,12 @@ export class DepartamentoComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /**
-   * Exibe o formulário para criar um novo departamento.
-   */
   showCreateForm(): void {
     this.showForm = true;
     this.editingId = null;
     this.departamentoForm.reset();
   }
 
-  /**
-   * Exibe o formulário para editar um departamento existente.
-   * @param departamento O departamento a ser editado.
-   */
   showEditForm(departamento: DepartamentoDTO): void {
     this.showForm = true;
     this.editingId = departamento.id || null;
@@ -146,28 +152,22 @@ export class DepartamentoComponent implements OnInit, AfterViewInit {
       this.loading = true;
       this.departamentoService.getDepartamentoById(departamento.id).subscribe({
         next: (data) => {
-          this.departamentoForm.patchValue({ // Preenche o formulário com os dados
+          this.departamentoForm.patchValue({
             descricao: data.descricao,
             observacao: data.observacao
           });
-          setTimeout(() => {
-            this.loading = false;
-            this.cdr.detectChanges();
-          }, 0);
+          this.loading = false;
+          this.cdr.detectChanges();
         },
         error: (err) => {
-          console.error('Erro ao carregar departamento para edição:', err);
-          setTimeout(() => {
-            this.loading = false;
-            this.cdr.detectChanges();
-          }, 0);
-          this.snackBar.open('Erro ao carregar dados para edição.', 'Fechar', { duration: 5000, panelClass: ['snackbar-error'] });
+          console.error(this.translocoService.translate('departamentos.erroCarregarEdicao'), err);
+          this.loading = false;
+          this.cdr.detectChanges();
+          this.snackBar.open(this.translocoService.translate('departamentos.erroCarregarEdicao'), this.translocoService.translate('global.fechar'), { duration: 5000, panelClass: ['snackbar-error'] });
           this.cancelForm();
         }
       });
     } else {
-      // Caso o departamento não tenha ID (não deveria acontecer em edição de item existente),
-      // apenas preenche com os dados passados.
       this.departamentoForm.patchValue({
         descricao: departamento.descricao,
         observacao: departamento.observacao
@@ -175,93 +175,76 @@ export class DepartamentoComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /**
-   * Cancela a exibição do formulário e limpa-o.
-   */
   cancelForm(): void {
     this.showForm = false;
     this.editingId = null;
     this.departamentoForm.reset();
   }
 
-  /**
-   * Envia o formulário para criar ou atualizar um departamento.
-   */
   onSubmit(): void {
     if (this.departamentoForm.valid) {
       const formData: DepartamentoDTO = this.departamentoForm.value;
       
       if (this.editingId) {
-        // Lógica para atualizar departamento existente
         this.departamentoService.updateDepartamento(this.editingId, formData).subscribe({
           next: (updatedDept) => {
-            this.snackBar.open('Departamento atualizado com sucesso!', 'Fechar', { duration: 3000 });
+            this.snackBar.open(this.translocoService.translate('departamentos.autalizadoComSucesso'), this.translocoService.translate('global.fechar'), { duration: 3000 });
             this.cancelForm();
-            this.loadDepartamentos(); // Recarrega a lista para refletir a atualização
+            this.loadDepartamentos();
           },
           error: (err) => {
             console.error('Erro ao atualizar departamento:', err);
-            this.snackBar.open('Erro ao atualizar departamento. Verifique os dados ou permissões.', 'Fechar', { duration: 5000, panelClass: ['snackbar-error'] });
+            this.snackBar.open(this.translocoService.translate('departamentos.erroAtualizar'), this.translocoService.translate('global.fechar'), { duration: 5000, panelClass: ['snackbar-error'] });
           }
         });
       } else {
-        // Lógica para criar novo departamento
         this.departamentoService.createDepartamento(formData).subscribe({
           next: (newDept) => {
-            this.snackBar.open('Departamento criado com sucesso!', 'Fechar', { duration: 3000 });
+            this.snackBar.open('Departamento criado com sucesso!', this.translocoService.translate('global.fechar'), { duration: 3000 });
             this.cancelForm();
-            this.loadDepartamentos(); // Recarrega a lista para mostrar o novo departamento
+            this.loadDepartamentos();
           },
           error: (err) => {
-            console.error('Erro ao criar departamento:', err);
-            this.snackBar.open('Erro ao criar departamento. Verifique os dados ou permissões.', 'Fechar', { duration: 5000, panelClass: ['snackbar-error'] });
+            console.error(this.translocoService.translate('erroAoCriar'), err);
+            this.snackBar.open(this.translocoService.translate('erroAoCriarConexao'), this.translocoService.translate('global.fechar'), { duration: 5000, panelClass: ['snackbar-error'] });
           }
         });
       }
     } else {
-      // Exibe mensagem se o formulário for inválido
-      this.snackBar.open('Por favor, preencha todos os campos obrigatórios e válidos.', 'Fechar', { duration: 3000, panelClass: ['snackbar-warning'] });
+      this.snackBar.open(this.translocoService.translate('departamentos.porFavorPreencha'), this.translocoService.translate('global.fechar'), { duration: 3000, panelClass: ['snackbar-warning'] });
     }
   }
 
-  /**
-   * Exclui um departamento após confirmação.
-   * @param id ID do departamento a ser excluído.
-   */
   deleteDepartamento(id: number): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
-      data: { title: 'Confirmar Exclusão', message: 'Tem certeza que deseja excluir este departamento?' }
+      data: { title: this.translocoService.translate('departamentos.confirmarExclusao'), message: this.translocoService.translate('departamentos.mensagemExclusao')}
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.departamentoService.deleteDepartamento(id).subscribe({
           next: () => {
-            this.snackBar.open('Departamento excluído com sucesso!', 'Fechar', { duration: 3000 });
+            this.snackBar.open(this.translocoService.translate('departamentos.excluidoComSucesso'), this.translocoService.translate('global.fechar'), { duration: 3000 });
             this.loadDepartamentos();
           },
           error: (err) => {
-            console.error('Erro ao excluir departamento:', err);
-            this.snackBar.open('Erro ao excluir departamento. Tente novamente.', 'Fechar', { duration: 5000, panelClass: ['snackbar-error'] });
+            console.error(this.translocoService.translate('departamentos.erroAoExcluir'), err);
+            this.snackBar.open(this.translocoService.translate('departamentos.erroAoExcluirConexao'), this.translocoService.translate('global.fechar'), { duration: 5000, panelClass: ['snackbar-error'] });
           }
         });
       }
     });
   }
 
-  /**
-   * Retorna a mensagem de erro para um controle de formulário.
-   * @param controlName Nome do controle do formulário.
-   */
   getErrorMessage(controlName: string): string {
     const control = this.departamentoForm.get(controlName);
     if (control?.hasError('required')) {
-      return 'Este campo é obrigatório';
+      return this.translocoService.translate('errosGlobais.campoObrigatorio');
     }
     if (control?.hasError('minlength')) {
       const requiredLength = control.getError('minlength').requiredLength;
-      return `Mínimo de ${requiredLength} caracteres`;
+      return this.translocoService.translate('errosGlobais.campoDeveTerTamnaho', { requiredLength: requiredLength });
     }
     return '';
   }

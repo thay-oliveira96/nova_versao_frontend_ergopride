@@ -18,20 +18,11 @@ export class AuthGuard implements CanActivate {
 
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    state: RouterStateSnapshot): Observable<boolean | UrlTree> {
 
     console.log('AuthGuard: Checking if user can activate route:', state.url);
     
-    // First check synchronously
-    const isLoggedInSync = this.authService.isLoggedInSync();
-    console.log('AuthGuard: Synchronous login check:', isLoggedInSync);
-    
-    if (isLoggedInSync) {
-      console.log('AuthGuard: User is logged in, allowing access');
-      return true;
-    }
-
-    // If not logged in synchronously, check the observable
+    // AQUI: Usamos o Observable isLoggedIn() para checar o status de login
     return this.authService.isLoggedIn().pipe(
       take(1), // Pega o primeiro valor e completa o observable
       map(isLoggedIn => {
