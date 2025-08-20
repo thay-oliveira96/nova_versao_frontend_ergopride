@@ -27,8 +27,11 @@ export class AuthService {
   // Sujeito para o status de login
   private loggedIn = new BehaviorSubject<boolean>(false);
   
-  // NOVO: Sujeito para a role do usuário, começa como nulo
+  // Sujeito para a role do usuário
   private userRoleSubject = new BehaviorSubject<string | null>(null);
+
+  // NOVO: Sujeito para o nome completo do usuário
+  private fullnameSubject = new BehaviorSubject<string | null>(null);
 
   constructor(
     private http: HttpClient,
@@ -39,6 +42,9 @@ export class AuthService {
       this.loggedIn.next(this.hasAccessToken());
       const initialRole = this.getRoleFromToken();
       this.userRoleSubject.next(initialRole);
+      // NOVO: Inicializa o nome completo ao carregar a página
+      const initialFullname = this.getFullnameFromToken();
+      this.fullnameSubject.next(initialFullname);
     }
   }
   
@@ -46,19 +52,20 @@ export class AuthService {
     return this.loggedIn.asObservable();
   }
 
-  // NOVO: Exponho a role do usuário como um Observable
   public getUserRole(): Observable<string | null> {
     return this.userRoleSubject.asObservable();
   }
 
-  // AQUI: CORRIGIDO para ler o array "roles" do token e pegar o primeiro item
+  // NOVO: Expõe o nome completo do usuário como um Observable
+  public getFullname(): Observable<string | null> {
+    return this.fullnameSubject.asObservable();
+  }
+
   private getRoleFromToken(): string | null {
     const token = this.getAccessToken();
     if (token) {
       try {
         const decoded: any = jwtDecode(token);
-        // AQUI: Lê o campo 'roles' (no plural) e verifica se é um array com itens.
-        // Se sim, retorna o primeiro item. Se não, retorna null.
         return (decoded.roles && Array.isArray(decoded.roles) && decoded.roles.length > 0) ? decoded.roles[0] : null;
       } catch (e) {
         console.error('Erro ao decodificar token para obter a role:', e);
@@ -68,13 +75,28 @@ export class AuthService {
     return null;
   }
   
-  // NOVO: Método para obter o username do token, necessário para o interceptor
+  // NOVO: Método privado para obter o nome completo do token
+  private getFullnameFromToken(): string | null {
+    const token = this.getAccessToken();
+    if (token) {
+      try {
+        const decoded: any = jwtDecode(token);
+        // AQUI: Lê o campo 'fullname' do seu payload
+        return decoded.fullname || null;
+      } catch (e) {
+        console.error('Erro ao decodificar token para obter o nome completo:', e);
+        return null;
+      }
+    }
+    return null;
+  }
+
   public getUsernameFromAccessToken(): string | null {
     const token = this.getAccessToken();
     if (token) {
       try {
         const decoded: any = jwtDecode(token);
-        return decoded.sub || null; // O subject 'sub' geralmente é o username
+        return decoded.sub || null;
       } catch (e) {
         console.error('Erro ao decodificar token para obter o username:', e);
         return null;
@@ -93,11 +115,14 @@ export class AuthService {
           this.saveRefreshToken(refreshToken);
           this.loggedIn.next(true);
 
-          // NOVO: Emite a nova role do usuário para todos os inscritos
           const userRole = this.getRoleFromToken();
           this.userRoleSubject.next(userRole);
           console.log(`AuthService: Usuário logado com a role: ${userRole}`);
           
+          // NOVO: Emite o nome completo do usuário para todos os inscritos
+          const userFullname = this.getFullnameFromToken();
+          this.fullnameSubject.next(userFullname);
+
           this.router.navigate(['/home']).then(() => {
             this.snackBar.open('Login realizado com sucesso!', 'Fechar', { duration: 3000 });
           });
@@ -114,22 +139,20 @@ export class AuthService {
     );
   }
   
-  // NOVO: Método para fazer a requisição do refresh token
   public requestRefreshToken(username: string, refreshToken: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/auth/refresh`, { username, refreshToken });
   }
 
-  // Limpa o estado de autenticação
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     this.loggedIn.next(false);
-    this.userRoleSubject.next(null); // NOVO: Notifica que a role foi removida
+    this.userRoleSubject.next(null);
+    this.fullnameSubject.next(null); // NOVO: Notifica que o nome completo foi removido
     this.router.navigate(['/login']);
     this.snackBar.open('Logout realizado.', 'Fechar', { duration: 3000 });
   }
 
-  // Verificações de permissão (agora usam o valor do BehaviorSubject)
   public isApprover(): boolean {
     return this.userRoleSubject.value === 'APPROVER';
   }
@@ -142,7 +165,6 @@ export class AuthService {
     return this.userRoleSubject.value === 'TECHNICAL';
   }
 
-  // Métodos síncronos para obter tokens, usados no interceptor e no guard
   public getAccessToken(): string | null {
     if (isPlatformBrowser(this.platformId)) {
       return localStorage.getItem(this.TOKEN_KEY);

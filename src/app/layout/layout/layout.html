@@ -1,4 +1,7 @@
+<!-- Componente de layout principal com um sidenav e a barra de ferramentas -->
 <mat-sidenav-container class="sidenav-container">
+  
+  <!-- Sidenav lateral para o menu de navegação -->
   <mat-sidenav #drawer class="sidenav" fixedInViewport
       [attr.role]="(mobileQuery.matches ? 'dialog' : 'navigation')"
       [mode]="(mobileQuery.matches ? 'over' : 'side')"
@@ -10,20 +13,25 @@
         <span class="brand-text">{{ 'layout.brandName' | transloco }}</span> </div>
     </div>
 
+    <!-- Lista de navegação com os itens do menu -->
     <mat-nav-list class="nav-list">
+      <!-- O menu foi simplificado para listar todos os itens diretamente -->
       <a mat-list-item 
-         *ngFor="let item of navItems" 
-         [routerLink]="item.route" 
-         routerLinkActive="active-link"
-         class="nav-item"
-         (click)="mobileQuery.matches ? drawer.close() : null">
+        *ngFor="let item of navItems" 
+        [routerLink]="item.route"
+        routerLinkActive="active-link"
+        class="nav-item"
+        (click)="closeSidenav()">
         <mat-icon matListItemIcon>{{item.icon}}</mat-icon>
-        <span matListItemTitle>{{item.nameKey | transloco}}</span> </a>
+        <span matListItemTitle>{{item.nameKey | transloco}}</span>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 
+  <!-- Conteúdo principal, onde as rotas são renderizadas -->
   <mat-sidenav-content class="sidenav-content">
     <mat-toolbar color="primary" class="toolbar">
+      <!-- Botão para abrir/fechar o menu lateral em telas menores -->
       <button
         type="button"
         aria-label="Toggle sidenav"
@@ -33,16 +41,22 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       
+      <!-- Título da barra de ferramentas -->
       <span class="toolbar-title">{{ 'layout.toolbarTitle' | transloco }}</span> <span class="toolbar-spacer"></span>
       
-      <mat-form-field appearance="outline" class="language-selector">
+      <!-- Seletor de idioma -->
+      <mat-form-field class="language-selector">
         <mat-select [value]="activeLang" (selectionChange)="changeLanguage($event.value)">
           <mat-option *ngFor="let lang of availableLangs" [value]="lang.id">
             {{ lang.label }}
           </mat-option>
         </mat-select>
       </mat-form-field>
+      
+      <!-- Saudação e nome do usuário, visível apenas se o nome estiver disponível -->
+      <span class="user-greeting" *ngIf="fullname">Olá, {{ fullname }}</span>
 
+      <!-- Botão para o menu do usuário (perfil e logout) -->
       <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-button">
         <mat-icon>account_circle</mat-icon>
       </button>
@@ -53,6 +67,7 @@
       </mat-menu>
     </mat-toolbar>
 
+    <!-- Container para o conteúdo das páginas -->
     <div class="content-container">
       <router-outlet></router-outlet>
     </div>

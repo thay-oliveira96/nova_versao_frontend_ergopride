@@ -1,0 +1,29 @@
+<div class="validation-container">
+    <mat-card class="validation-card">
+      <mat-card-header>
+        <mat-card-title>Validação de Cadastro</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <!-- Mensagem para o usuário com o e-mail mascarado -->
+        <div class="message">
+          <p>Seu código de verificação foi enviado para o e-mail:</p>
+          <p class="masked-email">{{ maskedEmail }}</p>
+        </div>
+  
+        <form [formGroup]="validationForm" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Código de Verificação</mat-label>
+            <input matInput formControlName="codigoValidacao" required maxlength="6">
+            <mat-error *ngIf="validationForm.get('codigoValidacao')?.invalid && validationForm.get('codigoValidacao')?.touched">
+              O código deve ter 6 dígitos.
+            </mat-error>
+          </mat-form-field>
+          
+          <button mat-raised-button color="primary" type="submit" [disabled]="validationForm.invalid">Validar Código</button>
+        </form>
+      </mat-card-content>
+      <mat-card-actions align="end" class="validation-actions">
+          <a mat-button color="warn" routerLink="/login">Voltar para Login</a>
+      </mat-card-actions>
+    </mat-card>
+  </div>

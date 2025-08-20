@@ -15,20 +15,20 @@
   background: rgba(255, 255, 255, 0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 
-  .brand-container { // Já existe
+  .brand-container {
     display: flex;
     align-items: center;
     gap: 12px;
   }
 
-  .brand-icon { // Já existe
+  .brand-icon {
     color: white;
     font-size: 28px;
     width: 28px;
     height: 28px;
   }
 
-  .brand-text { // Já existe
+  .brand-text {
     color: white;
     font-size: 20px;
     font-weight: 600;
@@ -83,42 +83,56 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 0 16px;
   
-  // Adições para o seletor de idioma
-  display: flex; // Garante que os itens dentro do toolbar se alinhem horizontalmente
-  align-items: center; // Centraliza verticalmente os itens
-  justify-content: space-between; // Distribui o espaço entre os itens
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
   .toolbar-title {
     font-size: 18px;
     font-weight: 600;
     margin-left: 16px;
-    flex-grow: 1; // Permite que o título ocupe o espaço restante
-  }
-
-  .toolbar-spacer { // Pode ser removido se o flex-grow acima for suficiente
-    // flex: 1 1 auto; // Isso já está sendo feito pelo flex-grow no .toolbar-title
+    flex-grow: 1;
   }
 
   .language-selector {
-    width: 120px; // Largura do seletor
-    margin-right: 16px; // Espaçamento à direita do seletor
-    margin-top: 25px; /* Ajuste para alinhar verticalmente, se necessário */
-    margin-bottom: 10px; /* Ajuste para alinhar verticalmente, se necessário */
+    width: 120px;
+    margin-right: 16px;
+    margin-top: 25px;
+    margin-bottom: 10px;
 
-    .mat-mdc-form-field-flex {
-        padding: 0 0.5em !important; // Ajuste o padding interno se precisar
+    // AQUI: Estilos CORRIGIDOS para remover a borda do mat-form-field
+    .mat-mdc-text-field-wrapper {
+        background-color: transparent !important;
     }
+    .mat-mdc-form-field-outline-end,
+    .mat-mdc-form-field-outline-start,
+    .mat-mdc-form-field-outline-gap {
+        border-color: transparent !important;
+    }
+    
     .mat-mdc-select-trigger {
-        height: auto; // Ajuste a altura do trigger
+        height: auto;
     }
     .mat-mdc-select-value {
-        line-height: normal; // Garante que o texto fique centralizado verticalmente
+        line-height: normal;
+        color: white; // Garante que o texto dentro do seletor seja branco
+    }
+  }
+
+  .user-greeting {
+    color: white;
+    font-weight: 500;
+    margin-right: 16px;
+    display: none;
+    
+    @media (min-width: 601px) {
+      display: inline;
     }
   }
 
   .user-menu-button {
     color: white;
-    margin-left: 8px; // Adicione margem para separar do seletor de idioma
+    margin-left: 8px;
     
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
@@ -130,6 +144,19 @@
   flex: 1;
   padding: 24px;
   overflow-y: auto;
+}
+
+// AQUI: Estilos CORRIGIDOS para o fundo branco dos menus
+.mat-mdc-menu-panel,
+.mat-mdc-select-panel {
+  background-color: white !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  
+  .mat-mdc-menu-item,
+  .mat-mdc-option {
+    color: #333 !important; // Cor do texto para garantir visibilidade
+  }
 }
 
 // Responsive design
@@ -149,7 +176,7 @@
 
   .toolbar {
     .language-selector {
-      width: 100px; // Ajuste a largura para telas menores
+      width: 100px;
       margin-right: 8px;
     }
   }

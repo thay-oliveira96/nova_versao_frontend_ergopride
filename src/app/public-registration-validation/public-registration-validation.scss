@@ -1,0 +1,49 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f0f2f5;
+  }
+  
+  .validation-container {
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .validation-card {
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  mat-card-header {
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  
+  .message {
+    text-align: center;
+    margin-bottom: 24px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .message .masked-email {
+    font-weight: bold;
+    color: #333;
+    font-size: 1.1em;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  button[type="submit"] {
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .validation-actions {
+    justify-content: center !important;
+    margin-top: 16px;
+  }
