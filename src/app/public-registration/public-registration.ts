@@ -58,10 +58,9 @@ export class PublicRegistration implements OnInit, OnDestroy {
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
 
-  public siteKey: string = 'SUA_CHAVE_DO_SITE_AQUI';
+  public siteKey: string = '6Le0Ha0rAAAAADvAYGPKbhnjVG7BQjdhimO0Sgpl';
   public registrationType: 'pf' | 'pj' | null = null;
   
-  // FormControl dedicado para o primeiro passo
   public registrationTypeControl = new FormControl<'pf' | 'pj' | null>(null, Validators.required);
   private stepperSubscription!: Subscription;
 
@@ -74,7 +73,6 @@ export class PublicRegistration implements OnInit, OnDestroy {
   hideConfirmPassword = true;
 
   ngOnInit(): void {
-    // Formulário para Pessoa Física
     this.pfInfoForm = this.fb.group({
       nome: ['', [Validators.required, Validators.maxLength(100)]],
       sobrenome: ['', [Validators.required, Validators.maxLength(100)]],
@@ -85,7 +83,6 @@ export class PublicRegistration implements OnInit, OnDestroy {
       email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]]
     });
 
-    // Formulário para Pessoa Jurídica
     this.pjInfoForm = this.fb.group({
       razaoSocial: ['', [Validators.required, Validators.maxLength(200)]],
       nomeFantasia: ['', [Validators.required, Validators.maxLength(200)]],
@@ -97,7 +94,6 @@ export class PublicRegistration implements OnInit, OnDestroy {
       email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]]
     });
 
-    // Formulário de Endereço (comum a ambos)
     this.addressForm = this.fb.group({
       logradouro: ['', [Validators.required]],
       numero: ['', [Validators.required]],
@@ -108,7 +104,6 @@ export class PublicRegistration implements OnInit, OnDestroy {
       cep: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]]
     });
 
-    // Formulário de Senha (comum a ambos)
     this.passwordForm = this.fb.group({
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]],
@@ -116,16 +111,13 @@ export class PublicRegistration implements OnInit, OnDestroy {
     }, { validators: passwordMatchValidator });
   }
 
-  // O método setRegistrationType foi removido pois a lógica de avanço de passo agora está no template
-  // O tipo de registrationType agora é 'pf' | 'pj' | null
-  
   onSubmit(): void {
     let finalPayload: any;
     let endpoint: string = '';
     let emailToValidate: string = '';
-    let identifierToValidate: string = '';
+    let cpfCnpjToValidate: string = '';
+    let tipoPessoaToValidate: string = '';
     
-    // Verifica o tipo de cadastro e monta o payload e o endpoint
     if (this.registrationType === 'pf' && this.pfInfoForm.valid && this.addressForm.valid && this.passwordForm.valid) {
       finalPayload = {
         ...this.pfInfoForm.value,
@@ -140,7 +132,8 @@ export class PublicRegistration implements OnInit, OnDestroy {
       
       endpoint = `${this.baseUrl}/api/v1/publica/pessoa-fisica/cadastrar`;
       emailToValidate = finalPayload.email;
-      identifierToValidate = finalPayload.cpf;
+      cpfCnpjToValidate = finalPayload.cpf;
+      tipoPessoaToValidate = 'F';
       
     } else if (this.registrationType === 'pj' && this.pjInfoForm.valid && this.addressForm.valid && this.passwordForm.valid) {
       finalPayload = {
@@ -152,7 +145,8 @@ export class PublicRegistration implements OnInit, OnDestroy {
       
       endpoint = `${this.baseUrl}/api/v1/publica/pessoa-juridica/cadastrar`;
       emailToValidate = finalPayload.email;
-      identifierToValidate = finalPayload.cnpj;
+      cpfCnpjToValidate = finalPayload.cnpj;
+      tipoPessoaToValidate = 'J';
 
     } else {
       this.snackBar.open('Por favor, preencha todos os campos obrigatórios e valide o reCAPTCHA.', 'Fechar', { duration: 5000 });
@@ -168,8 +162,8 @@ export class PublicRegistration implements OnInit, OnDestroy {
           this.router.navigate(['/validate-registration'], {
             queryParams: {
               email: emailToValidate,
-              cpf: this.registrationType === 'pf' ? identifierToValidate : null,
-              cnpj: this.registrationType === 'pj' ? identifierToValidate : null,
+              cpfCnpj: cpfCnpjToValidate,
+              tipoPessoa: tipoPessoaToValidate,
             }
           });
         },

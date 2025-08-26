@@ -39,7 +39,8 @@ export class PublicRegistrationValidationComponent implements OnInit {
   validationForm!: FormGroup;
   maskedEmail: string = '';
   private email: string = '';
-  private cpf: string = '';
+  private cpfCnpj: string = '';
+  private tipoPessoa: string = '';
 
   ngOnInit(): void {
     // Inicializa o formulário com um campo para o código de validação
@@ -47,10 +48,11 @@ export class PublicRegistrationValidationComponent implements OnInit {
       codigoValidacao: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]
     });
 
-    // Pega os parâmetros da URL para obter o email e cpf
+    // Pega os parâmetros da URL para obter o email, cpf/cnpj e o tipo de pessoa
     this.route.queryParams.subscribe(params => {
       this.email = params['email'] || '';
-      this.cpf = params['cpf'] || '';
+      this.cpfCnpj = params['cpfCnpj'] || '';
+      this.tipoPessoa = params['tipoPessoa'] || '';
       this.maskedEmail = this.maskEmail(this.email);
     });
   }
@@ -87,12 +89,13 @@ export class PublicRegistrationValidationComponent implements OnInit {
     const payload = {
       codigoValidacao: this.validationForm.get('codigoValidacao')?.value,
       emailValidado: this.email,
-      cpf: this.cpf
+      cpfCnpj: this.cpfCnpj,
+      tipoPessoa: this.tipoPessoa
     };
 
     console.log('Payload de validação:', payload);
 
-    this.http.post(`${this.baseUrl}/api/v1/publica/valida-cliente/pessoa-fisica`, payload)
+    this.http.post(`${this.baseUrl}/api/v1/publica/valida-cliente/validar`, payload)
       .subscribe({
         next: () => {
           this.snackBar.open('Conta validada com sucesso! Você já pode fazer login.', 'Fechar', { duration: 5000 });
