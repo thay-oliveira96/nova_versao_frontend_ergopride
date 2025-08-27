@@ -1,10 +1,19 @@
+// Paleta de Cores do Ergo Pride
+$background-color: #F5F7FA;
+$menu-bar-color: #4A90E2;
+$primary-button-color: #7BC47F;
+$secondary-button-color: #4A90E2;
+$highlight-color: #F5A623;
+$text-color: #3A3D40;
+$white-text: #FFFFFF;
+$card-background: $white-text;
+
 .departamento-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0;
+  padding: 24px;
 }
 
-// Header Section
 .header-section {
   margin-bottom: 24px;
 }
@@ -27,14 +36,14 @@
   font-size: 32px;
   width: 32px;
   height: 32px;
-  color: #667eea;
+  color: $secondary-button-color; // Azul sereno
 }
 
 .title-section h1 {
   margin: 0;
   font-size: 28px;
   font-weight: 700;
-  color: #333;
+  color: $text-color;
 }
 
 .add-button {
@@ -45,27 +54,30 @@
   border-radius: 8px;
   font-weight: 600;
   transition: all 0.3s ease;
-  
+  background-color: $primary-button-color; // Verde calmo
+  color: $white-text;
+
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 8px 16px rgba(123, 196, 127, 0.3);
   }
 }
 
-// Form Section
 .form-section {
   margin-bottom: 24px;
+  animation: slideDown 0.3s ease-out;
 }
 
 .form-card {
+  background-color: $card-background;
   border-radius: 12px;
   border: 1px solid #e0e0e0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .form-card mat-card-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background-color: $secondary-button-color; // Azul sereno
+  color: $white-text;
   margin: -16px -16px 16px -16px;
   padding: 20px 24px;
   border-radius: 12px 12px 0 0;
@@ -75,7 +87,7 @@
   margin: 0;
   font-size: 20px;
   font-weight: 600;
-  color: white;
+  color: $white-text;
 }
 
 .form {
@@ -87,7 +99,7 @@
 .form-row {
   display: flex;
   gap: 16px;
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
   }
@@ -111,22 +123,22 @@
 }
 
 .submit-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background-color: $primary-button-color; // Verde calmo
+  color: $white-text;
   font-weight: 600;
-  
+
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 8px 16px rgba(123, 196, 127, 0.3);
   }
 }
 
-// Table Section
 .table-section {
   margin-bottom: 24px;
 }
 
 .table-card {
+  background-color: $card-background;
   border-radius: 12px;
   border: 1px solid #e0e0e0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -162,7 +174,6 @@
   font-size: 14px;
 }
 
-// Loading Container
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -170,7 +181,7 @@
   justify-content: center;
   padding: 60px 20px;
   gap: 16px;
-  
+
   p {
     margin: 0;
     color: #666;
@@ -178,7 +189,6 @@
   }
 }
 
-// Table Container
 .table-container {
   overflow-x: auto;
 }
@@ -191,12 +201,12 @@
 }
 
 .mat-mdc-table {
-  background: white;
+  background-color: $card-background;
 }
 
 .mat-mdc-header-cell {
-  background: #f8f9fa;
-  color: #333;
+  background-color: #f8f9fa;
+  color: $text-color;
   font-weight: 600;
   font-size: 14px;
   padding: 16px 12px;
@@ -206,7 +216,7 @@
 .mat-mdc-cell {
   padding: 16px 12px;
   border-bottom: 1px solid #f0f0f0;
-  color: #333;
+  color: $text-color;
   font-size: 14px;
 }
 
@@ -214,7 +224,6 @@
   background-color: #f8f9fa;
 }
 
-// Action Buttons
 .action-buttons {
   display: flex;
   gap: 8px;
@@ -223,19 +232,25 @@
 
 .action-buttons button {
   transition: all 0.2s ease;
-  
+
   &:hover {
     transform: scale(1.1);
   }
 }
 
-// Paginator
-mat-paginator {
-  border-top: 1px solid #e0e0e0;
-  background: #f8f9fa;
+.action-buttons button:first-child {
+  color: $secondary-button-color; // Editar em azul sereno
 }
 
-// No Data Message
+.action-buttons button:last-child {
+  color: #f44336; // Excluir em vermelho para alerta
+}
+
+mat-paginator {
+  border-top: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+}
+
 .no-data {
   display: flex;
   flex-direction: column;
@@ -244,150 +259,24 @@ mat-paginator {
   padding: 60px 20px;
   text-align: center;
   gap: 16px;
-  
+
   mat-icon {
     font-size: 64px;
     width: 64px;
     height: 64px;
     color: #ccc;
   }
-  
+
   p {
     margin: 0;
     color: #666;
     font-size: 18px;
     font-weight: 500;
   }
-  
+
   button {
     margin-top: 8px;
   }
-}
-
-// Responsive Design
-@media (max-width: 1024px) {
-  .departamento-container {
-    padding: 0 16px;
-  }
-  
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .title-section h1 {
-    font-size: 24px;
-  }
-  
-  .table-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .search-section {
-    min-width: auto;
-  }
-}
-
-@media (max-width: 768px) {
-  .departamento-container {
-    padding: 0 12px;
-  }
-  
-  .title-section h1 {
-    font-size: 20px;
-  }
-  
-  .add-button {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .form-actions {
-    flex-direction: column;
-  }
-  
-  .action-buttons {
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .data-table {
-    font-size: 12px;
-  }
-  
-  .mat-mdc-header-cell,
-  .mat-mdc-cell {
-    padding: 8px 6px;
-  }
-}
-
-@media (max-width: 480px) {
-  .departamento-container {
-    padding: 0 8px;
-  }
-  
-  .title-section {
-    flex-direction: column;
-    text-align: center;
-    gap: 8px;
-  }
-  
-  .form-card mat-card-header {
-    padding: 16px;
-  }
-  
-  .form-card mat-card-title {
-    font-size: 18px;
-  }
-}
-
-// Dark theme support
-@media (prefers-color-scheme: dark) {
-  .title-section h1 {
-    color: #e0e0e0;
-  }
-  
-  .total-count {
-    color: #b0b0b0;
-  }
-  
-  .data-table {
-    background: #1e1e1e;
-  }
-  
-  .mat-mdc-header-cell {
-    background: #2d2d2d;
-    color: #e0e0e0;
-    border-bottom-color: #444;
-  }
-  
-  .mat-mdc-cell {
-    color: #e0e0e0;
-    border-bottom-color: #333;
-  }
-  
-  .mat-mdc-row:hover {
-    background-color: #2d2d2d;
-  }
-  
-  .no-data p {
-    color: #b0b0b0;
-  }
-  
-  .no-data mat-icon {
-    color: #555;
-  }
-  
-  mat-paginator {
-    background: #2d2d2d;
-    border-top-color: #444;
-  }
-}
-
-// Animation for form and table
-.form-section {
-  animation: slideDown 0.3s ease-out;
 }
 
 @keyframes slideDown {
@@ -401,7 +290,6 @@ mat-paginator {
   }
 }
 
-// Custom scrollbar for table
 .table-container::-webkit-scrollbar {
   height: 8px;
 }
@@ -414,11 +302,8 @@ mat-paginator {
 .table-container::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 4px;
-  
+
   &:hover {
     background: #a8a8a8;
   }
 }
-
-
-

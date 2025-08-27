@@ -1,19 +1,28 @@
+// Paleta de Cores do Ergo Pride
+$background-color: #F5F7FA; // Fundo da aplicação (cinza muito claro)
+$menu-bar-color: #4A90E2; // Menu lateral/topo (azul sereno)
+$primary-button-color: #7BC47F; // Botões primários (verde calmo)
+$secondary-button-color: #4A90E2; // Botões secundários (azul sereno)
+$highlight-color: #F5A623; // Destaques (laranja suave)
+$text-color: #3A3D40; // Textos (cinza escuro)
+$white-text: #FFFFFF;
+
 .sidenav-container {
   height: 100vh;
-  background-color: #f5f5f5;
+  background-color: $background-color;
 }
 
 .sidenav {
   width: 250px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: $menu-bar-color;
   border-right: none;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
 .sidenav-header {
   padding: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   .brand-container {
     display: flex;
@@ -21,15 +30,17 @@
     gap: 12px;
   }
 
+  .brand-icon, .brand-text {
+    color: $white-text;
+  }
+
   .brand-icon {
-    color: white;
     font-size: 28px;
     width: 28px;
     height: 28px;
   }
 
   .brand-text {
-    color: white;
     font-size: 20px;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -43,27 +54,31 @@
 .nav-item {
   margin: 4px 16px;
   border-radius: 8px;
-  transition: all 0.3s ease;
-  
+  transition: all 0.2s ease;
+
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
-    transform: translateX(4px);
+    transform: none;
   }
-  
+
   &.active-link {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
-    
+    background-color: rgba(255, 255, 255, 0.15); // Transparência suave para manter o foco
+    color: $white-text;
+
     mat-icon {
-      color: white;
+      color: $white-text;
+    }
+
+    span {
+      color: $white-text;
     }
   }
-  
+
   mat-icon {
     color: rgba(255, 255, 255, 0.8);
     margin-right: 12px;
   }
-  
+
   span {
     color: rgba(255, 255, 255, 0.9);
     font-weight: 500;
@@ -79,13 +94,13 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: $menu-bar-color;
+  color: $white-text;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 0 16px;
-  
+
   display: flex;
   align-items: center;
-  justify-content: space-between;
 
   .toolbar-title {
     font-size: 18px;
@@ -100,40 +115,39 @@
     margin-top: 25px;
     margin-bottom: 10px;
 
-    // AQUI: Estilos CORRIGIDOS para remover a borda do mat-form-field
     .mat-mdc-text-field-wrapper {
-        background-color: transparent !important;
+      background-color: transparent !important;
     }
     .mat-mdc-form-field-outline-end,
     .mat-mdc-form-field-outline-start,
     .mat-mdc-form-field-outline-gap {
-        border-color: transparent !important;
+      border-color: transparent !important;
     }
-    
+
     .mat-mdc-select-trigger {
-        height: auto;
+      height: auto;
     }
     .mat-mdc-select-value {
-        line-height: normal;
-        color: white; // Garante que o texto dentro do seletor seja branco
+      line-height: normal;
+      color: $white-text;
     }
   }
 
   .user-greeting {
-    color: white;
+    color: $white-text;
     font-weight: 500;
     margin-right: 16px;
     display: none;
-    
+
     @media (min-width: 601px) {
       display: inline;
     }
   }
 
   .user-menu-button {
-    color: white;
+    color: $white-text;
     margin-left: 8px;
-    
+
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
     }
@@ -144,31 +158,31 @@
   flex: 1;
   padding: 24px;
   overflow-y: auto;
+  background-color: $background-color;
+  color: $text-color;
 }
 
-// AQUI: Estilos CORRIGIDOS para o fundo branco dos menus
 .mat-mdc-menu-panel,
 .mat-mdc-select-panel {
-  background-color: white !important;
+  background-color: $white-text !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  
+
   .mat-mdc-menu-item,
   .mat-mdc-option {
-    color: #333 !important; // Cor do texto para garantir visibilidade
+    color: $text-color !important;
   }
 }
 
-// Responsive design
 @media (max-width: 600px) {
   .sidenav {
     width: 280px;
   }
-  
+
   .content-container {
     padding: 16px;
   }
-  
+
   .toolbar-title {
     font-size: 16px;
     margin-left: 8px;
@@ -179,17 +193,5 @@
       width: 100px;
       margin-right: 8px;
     }
-  }
-}
-
-// Dark theme support
-@media (prefers-color-scheme: dark) {
-  .sidenav-container {
-    background-color: #121212;
-  }
-  
-  .content-container {
-    background-color: #121212;
-    color: white;
   }
 }

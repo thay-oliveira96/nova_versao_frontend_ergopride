@@ -1,7 +1,17 @@
+// Paleta de Cores do Ergo Pride
+$background-color: #F5F7FA;
+$menu-bar-color: #4A90E2;
+$primary-button-color: #7BC47F;
+$secondary-button-color: #4A90E2;
+$highlight-color: #F5A623;
+$text-color: #3A3D40;
+$white-text: #FFFFFF;
+$card-background: $white-text;
+
 .home-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0;
+  padding: 24px;
 }
 
 .welcome-section {
@@ -9,10 +19,10 @@
 }
 
 .welcome-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  background-color: $highlight-color; // Laranja suave para o card de boas-vindas
+  color: $white-text;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
 
@@ -34,7 +44,7 @@
   margin: 0 0 8px 0;
   font-size: 32px;
   font-weight: 700;
-  color: white;
+  color: $white-text;
 }
 
 .welcome-text p {
@@ -51,10 +61,10 @@
 .quick-access-section h2 {
   font-size: 24px;
   font-weight: 600;
-  color: #333;
+  color: $text-color;
   margin-bottom: 24px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #667eea;
+  border-bottom: 2px solid $secondary-button-color; // Borda em azul sereno
 }
 
 .cards-grid {
@@ -64,15 +74,16 @@
 }
 
 .quick-card {
+  background-color: $card-background;
   border-radius: 12px;
   transition: all 0.3s ease;
   cursor: pointer;
   border: 1px solid #e0e0e0;
-  
+
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-    border-color: #667eea;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    border-color: $secondary-button-color;
   }
 }
 
@@ -85,7 +96,7 @@
   font-size: 48px;
   width: 48px;
   height: 48px;
-  color: #667eea;
+  color: $secondary-button-color; // Ícones em azul sereno
   margin-bottom: 16px;
 }
 
@@ -93,7 +104,7 @@
   margin: 0 0 8px 0;
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: $text-color;
 }
 
 .card-content p {
@@ -108,6 +119,7 @@
 }
 
 .info-card {
+  background-color: $card-background;
   border-radius: 12px;
   border: 1px solid #e0e0e0;
 }
@@ -124,7 +136,7 @@
   align-items: center;
   padding: 12px 0;
   border-bottom: 1px solid #f0f0f0;
-  
+
   &:last-child {
     border-bottom: none;
   }
@@ -137,7 +149,7 @@
 
 .info-value {
   font-weight: 600;
-  color: #333;
+  color: $text-color;
 }
 
 .status-online {
@@ -145,7 +157,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  
+
   &::before {
     content: '';
     width: 8px;
@@ -156,31 +168,30 @@
   }
 }
 
-// Responsive design
 @media (max-width: 768px) {
   .welcome-content {
     flex-direction: column;
     text-align: center;
     padding: 24px;
   }
-  
+
   .welcome-text h1 {
     font-size: 24px;
   }
-  
+
   .welcome-text p {
     font-size: 16px;
   }
-  
+
   .cards-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  
+
   .info-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .info-item {
     flex-direction: column;
     align-items: flex-start;
@@ -190,39 +201,14 @@
 
 @media (max-width: 480px) {
   .home-container {
-    padding: 0 8px;
+    padding: 0 16px;
   }
-  
+
   .welcome-content {
     padding: 16px;
   }
-  
+
   .card-content {
     padding: 16px 12px;
   }
 }
-
-// Dark theme support
-@media (prefers-color-scheme: dark) {
-  .quick-access-section h2 {
-    color: #e0e0e0;
-  }
-  
-  .card-content h3 {
-    color: #e0e0e0;
-  }
-  
-  .card-content p {
-    color: #b0b0b0;
-  }
-  
-  .info-label {
-    color: #b0b0b0;
-  }
-  
-  .info-value {
-    color: #e0e0e0;
-  }
-}
-
-
