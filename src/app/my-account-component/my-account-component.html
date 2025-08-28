@@ -1,0 +1,96 @@
+<div class="my-account-container">
+    <mat-card class="my-account-card">
+      <mat-card-header>
+        <mat-card-title>Minha Conta</mat-card-title>
+        <mat-card-subtitle>Gerencie suas informações e configurações de conta.</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-tab-group animationDuration="500ms">
+          
+          <!-- Aba de Dados Cadastrais -->
+          <mat-tab label="Dados Cadastrais">
+            <div class="tab-content">
+              <p>Aqui você pode visualizar seus dados de cadastro.</p>
+              <form [formGroup]="cadastralForm" class="form-container">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Nome Completo</mat-label>
+                  <input matInput formControlName="nomeCompleto">
+                  <mat-icon matSuffix>person</mat-icon>
+                </mat-form-field>
+  
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>E-mail</mat-label>
+                  <input matInput formControlName="email">
+                  <mat-icon matSuffix>mail_outline</mat-icon>
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>CPF</mat-label>
+                  <input matInput formControlName="cpfCnpj">
+                  <mat-icon matSuffix>badge</mat-icon>
+                </mat-form-field>
+  
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Telefone</mat-label>
+                  <input matInput formControlName="telefone">
+                  <mat-icon matSuffix>phone</mat-icon>
+                </mat-form-field>
+  
+                <!-- Futuros botões de edição/salvar -->
+                <div class="button-row">
+                  <button mat-raised-button color="primary" (click)="onEditProfile()">
+                    <mat-icon>edit</mat-icon> Editar
+                  </button>
+                </div>
+              </form>
+            </div>
+          </mat-tab>
+  
+          <!-- Aba de Planos -->
+          <mat-tab label="Planos">
+            <div class="tab-content">
+              <mat-card class="info-card">
+                <mat-card-header>
+                  <mat-card-title>Plano Atual</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <p><strong>Plano:</strong> {{ planDetails.planoAtual }}</p>
+                  <p><strong>Valor:</strong> R$ {{ planDetails.valor | number:'1.2-2' }} / {{ planDetails.ciclo }}</p>
+                  <p><strong>Próxima Renovação:</strong> {{ planDetails.proximaRenovacao }}</p>
+                </mat-card-content>
+                <mat-card-actions align="end">
+                  <button mat-button color="primary">Gerenciar Assinatura</button>
+                </mat-card-actions>
+              </mat-card>
+            </div>
+          </mat-tab>
+  
+          <!-- Aba de Usuários Vinculados -->
+          <mat-tab label="Usuários Vinculados">
+            <div class="tab-content">
+              <mat-list>
+                <h3 mat-subheader>Usuários Vinculados à Sua Conta</h3>
+                <mat-list-item *ngFor="let user of linkedUsers">
+                  <mat-icon matListItemIcon>account_circle</mat-icon>
+                  <div matListItemTitle>{{ user.nome }}</div>
+                  <div matListItemLine>{{ user.email }}</div>
+                  <div matListItemLine>Status: {{ user.status }}</div>
+                  <button mat-icon-button matListItemMeta>
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                </mat-list-item>
+              </mat-list>
+            </div>
+          </mat-tab>
+  
+          <!-- Aba para futuras expansões -->
+          <mat-tab label="Outras Configurações">
+            <div class="tab-content">
+              <p>Esta aba está reservada para futuras funcionalidades.</p>
+            </div>
+          </mat-tab>
+  
+        </mat-tab-group>
+      </mat-card-content>
+    </mat-card>
+  </div>  

@@ -5,11 +5,15 @@ import { AuthGuard } from './auth/auth.guard';
 import { HomeComponent } from './home/home/home';
 import { PublicRegistration } from './public-registration/public-registration';
 import { PublicRegistrationValidationComponent } from './public-registration-validation/public-registration-validation';
+import { MyAccountComponent } from './my-account-component/my-account-component';
+import { MyAccountJuridicaComponent } from './my-account-juridica-component/my-account-juridica-component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'cadastro', component: PublicRegistration },
   { path: 'validate-registration', component: PublicRegistrationValidationComponent },
+  { path: 'my-account', component: MyAccountComponent},
+  { path: 'my-account-juridica', component: MyAccountJuridicaComponent},
   {
     path: '',
     component: LayoutComponent,

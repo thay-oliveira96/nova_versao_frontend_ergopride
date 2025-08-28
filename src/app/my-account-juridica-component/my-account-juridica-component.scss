@@ -1,0 +1,49 @@
+.my-account-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    min-height: calc(100vh - 64px); // Ajusta para a altura do toolbar
+  }
+  
+  .my-account-card {
+    width: 100%;
+    max-width: 900px; // Define uma largura máxima para desktops
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+  }
+  
+  .tab-content {
+    padding: 20px 0;
+  }
+  
+  .form-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .info-card {
+    margin-bottom: 20px;
+    border-left: 5px solid #3f51b5;
+  }
+  
+  .info-card p {
+    margin: 8px 0;
+  }
+  
+  .button-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  
+  mat-list-item {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+  }
