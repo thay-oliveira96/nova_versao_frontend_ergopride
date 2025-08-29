@@ -4,14 +4,17 @@
     align-items: flex-start;
     padding: 20px;
     min-height: calc(100vh - 64px); // Ajusta para a altura do toolbar
+    background-color: #4A90E2;
   }
   
   .my-account-card {
     width: 100%;
     max-width: 900px; // Define uma largura máxima para desktops
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(241, 241, 241, 0.1);
     border-radius: 12px;
+    background-color: #eee;
+    color: black;
   }
   
   .tab-content {

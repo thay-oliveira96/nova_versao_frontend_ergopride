@@ -68,7 +68,9 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   ];
 
   fullname: string | null = null;
+  tipoPessoa: string | null = null;
   private fullnameSubscription!: Subscription;
+  private tipoPessoaSubscription!: Subscription;
 
   constructor(
     changeDetectorRef: ChangeDetectorRef,
@@ -88,6 +90,11 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     this.fullnameSubscription = this.authService.getFullname().subscribe(fullname => {
       this.fullname = fullname;
     });
+
+    this.tipoPessoaSubscription = this.authService.getTipoPessoa().subscribe(tipoPessoa => {
+      this.tipoPessoa = tipoPessoa;
+      console.log("Tipo Pessoa: " + tipoPessoa);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -97,6 +104,10 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     this.mobileQuery.removeListener(this._mobileQueryListener);
     if (this.fullnameSubscription) {
       this.fullnameSubscription.unsubscribe();
+    }
+    // Adicionando a subscrição do tipoPessoa para ser removida
+    if (this.tipoPessoaSubscription) {
+      this.tipoPessoaSubscription.unsubscribe();
     }
   }
 
@@ -117,5 +128,13 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.mobileQuery.matches) {
       this.sidenav.close();
     }
+  }
+
+  /**
+   * Verifica se o tipo de pessoa é 'F' (Física).
+   * @returns true se o tipo de pessoa for 'F', caso contrário false.
+   */
+  verificaTipoPessoa(): boolean {
+    return this.tipoPessoa === 'F';
   }
 }

@@ -1,96 +1,160 @@
 <div class="my-account-container">
-    <mat-card class="my-account-card">
-      <mat-card-header>
-        <mat-card-title>Minha Conta</mat-card-title>
-        <mat-card-subtitle>Gerencie suas informações e configurações de conta.</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-tab-group animationDuration="500ms">
-          
-          <!-- Aba de Dados Cadastrais -->
-          <mat-tab label="Dados Cadastrais">
-            <div class="tab-content">
-              <p>Aqui você pode visualizar seus dados de cadastro.</p>
-              <form [formGroup]="cadastralForm" class="form-container">
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Nome Completo</mat-label>
-                  <input matInput formControlName="nomeCompleto">
-                  <mat-icon matSuffix>person</mat-icon>
-                </mat-form-field>
-  
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>E-mail</mat-label>
-                  <input matInput formControlName="email">
-                  <mat-icon matSuffix>mail_outline</mat-icon>
-                </mat-form-field>
-                
+  <mat-card class="my-account-card">
+    <button mat-icon-button (click)="goToHome()" aria-label="Voltar para a tela inicial">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <mat-card-header>
+      <mat-card-title>Minha Conta</mat-card-title>
+      <mat-card-subtitle>Gerencie suas informações e configurações de conta.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-tab-group animationDuration="500ms">
+        
+        <!-- Aba de Dados Cadastrais -->
+        <mat-tab label="Dados Cadastrais" *ngIf="isManager()">
+          <div class="tab-content">
+            <p>Aqui você pode visualizar seus dados de cadastro.</p>
+            <form [formGroup]="cadastralForm" class="form-container">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nome Completo</mat-label>
+                <input matInput formControlName="nomeCompleto">
+                <mat-icon matSuffix>person</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>E-mail</mat-label>
+                <input matInput formControlName="email">
+                <mat-icon matSuffix>mail_outline</mat-icon>
+              </mat-form-field>
+              
+              <!-- Campos específicos para Pessoa Física -->
+              <ng-container *ngIf="isPessoaFisica()">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>CPF</mat-label>
-                  <input matInput formControlName="cpfCnpj">
+                  <input matInput formControlName="cpf">
                   <mat-icon matSuffix>badge</mat-icon>
                 </mat-form-field>
-  
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Data de Nascimento</mat-label>
+                  <input matInput formControlName="dataNascimento">
+                  <mat-icon matSuffix>cake</mat-icon>
+                </mat-form-field>
+
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Telefone</mat-label>
                   <input matInput formControlName="telefone">
                   <mat-icon matSuffix>phone</mat-icon>
                 </mat-form-field>
-  
-                <!-- Futuros botões de edição/salvar -->
-                <div class="button-row">
-                  <button mat-raised-button color="primary" (click)="onEditProfile()">
-                    <mat-icon>edit</mat-icon> Editar
-                  </button>
-                </div>
-              </form>
-            </div>
-          </mat-tab>
-  
-          <!-- Aba de Planos -->
-          <mat-tab label="Planos">
-            <div class="tab-content">
-              <mat-card class="info-card">
-                <mat-card-header>
-                  <mat-card-title>Plano Atual</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                  <p><strong>Plano:</strong> {{ planDetails.planoAtual }}</p>
-                  <p><strong>Valor:</strong> R$ {{ planDetails.valor | number:'1.2-2' }} / {{ planDetails.ciclo }}</p>
-                  <p><strong>Próxima Renovação:</strong> {{ planDetails.proximaRenovacao }}</p>
-                </mat-card-content>
-                <mat-card-actions align="end">
-                  <button mat-button color="primary">Gerenciar Assinatura</button>
-                </mat-card-actions>
-              </mat-card>
-            </div>
-          </mat-tab>
-  
-          <!-- Aba de Usuários Vinculados -->
-          <mat-tab label="Usuários Vinculados">
-            <div class="tab-content">
-              <mat-list>
-                <h3 mat-subheader>Usuários Vinculados à Sua Conta</h3>
-                <mat-list-item *ngFor="let user of linkedUsers">
-                  <mat-icon matListItemIcon>account_circle</mat-icon>
-                  <div matListItemTitle>{{ user.nome }}</div>
-                  <div matListItemLine>{{ user.email }}</div>
-                  <div matListItemLine>Status: {{ user.status }}</div>
-                  <button mat-icon-button matListItemMeta>
-                    <mat-icon>more_vert</mat-icon>
-                  </button>
-                </mat-list-item>
-              </mat-list>
-            </div>
-          </mat-tab>
-  
-          <!-- Aba para futuras expansões -->
-          <mat-tab label="Outras Configurações">
-            <div class="tab-content">
-              <p>Esta aba está reservada para futuras funcionalidades.</p>
-            </div>
-          </mat-tab>
-  
-        </mat-tab-group>
-      </mat-card-content>
-    </mat-card>
-  </div>  
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Celular</mat-label>
+                  <input matInput formControlName="celular">
+                  <mat-icon matSuffix>smartphone</mat-icon>
+                </mat-form-field>
+                
+                <!-- Seção de Endereço -->
+                <h3>Endereço</h3>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>CEP</mat-label>
+                  <input matInput formControlName="cep">
+                  <mat-icon matSuffix>location_on</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Logradouro</mat-label>
+                  <input matInput formControlName="logradouro">
+                  <mat-icon matSuffix>location_city</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Número</mat-label>
+                  <input matInput formControlName="numero">
+                  <mat-icon matSuffix>numbers</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Complemento</mat-label>
+                  <input matInput formControlName="complemento">
+                  <mat-icon matSuffix>apartment</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Bairro</mat-label>
+                  <input matInput formControlName="bairro">
+                  <mat-icon matSuffix>signpost</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Cidade</mat-label>
+                  <input matInput formControlName="cidade">
+                  <mat-icon matSuffix>business</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Estado</mat-label>
+                  <input matInput formControlName="estado">
+                  <mat-icon matSuffix>map</mat-icon>
+                </mat-form-field>
+              </ng-container>
+
+              <div class="button-row" *ngIf="isManager()">
+                <button mat-raised-button color="primary" (click)="onEditProfile()">
+                  <mat-icon>edit</mat-icon> Editar
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-tab>
+
+       <mat-tab label="Segurança">
+        <div class="tab-content">
+          <p>Esta aba está reservada para futuras funcionalidades, visível apenas para gerentes e técnicos.</p>
+        </div>
+      </mat-tab>
+
+        <mat-tab label="Planos" *ngIf="isManager()">
+          <div class="tab-content">
+            <mat-card class="info-card">
+              <mat-card-header>
+                <mat-card-title>Plano Atual</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p><strong>Plano:</strong> {{ planDetails.planoAtual }}</p>
+                <p><strong>Valor:</strong> R$ {{ planDetails.valor | number:'1.2-2' }} / {{ planDetails.ciclo }}</p>
+                <p><strong>Próxima Renovação:</strong> {{ planDetails.proximaRenovacao }}</p>
+              </mat-card-content>
+              <mat-card-actions align="end" *ngIf="isManager()">
+                <button mat-button color="primary">Gerenciar Assinatura</button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Usuários Vinculados" *ngIf="isManager()">
+          <div class="tab-content">
+            <mat-list>
+              <h3 mat-subheader>Usuários Vinculados à Sua Conta</h3>
+              <mat-list-item *ngFor="let user of linkedUsers">
+                <mat-icon matListItemIcon>account_circle</mat-icon>
+                <div matListItemTitle>{{ user.nome }}</div>
+                <div matListItemLine>{{ user.email }}</div>
+                <div matListItemLine>Status: {{ user.status }}</div>
+                <button mat-icon-button matListItemMeta>
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-list>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Outras Configurações" *ngIf="isManager()">
+          <div class="tab-content">
+            <p>Esta aba está reservada para futuras funcionalidades.</p>
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -33,6 +33,8 @@ export class AuthService {
   // NOVO: Sujeito para o nome completo do usuário
   private fullnameSubject = new BehaviorSubject<string | null>(null);
 
+  private tipoPessoa = new BehaviorSubject<string | null>(null);
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -45,6 +47,8 @@ export class AuthService {
       // NOVO: Inicializa o nome completo ao carregar a página
       const initialFullname = this.getFullnameFromToken();
       this.fullnameSubject.next(initialFullname);
+      const initTipoPessoa = this.getTipoPessoaFromAccessToken();
+      this.tipoPessoa.next(initTipoPessoa);
     }
   }
   
@@ -59,6 +63,10 @@ export class AuthService {
   // NOVO: Expõe o nome completo do usuário como um Observable
   public getFullname(): Observable<string | null> {
     return this.fullnameSubject.asObservable();
+  }
+
+  public getTipoPessoa(): Observable<string | null> {
+    return this.tipoPessoa.asObservable();
   }
 
   private getRoleFromToken(): string | null {
@@ -105,6 +113,20 @@ export class AuthService {
     return null;
   }
 
+  public getTipoPessoaFromAccessToken(): string | null {
+    const token = this.getAccessToken();
+    if (token) {
+      try {
+        const decoded: any = jwtDecode(token);
+        return decoded.tipoPessoa || null;
+      } catch (e) {
+        console.error('Erro ao decodificar token para obter o username:', e);
+        return null;
+      }
+    }
+    return null;
+  }
+
   login(credentials: any): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/auth/signin`, credentials).pipe(
       tap(response => {
@@ -122,6 +144,10 @@ export class AuthService {
           // NOVO: Emite o nome completo do usuário para todos os inscritos
           const userFullname = this.getFullnameFromToken();
           this.fullnameSubject.next(userFullname);
+
+          // NOVO: Emite o tipo de pessoa do usuário para todos os inscritos
+          const userTipoPessoa = this.getTipoPessoaFromAccessToken();
+          this.tipoPessoa.next(userTipoPessoa);
 
           this.router.navigate(['/home']).then(() => {
             this.snackBar.open('Login realizado com sucesso!', 'Fechar', { duration: 3000 });
@@ -149,6 +175,7 @@ export class AuthService {
     this.loggedIn.next(false);
     this.userRoleSubject.next(null);
     this.fullnameSubject.next(null); // NOVO: Notifica que o nome completo foi removido
+    this.tipoPessoa.next(null); // NOVO: Notifica que o tipo de pessoa foi removido
     this.router.navigate(['/login']);
     this.snackBar.open('Logout realizado.', 'Fechar', { duration: 3000 });
   }
