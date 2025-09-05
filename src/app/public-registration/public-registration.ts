@@ -91,7 +91,10 @@ export class PublicRegistration implements OnInit, OnDestroy {
       inscricaoMunicipal: [''],
       telefone1: ['', [Validators.pattern(/^\d{10,11}$/)]],
       celular: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
-      email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]]
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
+      emailResponsavel: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
+      nomeResponsavel: ['', [Validators.required, Validators.maxLength(50)]],
+      sobreNomeResponsavel: ['', [Validators.required, Validators.maxLength(50)]]
     });
 
     this.addressForm = this.fb.group({
@@ -144,7 +147,7 @@ export class PublicRegistration implements OnInit, OnDestroy {
       };
       
       endpoint = `${this.baseUrl}/api/v1/publica/pessoa-juridica/cadastrar`;
-      emailToValidate = finalPayload.email;
+      emailToValidate = finalPayload.emailResponsavel;
       cpfCnpjToValidate = finalPayload.cnpj;
       tipoPessoaToValidate = 'J';
 
