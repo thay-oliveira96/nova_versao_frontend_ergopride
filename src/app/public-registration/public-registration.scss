@@ -48,4 +48,27 @@
 .cadastrar {
     color: #d15858;
 
-}  
+}
+
+/* Seletor global para a sobreposição do calendário */
+  :host ::ng-deep .mat-datepicker-content {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  /* Seletor para garantir que os ícones e texto dentro do datepicker sejam visíveis */
+  :host ::ng-deep .mat-calendar-body-cell-content,
+  :host ::ng-deep .mat-calendar-table-header th,
+  :host ::ng-deep .mat-calendar-controls,
+  :host ::ng-deep .mat-calendar-previous-button,
+  :host ::ng-deep .mat-calendar-next-button {
+    color: black !important;
+  }
+  
+  /* Adicional: estilo para os botões do stepper para melhor contraste */
+  .mat-stepper-horizontal button[mat-stepper-previous],
+  .mat-stepper-horizontal button[mat-stepper-next] {
+    background-color: white;
+    color: black;
+    margin-right: 8px;
+  }

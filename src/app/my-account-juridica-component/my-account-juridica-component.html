@@ -1,166 +1,252 @@
 <div class="my-account-container">
-    <mat-card class="my-account-card">
-        <button mat-icon-button (click)="goToHome()" aria-label="Voltar para a tela inicial">
-            <mat-icon>arrow_back</mat-icon>
-          </button>
-      <mat-card-header>
-        <!-- Botão de voltar adicionado para consistência -->
-        <mat-card-title>Minha Conta</mat-card-title>
-        <mat-card-subtitle>Gerencie suas informações e configurações de conta.</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-tab-group animationDuration="500ms">
+  <mat-card class="my-account-card">
+    <button mat-icon-button (click)="goToHome()" aria-label="Voltar para a tela inicial">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <mat-card-header>
+      <mat-card-title>Minha Conta</mat-card-title>
+      <mat-card-subtitle>Gerencie suas informações e configurações de conta.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-tab-group animationDuration="500ms">
   
-          <mat-tab label="Dados Cadastrais" *ngIf="isManager()">
-            <div class="tab-content">
-              <p>Aqui você pode visualizar seus dados de cadastro.</p>
-              <form [formGroup]="cadastralForm" class="form-container">
+        <mat-tab label="Dados Cadastrais" *ngIf="isManager()">
+          <div class="tab-content">
+            <p>Aqui você pode visualizar e editar seus dados de cadastro.</p>
+            <form [formGroup]="cadastralForm" class="form-container">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Razão Social</mat-label>
+                <input matInput formControlName="razaoSocial">
+                <mat-icon matSuffix>domain</mat-icon>
+                <mat-error *ngIf="cadastralForm.get('razaoSocial')?.hasError('required')">
+                  Razão Social é obrigatória
+                </mat-error>
+              </mat-form-field>
+  
+              <ng-container *ngIf="isPessoaJuridica()">
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Razão Social</mat-label>
-                  <input matInput formControlName="razaoSocial">
-                  <mat-icon matSuffix>domain</mat-icon>
-                </mat-form-field>
-  
-                <!-- Condição ajustada para Pessoa Jurídica -->
-                <ng-container *ngIf="isPessoaJuridica()">
-                  <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Nome Fantasia</mat-label>
-                    <input matInput formControlName="nomeFantasia">
-                    <mat-icon matSuffix>badge</mat-icon>
-                  </mat-form-field>
-  
-                  <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>CNPJ</mat-label>
-                    <input matInput formControlName="cnpj">
-                    <mat-icon matSuffix>fingerprint</mat-icon>
-                  </mat-form-field>
-  
-                  <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Inscrição Estatual</mat-label>
-                    <input matInput formControlName="inscricaoEstatual">
-                    <mat-icon matSuffix>badge</mat-icon>
-                  </mat-form-field>
-  
-                  <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Inscrição Municipal</mat-label>
-                    <input matInput formControlName="inscricaoMunicipal">
-                    <mat-icon matSuffix>badge</mat-icon>
-                  </mat-form-field>
-                </ng-container>
-  
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Telefone</mat-label>
-                  <input matInput formControlName="telefone">
-                  <mat-icon matSuffix>phone</mat-icon>
+                  <mat-label>Nome Fantasia</mat-label>
+                  <input matInput formControlName="nomeFantasia">
+                  <mat-icon matSuffix>badge</mat-icon>
+                  <mat-error *ngIf="cadastralForm.get('nomeFantasia')?.hasError('required')">
+                    Nome Fantasia é obrigatório
+                  </mat-error>
                 </mat-form-field>
   
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Celular</mat-label>
-                  <input matInput formControlName="celular">
-                  <mat-icon matSuffix>smartphone</mat-icon>
+                  <mat-label>CNPJ</mat-label>
+                  <input matInput formControlName="cnpj" readonly>
+                  <mat-icon matSuffix>fingerprint</mat-icon>
+                  <mat-error *ngIf="cadastralForm.get('cnpj')?.hasError('required')">
+                    CNPJ é obrigatório
+                  </mat-error>
                 </mat-form-field>
   
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>E-mail</mat-label>
-                  <input matInput formControlName="email">
-                  <mat-icon matSuffix>mail_outline</mat-icon>
-                </mat-form-field>
-  
-                <h3>Endereço</h3>
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>CEP</mat-label>
-                  <input matInput formControlName="cep">
-                  <mat-icon matSuffix>location_on</mat-icon>
+                  <mat-label>Inscrição Estadual</mat-label>
+                  <input matInput formControlName="inscricaoEstatual">
+                  <mat-icon matSuffix>badge</mat-icon>
                 </mat-form-field>
   
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Logradouro</mat-label>
-                  <input matInput formControlName="logradouro">
-                  <mat-icon matSuffix>location_city</mat-icon>
+                  <mat-label>Inscrição Municipal</mat-label>
+                  <input matInput formControlName="inscricaoMunicipal">
+                  <mat-icon matSuffix>badge</mat-icon>
                 </mat-form-field>
+              </ng-container>
   
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Telefone</mat-label>
+                <input matInput formControlName="telefone">
+                <mat-icon matSuffix>phone</mat-icon>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Celular</mat-label>
+                <input matInput formControlName="celular">
+                <mat-icon matSuffix>smartphone</mat-icon>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>E-mail</mat-label>
+                <input matInput formControlName="email" readonly>
+                <mat-icon matSuffix>mail_outline</mat-icon>
+                <mat-error *ngIf="cadastralForm.get('email')?.hasError('required')">
+                  E-mail é obrigatório
+                </mat-error>
+                <mat-error *ngIf="cadastralForm.get('email')?.hasError('email')">
+                  E-mail inválido
+                </mat-error>
+              </mat-form-field>
+  
+              <h3>Endereço</h3>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>CEP</mat-label>
+                <input matInput formControlName="cep">
+                <mat-icon matSuffix>location_on</mat-icon>
+                <mat-error *ngIf="cadastralForm.get('cep')?.hasError('required')">
+                  CEP é obrigatório
+                </mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Logradouro</mat-label>
+                <input matInput formControlName="logradouro">
+                <mat-icon matSuffix>location_city</mat-icon>
+                <mat-error *ngIf="cadastralForm.get('logradouro')?.hasError('required')">
+                  Logradouro é obrigatório
+                </mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Número</mat-label>
+                <input matInput formControlName="numero">
+                <mat-icon matSuffix>numbers</mat-icon>
+                <mat-error *ngIf="cadastralForm.get('numero')?.hasError('required')">
+                  Número é obrigatório
+                </mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Complemento</mat-label>
+                <input matInput formControlName="complemento">
+                <mat-icon matSuffix>apartment</mat-icon>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Bairro</mat-label>
+                <input matInput formControlName="bairro">
+                <mat-icon matSuffix>signpost</mat-icon>
+                <mat-error *ngIf="cadastralForm.get('bairro')?.hasError('required')">
+                  Bairro é obrigatório
+                </mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Cidade</mat-label>
+                <input matInput formControlName="cidade">
+                <mat-icon matSuffix>business</mat-icon>
+                <mat-error *ngIf="cadastralForm.get('cidade')?.hasError('required')">
+                  Cidade é obrigatória
+                </mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Estado</mat-label>
+                <input matInput formControlName="estado">
+                <mat-icon matSuffix>map</mat-icon>
+                <mat-error *ngIf="cadastralForm.get('estado')?.hasError('required')">
+                  Estado é obrigatório
+                </mat-error>
+              </mat-form-field>
+  
+              <div class="button-row" *ngIf="isManager()">
+                <button mat-raised-button color="primary" (click)="onEditProfile()" *ngIf="!isEditMode">
+                  <mat-icon>edit</mat-icon> Editar
+                </button>
+                <button mat-raised-button color="primary" (click)="onSaveChanges()" *ngIf="isEditMode" [disabled]="cadastralForm.invalid">
+                  <mat-icon>save</mat-icon> Salvar
+                </button>
+                <button mat-raised-button color="warn" (click)="onCancelEdit()" *ngIf="isEditMode">
+                  <mat-icon>cancel</mat-icon> Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-tab>
+  
+        <mat-tab label="Segurança">
+          <div class="tab-content">
+            <p>Altere sua senha de acesso à conta.</p>
+            <button mat-raised-button color="primary" (click)="togglePasswordForm()" *ngIf="!showPasswordForm">
+              <mat-icon>lock</mat-icon> Trocar a senha
+            </button>
+            <div *ngIf="showPasswordForm" class="password-form">
+              <form [formGroup]="passwordForm" class="form-container">
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Número</mat-label>
-                  <input matInput formControlName="numero">
-                  <mat-icon matSuffix>numbers</mat-icon>
+                  <mat-label>Senha atual</mat-label>
+                  <input matInput type="password" formControlName="senhaAtual">
+                  <mat-icon matSuffix>lock</mat-icon>
+                  <mat-error *ngIf="passwordForm.get('senhaAtual')?.hasError('required')">
+                    Senha atual é obrigatória
+                  </mat-error>
                 </mat-form-field>
-  
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Complemento</mat-label>
-                  <input matInput formControlName="complemento">
-                  <mat-icon matSuffix>apartment</mat-icon>
+                  <mat-label>Nova Senha</mat-label>
+                  <input matInput type="password" formControlName="novaSenha">
+                  <mat-icon matSuffix>lock</mat-icon>
+                  <mat-error *ngIf="passwordForm.get('novaSenha')?.hasError('required')">
+                    Nova senha é obrigatória
+                  </mat-error>
+                  <mat-error *ngIf="passwordForm.get('novaSenha')?.hasError('minlength')">
+                    A nova senha deve ter pelo menos 8 caracteres
+                  </mat-error>
                 </mat-form-field>
-  
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Bairro</mat-label>
-                  <input matInput formControlName="bairro">
-                  <mat-icon matSuffix>signpost</mat-icon>
+                  <mat-label>Confirmar Nova Senha</mat-label>
+                  <input matInput type="password" formControlName="confirmacaoNovaSenha">
+                  <mat-icon matSuffix>lock</mat-icon>
+                  <mat-error *ngIf="passwordForm.get('confirmacaoNovaSenha')?.hasError('required')">
+                    Confirmação da senha é obrigatória
+                  </mat-error>
+                  <mat-error *ngIf="passwordForm.hasError('mismatch') && !passwordForm.get('confirmacaoNovaSenha')?.hasError('required')">
+                    As senhas não coincidem
+                  </mat-error>
                 </mat-form-field>
-  
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Cidade</mat-label>
-                  <input matInput formControlName="cidade">
-                  <mat-icon matSuffix>business</mat-icon>
-                </mat-form-field>
-  
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Estado</mat-label>
-                  <input matInput formControlName="estado">
-                  <mat-icon matSuffix>map</mat-icon>
-                </mat-form-field>
-  
-                <div class="button-row" *ngIf="isManager()">
-                  <button mat-raised-button color="primary" (click)="onEditProfile()">
-                    <mat-icon>edit</mat-icon> Editar
+                <div class="button-row">
+                  <button mat-raised-button color="primary" (click)="onSavePassword()" [disabled]="passwordForm.invalid || passwordForm.hasError('mismatch')">
+                    <mat-icon>save</mat-icon> Salvar Senha
+                  </button>
+                  <button mat-raised-button color="warn" (click)="togglePasswordForm()">
+                    <mat-icon>cancel</mat-icon> Cancelar
                   </button>
                 </div>
               </form>
             </div>
-          </mat-tab>
+          </div>
+        </mat-tab>
   
-          <mat-tab label="Planos">
-            <div class="tab-content">
-              <mat-card class="info-card">
-                <mat-card-header>
-                  <mat-card-title>Plano Atual</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                  <p><strong>Plano:</strong> {{ planDetails.planoAtual }}</p>
-                  <p><strong>Valor:</strong> R$ {{ planDetails.valor | number:'1.2-2' }} / {{ planDetails.ciclo }}</p>
-                  <p><strong>Próxima Renovação:</strong> {{ planDetails.proximaRenovacao }}</p>
-                </mat-card-content>
-                <mat-card-actions align="end" *ngIf="isManager()">
-                  <button mat-button color="primary">Gerenciar Assinatura</button>
-                </mat-card-actions>
-              </mat-card>
-            </div>
-          </mat-tab>
+        <mat-tab label="Planos">
+          <div class="tab-content">
+            <mat-card class="info-card">
+              <mat-card-header>
+                <mat-card-title>Plano Atual</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p><strong>Plano:</strong> {{ planDetails.planoAtual }}</p>
+                <p><strong>Valor:</strong> R$ {{ planDetails.valor | number:'1.2-2' }} / {{ planDetails.ciclo }}</p>
+                <p><strong>Próxima Renovação:</strong> {{ planDetails.proximaRenovacao }}</p>
+              </mat-card-content>
+              <mat-card-actions align="end" *ngIf="isManager()">
+                <button mat-button color="primary">Gerenciar Assinatura</button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </mat-tab>
   
-          <mat-tab label="Usuários Vinculados">
-            <div class="tab-content">
-              <mat-list>
-                <h3 mat-subheader>Usuários Vinculados à Sua Conta</h3>
-                <mat-list-item *ngFor="let user of linkedUsers">
-                  <mat-icon matListItemIcon>account_circle</mat-icon>
-                  <div matListItemTitle>{{ user.nome }}</div>
-                  <div matListItemLine>{{ user.email }}</div>
-                  <div matListItemLine>Status: {{ user.status }}</div>
-                  <button mat-icon-button matListItemMeta>
-                    <mat-icon>more_vert</mat-icon>
-                  </button>
-                </mat-list-item>
-              </mat-list>
-            </div>
-          </mat-tab>
+        <mat-tab label="Usuários Vinculados">
+          <div class="tab-content">
+            <mat-list>
+              <h3 mat-subheader>Usuários Vinculados à Sua Conta</h3>
+              <mat-list-item *ngFor="let user of linkedUsers">
+                <mat-icon matListItemIcon>account_circle</mat-icon>
+                <div matListItemTitle>{{ user.nome }}</div>
+                <div matListItemLine>{{ user.email }}</div>
+                <div matListItemLine>Status: {{ user.status }}</div>
+                <button mat-icon-button matListItemMeta>
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-list>
+          </div>
+        </mat-tab>
   
-          <mat-tab label="Outras Configurações">
-            <div class="tab-content">
-              <p>Esta aba está reservada para futuras funcionalidades.</p>
-            </div>
-          </mat-tab>
-  
-        </mat-tab-group>
-      </mat-card-content>
-    </mat-card>
-  </div>
-  
+        <mat-tab label="Outras Configurações">
+          <div class="tab-content">
+            <p>Esta aba está reservada para futuras funcionalidades.</p>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>

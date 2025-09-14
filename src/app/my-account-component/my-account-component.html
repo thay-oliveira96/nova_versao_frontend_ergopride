@@ -13,32 +13,47 @@
         <!-- Aba de Dados Cadastrais -->
         <mat-tab label="Dados Cadastrais" *ngIf="isManager()">
           <div class="tab-content">
-            <p>Aqui você pode visualizar seus dados de cadastro.</p>
+            <p>Aqui você pode visualizar e editar seus dados de cadastro.</p>
             <form [formGroup]="cadastralForm" class="form-container">
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Nome Completo</mat-label>
                 <input matInput formControlName="nomeCompleto">
                 <mat-icon matSuffix>person</mat-icon>
+                <mat-error *ngIf="cadastralForm.get('nomeCompleto')?.hasError('required')">
+                  Nome completo é obrigatório
+                </mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>E-mail</mat-label>
-                <input matInput formControlName="email">
+                <input matInput formControlName="email" readonly>
                 <mat-icon matSuffix>mail_outline</mat-icon>
+                <mat-error *ngIf="cadastralForm.get('email')?.hasError('required')">
+                  E-mail é obrigatório
+                </mat-error>
+                <mat-error *ngIf="cadastralForm.get('email')?.hasError('email')">
+                  E-mail inválido
+                </mat-error>
               </mat-form-field>
               
               <!-- Campos específicos para Pessoa Física -->
               <ng-container *ngIf="isPessoaFisica()">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>CPF</mat-label>
-                  <input matInput formControlName="cpf">
+                  <input matInput formControlName="cpf" readonly>
                   <mat-icon matSuffix>badge</mat-icon>
+                  <mat-error *ngIf="cadastralForm.get('cpf')?.hasError('required')">
+                    CPF é obrigatório
+                  </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Data de Nascimento</mat-label>
                   <input matInput formControlName="dataNascimento">
                   <mat-icon matSuffix>cake</mat-icon>
+                  <mat-error *ngIf="cadastralForm.get('dataNascimento')?.hasError('required')">
+                    Data de nascimento é obrigatória
+                  </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
@@ -59,18 +74,27 @@
                   <mat-label>CEP</mat-label>
                   <input matInput formControlName="cep">
                   <mat-icon matSuffix>location_on</mat-icon>
+                  <mat-error *ngIf="cadastralForm.get('cep')?.hasError('required')">
+                    CEP é obrigatório
+                  </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Logradouro</mat-label>
                   <input matInput formControlName="logradouro">
                   <mat-icon matSuffix>location_city</mat-icon>
+                  <mat-error *ngIf="cadastralForm.get('logradouro')?.hasError('required')">
+                    Logradouro é obrigatório
+                  </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Número</mat-label>
                   <input matInput formControlName="numero">
                   <mat-icon matSuffix>numbers</mat-icon>
+                  <mat-error *ngIf="cadastralForm.get('numero')?.hasError('required')">
+                    Número é obrigatório
+                  </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
@@ -83,35 +107,95 @@
                   <mat-label>Bairro</mat-label>
                   <input matInput formControlName="bairro">
                   <mat-icon matSuffix>signpost</mat-icon>
+                  <mat-error *ngIf="cadastralForm.get('bairro')?.hasError('required')">
+                    Bairro é obrigatório
+                  </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Cidade</mat-label>
                   <input matInput formControlName="cidade">
                   <mat-icon matSuffix>business</mat-icon>
+                  <mat-error *ngIf="cadastralForm.get('cidade')?.hasError('required')">
+                    Cidade é obrigatória
+                  </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Estado</mat-label>
                   <input matInput formControlName="estado">
                   <mat-icon matSuffix>map</mat-icon>
+                  <mat-error *ngIf="cadastralForm.get('estado')?.hasError('required')">
+                    Estado é obrigatório
+                  </mat-error>
                 </mat-form-field>
               </ng-container>
 
               <div class="button-row" *ngIf="isManager()">
-                <button mat-raised-button color="primary" (click)="onEditProfile()">
+                <button mat-raised-button color="primary" (click)="onEditProfile()" *ngIf="!isEditMode">
                   <mat-icon>edit</mat-icon> Editar
+                </button>
+                <button mat-raised-button color="primary" (click)="onSaveChanges()" *ngIf="isEditMode" [disabled]="cadastralForm.invalid">
+                  <mat-icon>save</mat-icon> Salvar
+                </button>
+                <button mat-raised-button color="warn" (click)="onCancelEdit()" *ngIf="isEditMode">
+                  <mat-icon>cancel</mat-icon> Cancelar
                 </button>
               </div>
             </form>
           </div>
         </mat-tab>
 
-       <mat-tab label="Segurança">
-        <div class="tab-content">
-          <p>Esta aba está reservada para futuras funcionalidades, visível apenas para gerentes e técnicos.</p>
-        </div>
-      </mat-tab>
+        <mat-tab label="Segurança">
+          <div class="tab-content">
+            <p>Altere sua senha de acesso à conta.</p>
+            <button mat-raised-button color="primary" (click)="togglePasswordForm()" *ngIf="!showPasswordForm">
+              <mat-icon>lock</mat-icon> Trocar a senha
+            </button>
+            <div *ngIf="showPasswordForm" class="password-form">
+              <form [formGroup]="passwordForm" class="form-container">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Senha atual</mat-label>
+                  <input matInput type="password" formControlName="senhaAtual">
+                  <mat-icon matSuffix>lock</mat-icon>
+                  <mat-error *ngIf="passwordForm.get('senhaAtual')?.hasError('required')">
+                    Senha atual é obrigatória
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Nova Senha</mat-label>
+                  <input matInput type="password" formControlName="novaSenha">
+                  <mat-icon matSuffix>lock</mat-icon>
+                  <mat-error *ngIf="passwordForm.get('novaSenha')?.hasError('required')">
+                    Nova senha é obrigatória
+                  </mat-error>
+                  <mat-error *ngIf="passwordForm.get('novaSenha')?.hasError('minlength')">
+                    A nova senha deve ter pelo menos 8 caracteres
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Confirmar Nova Senha</mat-label>
+                  <input matInput type="password" formControlName="confirmacaoNovaSenha">
+                  <mat-icon matSuffix>lock</mat-icon>
+                  <mat-error *ngIf="passwordForm.get('confirmacaoNovaSenha')?.hasError('required')">
+                    Confirmação da senha é obrigatória
+                  </mat-error>
+                  <mat-error *ngIf="passwordForm.hasError('mismatch') && !passwordForm.get('confirmacaoNovaSenha')?.hasError('required')">
+                    As senhas não coincidem
+                  </mat-error>
+                </mat-form-field>
+                <div class="button-row">
+                  <button mat-raised-button color="primary" (click)="onSavePassword()" [disabled]="passwordForm.invalid || passwordForm.hasError('mismatch')">
+                    <mat-icon>save</mat-icon> Salvar Senha
+                  </button>
+                  <button mat-raised-button color="warn" (click)="togglePasswordForm()">
+                    <mat-icon>cancel</mat-icon> Cancelar
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </mat-tab>
 
         <mat-tab label="Planos" *ngIf="isManager()">
           <div class="tab-content">
@@ -153,7 +237,6 @@
             <p>Esta aba está reservada para futuras funcionalidades.</p>
           </div>
         </mat-tab>
-
       </mat-tab-group>
     </mat-card-content>
   </mat-card>

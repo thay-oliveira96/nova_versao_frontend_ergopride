@@ -195,3 +195,57 @@ $white-text: #FFFFFF;
     }
   }
 }
+
+/* Estilos globais para overlays do Angular Material */
+
+/*
+  Corrige a transparência do seletor de linguagem.
+  O .mat-select-panel é o contêiner das opções do dropdown.
+*/
+.mat-select-panel {
+  background-color: #333 !important;
+}
+
+.mat-option {
+  color: #fff !important;
+}
+
+/*
+  Corrige a transparência do calendário (mat-datepicker).
+  O .mat-datepicker-content é a janela do calendário.
+*/
+.mat-datepicker-content {
+  background-color: #333 !important;
+  color: #fff !important;
+}
+
+/* Garante que os números e o cabeçalho do calendário fiquem brancos. */
+.mat-datepicker-content .mat-calendar-body-cell-content,
+.mat-datepicker-content .mat-calendar-table-header th,
+.mat-datepicker-content .mat-calendar-period-button,
+.mat-datepicker-content .mat-calendar-previous-button,
+.mat-datepicker-content .mat-calendar-next-button {
+  color: #fff !important;
+}
+
+/*
+  Corrige a transparência de todos os menus.
+  O .mat-menu-panel é o contêiner de itens de menu.
+*/
+.mat-menu-panel {
+  background-color: #333 !important;
+  color: #fff !important;
+}
+
+/*
+  Corrige a transparência da paginação de tabelas.
+  O .mat-paginator-container é a barra de navegação de páginas.
+*/
+.mat-paginator-container {
+  background-color: #333 !important;
+  color: #fff !important;
+}
+
+.mat-paginator-container .mat-icon-button {
+  color: #fff !important;
+}

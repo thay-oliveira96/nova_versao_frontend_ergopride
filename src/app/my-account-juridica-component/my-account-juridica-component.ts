@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environments';
 import { Subscription } from 'rxjs';
@@ -39,9 +40,29 @@ interface PessoaJuridicaPublicaReponseDTO {
   email: string;
 }
 
+interface PessoaJuridicaDTO {
+  razaoSocial: string;
+  nomeFantasia: string;
+  cnpj: string;
+  inscricaoEstatual: string;
+  inscricaoMunicipal: string;
+  endereco: EnderecoPublicoResponseDTO;
+  telefone1: string;
+  celular: string;
+  email: string;
+  senha?: string;
+}
+
+interface AlterarSenhaDTO {
+  idPessoa: number;
+  senhaAtual: string;
+  novaSenha: string;
+  confirmacaoNovaSenha: string;
+}
+
 @Component({
   selector: 'app-my-account-juridica',
-  standalone: true, // Adicionado para funcionar como componente autônomo
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -51,7 +72,8 @@ interface PessoaJuridicaPublicaReponseDTO {
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatListModule
+    MatListModule,
+    MatSnackBarModule
   ],
   templateUrl: './my-account-juridica-component.html',
   styleUrl: './my-account-juridica-component.scss'
@@ -60,6 +82,7 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private http = inject(HttpClient);
+  private snackBar = inject(MatSnackBar);
   private readonly baseUrl = environment.apiUrl;
 
   tipoPessoa: string | null = null;
@@ -68,6 +91,10 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
   private userRoleSubscription!: Subscription;
 
   cadastralForm!: FormGroup;
+  passwordForm!: FormGroup;
+  isEditMode = false;
+  showPasswordForm = false;
+  userId: number | null = null;
 
   userProfile = {
     razaoSocial: 'Carregando...',
@@ -78,7 +105,6 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
     telefone: 'Carregando...',
     celular: 'Carregando...',
     email: 'Carregando...',
-    dataNascimento: 'Carregando...',
     logradouro: 'Carregando...',
     numero: 'Carregando...',
     complemento: 'Carregando...',
@@ -101,32 +127,38 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-      private authService: AuthService,
-    ) {}
+    private authService: AuthService,
+  ) {}
 
   ngOnInit(): void {
     this.cadastralForm = this.fb.group({
-      razaoSocial: [{ value: '', disabled: true }],
-      nomeFantasia: [{ value: '', disabled: true }],
-      cnpj: [{ value: '', disabled: true }],
+      razaoSocial: [{ value: '', disabled: true }, Validators.required],
+      nomeFantasia: [{ value: '', disabled: true }, Validators.required],
+      cnpj: [{ value: '', disabled: true }, Validators.required],
       inscricaoEstatual: [{ value: '', disabled: true }],
       inscricaoMunicipal: [{ value: '', disabled: true }],
       telefone: [{ value: '', disabled: true }],
       celular: [{ value: '', disabled: true }],
-      email: [{ value: '', disabled: true }],
-      logradouro: [{ value: '', disabled: true }],
-      numero: [{ value: '', disabled: true }],
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
+      logradouro: [{ value: '', disabled: true }, Validators.required],
+      numero: [{ value: '', disabled: true }, Validators.required],
       complemento: [{ value: '', disabled: true }],
-      bairro: [{ value: '', disabled: true }],
-      cidade: [{ value: '', disabled: true }],
-      estado: [{ value: '', disabled: true }],
-      cep: [{ value: '', disabled: true }]
+      bairro: [{ value: '', disabled: true }, Validators.required],
+      cidade: [{ value: '', disabled: true }, Validators.required],
+      estado: [{ value: '', disabled: true }, Validators.required],
+      cep: [{ value: '', disabled: true }, Validators.required]
     });
-  
+
+    // Inicializa o formulário de troca de senha
+    this.passwordForm = this.fb.group({
+      senhaAtual: ['', Validators.required],
+      novaSenha: ['', [Validators.required, Validators.minLength(8)]],
+      confirmacaoNovaSenha: ['', Validators.required]
+    }, { validators: this.passwordMatchValidator });
+
     // Inscreve-se para o tipo de pessoa e busca os dados se for Pessoa Jurídica
     this.tipoPessoaSubscription = this.authService.getTipoPessoa().subscribe(tipoPessoa => {
       this.tipoPessoa = tipoPessoa;
-      console.log("Tipo Pessoa: " + tipoPessoa);
       if (tipoPessoa === 'J') {
         this.loadPessoaJuridicaData();
       }
@@ -135,9 +167,7 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
     // Inscreve-se para a role do usuário
     this.userRoleSubscription = this.authService.getUserRole().subscribe(role => {
       this.userRole = role;
-      console.log("User Role: " + this.userRole);
     });
-  
   }
 
   ngOnDestroy(): void {
@@ -152,11 +182,11 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
   private loadPessoaJuridicaData(): void {
     const email = this.authService.getUsernameFromAccessToken();
     if (email) {
-      // Corrigido o erro de digitação na URL
       const url = `${this.baseUrl}/api/v1/pessoa-juridica/buscar/email/${email}`;
       this.http.get<PessoaJuridicaPublicaReponseDTO>(url).subscribe({
         next: (data) => {
-          console.log('Dados de Pessoa Juridica recebidos:', data);
+          console.log('Dados de Pessoa Jurídica recebidos:', data);
+          this.userId = data.id;
           this.userProfile.razaoSocial = data.razaoSocial;
           this.userProfile.nomeFantasia = data.nomeFantasia;
           this.userProfile.cnpj = data.cnpj;
@@ -176,7 +206,7 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
           }
           
           this.cadastralForm.patchValue({
-            razaoSocial: this.userProfile.razaoSocial, // Corrigido o nome do campo
+            razaoSocial: this.userProfile.razaoSocial,
             nomeFantasia: this.userProfile.nomeFantasia,
             cnpj: this.userProfile.cnpj,
             inscricaoEstatual: this.userProfile.inscricaoEstatual,
@@ -194,12 +224,20 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
           });
         },
         error: (err) => {
-          console.error('Erro ao buscar dados de Pessoa Juridica:', err);
+          console.error('Erro ao buscar dados de Pessoa Jurídica:', err);
+          this.snackBar.open('Erro ao carregar dados da conta.', 'Fechar', { duration: 5000 });
         }
       });
     }
   }
-  
+
+  // Validador personalizado para verificar se as senhas coincidem
+  private passwordMatchValidator(form: FormGroup) {
+    const novaSenha = form.get('novaSenha')?.value;
+    const confirmacaoNovaSenha = form.get('confirmacaoNovaSenha')?.value;
+    return novaSenha === confirmacaoNovaSenha ? null : { mismatch: true };
+  }
+
   // Métodos de verificação de role e tipo de pessoa
   isManager(): boolean {
     return this.userRole === 'MANAGER';
@@ -218,11 +256,109 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
   }
 
   onEditProfile(): void {
-    console.log('Botão de editar clicado.');
+    this.isEditMode = true;
+    Object.keys(this.cadastralForm.controls).forEach(key => {
+      if (key !== 'email' && key !== 'cnpj') {
+        this.cadastralForm.get(key)?.enable();
+      }
+    });
   }
 
   onSaveChanges(): void {
-    console.log('Botão de salvar clicado.');
+    if (this.cadastralForm.invalid) {
+      this.cadastralForm.markAllAsTouched();
+      this.snackBar.open('Por favor, preencha todos os campos obrigatórios.', 'Fechar', { duration: 3000 });
+      return;
+    }
+
+    const payload: Partial<PessoaJuridicaDTO> = {
+      razaoSocial: this.cadastralForm.get('razaoSocial')?.value,
+      nomeFantasia: this.cadastralForm.get('nomeFantasia')?.value,
+      inscricaoEstatual: this.cadastralForm.get('inscricaoEstatual')?.value,
+      inscricaoMunicipal: this.cadastralForm.get('inscricaoMunicipal')?.value,
+      telefone1: this.cadastralForm.get('telefone')?.value,
+      celular: this.cadastralForm.get('celular')?.value,
+      email: this.cadastralForm.get('email')?.value,
+      endereco: {
+        id: this.userId || 0,
+        logradouro: this.cadastralForm.get('logradouro')?.value,
+        numero: this.cadastralForm.get('numero')?.value,
+        complemento: this.cadastralForm.get('complemento')?.value,
+        bairro: this.cadastralForm.get('bairro')?.value,
+        cidade: this.cadastralForm.get('cidade')?.value,
+        estado: this.cadastralForm.get('estado')?.value,
+        cep: this.cadastralForm.get('cep')?.value
+      }
+    };
+
+    const headers = new HttpHeaders({
+      'usuario': this.authService.getUsernameFromAccessToken() || ''
+    });
+
+    if (this.userId) {
+      this.http.put(`${this.baseUrl}/api/v1/pessoa-juridica/alterar/${this.userId}`, payload, { headers }).subscribe({
+        next: () => {
+          this.snackBar.open('Dados atualizados com sucesso!', 'Fechar', { duration: 3000 });
+          this.isEditMode = false;
+          Object.keys(this.cadastralForm.controls).forEach(key => {
+            this.cadastralForm.get(key)?.disable();
+          });
+        },
+        error: (err) => {
+          console.error('Erro ao atualizar dados:', err);
+          const errorMessage = err.error?.message || 'Erro ao atualizar os dados. Tente novamente.';
+          this.snackBar.open(errorMessage, 'Fechar', { duration: 5000 });
+        }
+      });
+    }
+  }
+
+  onCancelEdit(): void {
+    this.isEditMode = false;
+    Object.keys(this.cadastralForm.controls).forEach(key => {
+      this.cadastralForm.get(key)?.disable();
+    });
+    this.loadPessoaJuridicaData();
+  }
+
+  togglePasswordForm(): void {
+    this.showPasswordForm = !this.showPasswordForm;
+    if (!this.showPasswordForm) {
+      this.passwordForm.reset();
+    }
+  }
+
+  onSavePassword(): void {
+    if (this.passwordForm.invalid || this.passwordForm.hasError('mismatch')) {
+      this.passwordForm.markAllAsTouched();
+      this.snackBar.open(
+        this.passwordForm.hasError('mismatch') ? 'As senhas não coincidem.' : 'Por favor, preencha todos os campos corretamente.',
+        'Fechar',
+        { duration: 3000 }
+      );
+      return;
+    }
+
+    const payload: AlterarSenhaDTO = {
+      idPessoa: this.userId || 0,
+      senhaAtual: this.passwordForm.get('senhaAtual')?.value,
+      novaSenha: this.passwordForm.get('novaSenha')?.value,
+      confirmacaoNovaSenha: this.passwordForm.get('confirmacaoNovaSenha')?.value
+    };
+
+    this.http.put(`${this.baseUrl}/api/v1/users/alterar-senha/pessoa-juridica`, payload, { responseType: 'text' }).subscribe({
+      next: () => {
+        console.log('Senha alterada com sucesso, ocultando formulário');
+        this.snackBar.open('Senha alterada com sucesso!', 'Fechar', { duration: 3000 });
+        this.showPasswordForm = false;
+        this.passwordForm.reset();
+      },
+      error: (err) => {
+        console.error('Erro ao alterar senha:', err);
+        const errorMessage = err.error?.message || 'Erro ao alterar a senha. Tente novamente.';
+        this.snackBar.open(errorMessage, 'Fechar', { duration: 5000 });
+      }
+    });
   }
 
   goToHome(): void {
