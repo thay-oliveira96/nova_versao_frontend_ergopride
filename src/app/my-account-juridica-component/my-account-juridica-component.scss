@@ -50,3 +50,46 @@ mat-list-item {
   padding-bottom: 8px;
   margin-bottom: 8px;
 }
+
+.no-plan-message {
+  text-align: center;
+  color: #666;
+}
+
+.bronze-color {
+  color: #cd7f32;
+}
+
+.prata-color {
+  color: #c0c0c0;
+}
+
+.ouro-color {
+  color: #D1A300;
+}
+
+.upgrade-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.upgrade-card {
+  width: 200px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  transition: border-color 0.3s;
+
+  &.selected {
+    border-color: #3f51b5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.no-upgrade-message {
+  text-align: center;
+  color: #666;
+}

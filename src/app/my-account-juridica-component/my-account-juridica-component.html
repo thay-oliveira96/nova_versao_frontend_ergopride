@@ -9,7 +9,7 @@
     </mat-card-header>
     <mat-card-content>
       <mat-tab-group animationDuration="500ms">
-  
+
         <mat-tab label="Dados Cadastrais" *ngIf="isManager()">
           <div class="tab-content">
             <p>Aqui você pode visualizar e editar seus dados de cadastro.</p>
@@ -22,7 +22,7 @@
                   Razão Social é obrigatória
                 </mat-error>
               </mat-form-field>
-  
+
               <ng-container *ngIf="isPessoaJuridica()">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Nome Fantasia</mat-label>
@@ -32,7 +32,7 @@
                     Nome Fantasia é obrigatório
                   </mat-error>
                 </mat-form-field>
-  
+
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>CNPJ</mat-label>
                   <input matInput formControlName="cnpj" readonly>
@@ -41,32 +41,32 @@
                     CNPJ é obrigatório
                   </mat-error>
                 </mat-form-field>
-  
+
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Inscrição Estadual</mat-label>
                   <input matInput formControlName="inscricaoEstatual">
                   <mat-icon matSuffix>badge</mat-icon>
                 </mat-form-field>
-  
+
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Inscrição Municipal</mat-label>
                   <input matInput formControlName="inscricaoMunicipal">
                   <mat-icon matSuffix>badge</mat-icon>
                 </mat-form-field>
               </ng-container>
-  
+
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Telefone</mat-label>
                 <input matInput formControlName="telefone">
                 <mat-icon matSuffix>phone</mat-icon>
               </mat-form-field>
-  
+
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Celular</mat-label>
                 <input matInput formControlName="celular">
                 <mat-icon matSuffix>smartphone</mat-icon>
               </mat-form-field>
-  
+
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>E-mail</mat-label>
                 <input matInput formControlName="email" readonly>
@@ -78,7 +78,7 @@
                   E-mail inválido
                 </mat-error>
               </mat-form-field>
-  
+
               <h3>Endereço</h3>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>CEP</mat-label>
@@ -88,7 +88,7 @@
                   CEP é obrigatório
                 </mat-error>
               </mat-form-field>
-  
+
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Logradouro</mat-label>
                 <input matInput formControlName="logradouro">
@@ -97,7 +97,7 @@
                   Logradouro é obrigatório
                 </mat-error>
               </mat-form-field>
-  
+
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Número</mat-label>
                 <input matInput formControlName="numero">
@@ -106,13 +106,13 @@
                   Número é obrigatório
                 </mat-error>
               </mat-form-field>
-  
+
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Complemento</mat-label>
                 <input matInput formControlName="complemento">
                 <mat-icon matSuffix>apartment</mat-icon>
               </mat-form-field>
-  
+
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Bairro</mat-label>
                 <input matInput formControlName="bairro">
@@ -121,7 +121,7 @@
                   Bairro é obrigatório
                 </mat-error>
               </mat-form-field>
-  
+
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Cidade</mat-label>
                 <input matInput formControlName="cidade">
@@ -130,7 +130,7 @@
                   Cidade é obrigatória
                 </mat-error>
               </mat-form-field>
-  
+
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Estado</mat-label>
                 <input matInput formControlName="estado">
@@ -139,7 +139,7 @@
                   Estado é obrigatório
                 </mat-error>
               </mat-form-field>
-  
+
               <div class="button-row" *ngIf="isManager()">
                 <button mat-raised-button color="primary" (click)="onEditProfile()" *ngIf="!isEditMode">
                   <mat-icon>edit</mat-icon> Editar
@@ -154,7 +154,7 @@
             </form>
           </div>
         </mat-tab>
-  
+
         <mat-tab label="Segurança">
           <div class="tab-content">
             <p>Altere sua senha de acesso à conta.</p>
@@ -205,25 +205,27 @@
             </div>
           </div>
         </mat-tab>
-  
+
         <mat-tab label="Planos">
           <div class="tab-content">
-            <mat-card class="info-card">
+            <mat-card class="info-card" *ngIf="currentPlan">
               <mat-card-header>
                 <mat-card-title>Plano Atual</mat-card-title>
               </mat-card-header>
               <mat-card-content>
-                <p><strong>Plano:</strong> {{ planDetails.planoAtual }}</p>
-                <p><strong>Valor:</strong> R$ {{ planDetails.valor | number:'1.2-2' }} / {{ planDetails.ciclo }}</p>
-                <p><strong>Próxima Renovação:</strong> {{ planDetails.proximaRenovacao }}</p>
+                <p><strong>Plano:</strong> <span [ngClass]="{'bronze-color': currentPlan.plano === 'Bronze', 'prata-color': currentPlan.plano === 'Prata', 'ouro-color': currentPlan.plano === 'Ouro'}">{{ currentPlan.plano }}</span></p>
+                <p><strong>Usuários:</strong> {{ currentPlan.usuarios }}</p>
               </mat-card-content>
               <mat-card-actions align="end" *ngIf="isManager()">
-                <button mat-button color="primary">Gerenciar Assinatura</button>
+                <button mat-button color="primary" (click)="openUpgradeDialog()">Gerenciar minha assinatura</button>
               </mat-card-actions>
             </mat-card>
+            <div *ngIf="!currentPlan" class="no-plan-message">
+              <p>Nenhum plano associado à conta no momento.</p>
+            </div>
           </div>
         </mat-tab>
-  
+
         <mat-tab label="Usuários Vinculados">
           <div class="tab-content">
             <mat-list>
@@ -240,7 +242,7 @@
             </mat-list>
           </div>
         </mat-tab>
-  
+
         <mat-tab label="Outras Configurações">
           <div class="tab-content">
             <p>Esta aba está reservada para futuras funcionalidades.</p>
@@ -250,3 +252,26 @@
     </mat-card-content>
   </mat-card>
 </div>
+
+<ng-template #upgradeDialog>
+  <h2 mat-dialog-title>Gerenciar Assinatura</h2>
+  <mat-dialog-content>
+    <div *ngIf="upgradeOptions.length > 0" class="upgrade-options">
+      <mat-card class="upgrade-card" *ngFor="let option of upgradeOptions" (click)="selectUpgradeOption(option.idPlano)" [ngClass]="{'selected': selectedUpgradeId === option.idPlano}">
+        <mat-card-header>
+          <mat-card-title><span [ngClass]="{'bronze-color': option.plano === 'Bronze', 'prata-color': option.plano === 'Prata', 'ouro-color': option.plano === 'Ouro'}">{{ option.plano }}</span></mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p><strong>Usuários:</strong> {{ option.usuarios }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div *ngIf="upgradeOptions.length === 0" class="no-upgrade-message">
+      <p>Não existem planos disponíveis para upgrade.</p>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeUpgradeDialog()">Cancelar</button>
+    <button mat-raised-button color="primary" *ngIf="selectedUpgradeId" (click)="performUpgrade()" [disabled]="!selectedUpgradeId">Upgrade</button>
+  </mat-dialog-actions>
+</ng-template>

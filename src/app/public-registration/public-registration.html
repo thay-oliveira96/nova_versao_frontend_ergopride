@@ -15,6 +15,9 @@
                             <mat-radio-button value="pj" class="type-button">Pessoa Jurídica</mat-radio-button>
                         </mat-radio-group>
                     </div>
+                    <div>
+                        <button mat-raised-button matStepperNext [ngClass]="{'green-button': registrationTypeControl.valid}" color="primary">Próximo</button>
+                    </div>
                 </mat-step>
 
                 <!-- Passo 2: Formulário de Informações (PF ou PJ) -->
@@ -65,7 +68,10 @@
                             <mat-icon matSuffix>mail_outline</mat-icon>
                             <mat-error *ngIf="pfInfoForm.get('email')?.invalid && pfInfoForm.get('email')?.touched">Por favor, insira um e-mail válido.</mat-error>
                         </mat-form-field>
-                        <button mat-raised-button matStepperNext color="primary">Próximo</button>
+                        <div>
+                            <button mat-raised-button matStepperPrevious>Voltar</button>
+                            <button mat-raised-button matStepperNext [ngClass]="{'green-button': pfInfoForm.valid}" color="primary">Próximo</button>
+                        </div>
                     </form>
 
                     <!-- Formulário de Pessoa Jurídica -->
@@ -133,7 +139,10 @@
                             <mat-icon matSuffix>account_circle</mat-icon>
                             <mat-error *ngIf="pjInfoForm.get('sobreNomeResponsavel')?.invalid && pjInfoForm.get('sobreNomeResponsavel')?.touched">O nome sobrenome é obrigatório.</mat-error>
                         </mat-form-field>
-                        <button mat-raised-button matStepperNext color="primary">Próximo</button>
+                        <div>
+                            <button mat-raised-button matStepperPrevious>Voltar</button>
+                            <button mat-raised-button matStepperNext [ngClass]="{'green-button': pjInfoForm.valid}" color="primary">Próximo</button>
+                        </div>
                     </form>
                 </mat-step>
 
@@ -184,12 +193,38 @@
                         </mat-form-field>
                         <div>
                             <button mat-raised-button matStepperPrevious>Voltar</button>
-                            <button mat-raised-button matStepperNext color="primary">Próximo</button>
+                            <button mat-raised-button matStepperNext [ngClass]="{'green-button': addressForm.valid}" color="primary">Próximo</button>
                         </div>
                     </form>
                 </mat-step>
 
-                <!-- Passo 4: Senha e Finalização -->
+                <!-- Passo 4: Plano -->
+                <mat-step [stepControl]="planForm">
+                    <ng-template matStepLabel>Plano</ng-template>
+                    <form [formGroup]="planForm">
+                        <h2 class="plan-title">Escolha seu plano de site mensal</h2>
+                        <div class="plan-container">
+                            <mat-card class="plan-card" *ngFor="let plan of availablePlans" [class.selected]="selectedPlanId === plan.id" [ngClass]="{'grayed-out': selectedPlanId !== null && selectedPlanId !== plan.id, 'bronze': plan.title === 'Bronze', 'prata': plan.title === 'Prata', 'ouro': plan.title === 'Ouro'}" (click)="selectPlan(plan.id)">
+                                <mat-card-header>
+                                    <mat-card-title>{{plan.title}}</mat-card-title>
+                                    <mat-card-subtitle><span class="price">R$ {{plan.value | number:'1.2-2'}}</span></mat-card-subtitle>
+                                </mat-card-header>
+                                <mat-card-content>
+                                    <p><strong>Usuários:</strong> {{plan.users}}</p>
+                                </mat-card-content>
+                                <mat-card-actions>
+                                    <button mat-raised-button color="accent" disabled>COMPRE AGORA</button>
+                                </mat-card-actions>
+                            </mat-card>
+                        </div>
+                        <div>
+                            <button mat-raised-button matStepperPrevious>Voltar</button>
+                            <button mat-raised-button matStepperNext [ngClass]="{'green-button': planForm.valid}" color="primary" [disabled]="planForm.invalid">Próximo</button>
+                        </div>
+                    </form>
+                </mat-step>
+
+                <!-- Passo 5: Senha e Finalização -->
                 <mat-step [stepControl]="passwordForm">
                     <ng-template matStepLabel>Senha e Finalização</ng-template>
                     <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()">
@@ -218,7 +253,7 @@
                         </div>
                         <div>
                             <button mat-raised-button matStepperPrevious type="button">Voltar</button>
-                            <button mat-raised-button color="primary" type="submit" [disabled]="passwordForm.invalid || (registrationType === 'pf' && pfInfoForm.invalid) || (registrationType === 'pj' && pjInfoForm.invalid)">
+                            <button mat-raised-button color="primary" type="submit" [ngClass]="{'green-button': passwordForm.valid && (registrationType === 'pf' && pfInfoForm.valid) || (registrationType === 'pj' && pjInfoForm.valid) && addressForm.valid && planForm.valid}" [disabled]="passwordForm.invalid || (registrationType === 'pf' && pfInfoForm.invalid) || (registrationType === 'pj' && pjInfoForm.invalid) || addressForm.invalid || planForm.invalid">
                                 Finalizar Cadastro
                             </button>
                         </div>
@@ -227,7 +262,7 @@
             </mat-horizontal-stepper>
         </mat-card-content>
         <mat-card-actions align="end" class="registration-actions">
-            Já tem uma conta? <a mat-button color="warn" routerLink="/login">Login</a>
+            Já tem conta? <a mat-button color="warn" routerLink="/login" class="login">Fazer Login</a>
         </mat-card-actions>
     </mat-card>
 </div>

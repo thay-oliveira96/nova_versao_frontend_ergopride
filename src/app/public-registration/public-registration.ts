@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, InjectionToken, Provider } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { HttpClient, HttpErrorResponse, HttpClientModule } from '@angular/common/http';
@@ -11,11 +11,44 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MAT_NATIVE_DATE_FORMATS, MatDateFormats } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 import { environment } from '../../environments/environments';
 import { NgxCaptchaModule } from 'ngx-captcha';
-import { MatRadioModule } from '@angular/material/radio'; 
+import { MatRadioModule } from '@angular/material/radio';
 import { Subscription } from 'rxjs';
+
+// Custom date formats for DD/MM/AAAA
+export const MY_DATE_FORMATS: MatDateFormats = {
+  parse: {
+    dateInput: 'dd/MM/yyyy',
+  },
+  display: {
+    dateInput: 'dd/MM/yyyy',
+    monthYearLabel: 'MMMM yyyy',
+    dateA11yLabel: 'dd/MM/yyyy',
+    monthYearA11yLabel: 'MMMM yyyy',
+  },
+};
+
+// Provider to override the default date formats
+export const CUSTOM_DATE_FORMAT_PROVIDER: Provider = {
+  provide: MAT_DATE_FORMATS,
+  useValue: MY_DATE_FORMATS,
+};
+
+// Custom date adapter to ensure proper parsing
+import { NativeDateAdapter } from '@angular/material/core';
+
+export class CustomDateAdapter extends NativeDateAdapter {
+  override format(date: Date, displayFormat: string): string {
+    return this.toLocaleString(date);
+  }
+
+  private override toLocaleString(date: Date): string {
+    return date.toLocaleDateString('pt-BR');
+  }
+}
 
 export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
   const password = control.get('password');
@@ -46,7 +79,13 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): {
     MatDatepickerModule,
     MatNativeDateModule,
     NgxCaptchaModule,
-    MatRadioModule 
+    MatRadioModule,
+    MatSelectModule
+  ],
+  providers: [
+    CUSTOM_DATE_FORMAT_PROVIDER,
+    { provide: DateAdapter, useClass: CustomDateAdapter },
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
   ],
   templateUrl: './public-registration.html',
   styleUrl: './public-registration.scss'
@@ -62,7 +101,9 @@ export class PublicRegistration implements OnInit, OnDestroy {
   public registrationType: 'pf' | 'pj' | null = null;
   
   public registrationTypeControl = new FormControl<'pf' | 'pj' | null>(null, Validators.required);
+  public planForm!: FormGroup;
   private stepperSubscription!: Subscription;
+  public selectedPlanId: number | null = null; // Track selected plan ID
 
   pfInfoForm!: FormGroup;
   pjInfoForm!: FormGroup;
@@ -71,6 +112,13 @@ export class PublicRegistration implements OnInit, OnDestroy {
 
   hidePassword = true;
   hideConfirmPassword = true;
+
+  // Available plans
+  availablePlans = [
+    { id: 1, title: 'Bronze', value: 100.00, users: 1, color: '#cd7f32' },
+    { id: 2, title: 'Prata', value: 250.00, users: 5, color: '#c0c0c0' },
+    { id: 3, title: 'Ouro', value: 550.00, users: 10, color: '#D1A300' }
+  ];
 
   ngOnInit(): void {
     this.pfInfoForm = this.fb.group({
@@ -107,11 +155,20 @@ export class PublicRegistration implements OnInit, OnDestroy {
       cep: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]]
     });
 
+    this.planForm = this.fb.group({
+      idPlano: ['', Validators.required]
+    });
+
     this.passwordForm = this.fb.group({
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]],
       recaptcha: ['', Validators.required]
     }, { validators: passwordMatchValidator });
+  }
+
+  selectPlan(planId: number): void {
+    this.selectedPlanId = planId;
+    this.planForm.get('idPlano')?.setValue(planId);
   }
 
   onSubmit(): void {
@@ -121,12 +178,25 @@ export class PublicRegistration implements OnInit, OnDestroy {
     let cpfCnpjToValidate: string = '';
     let tipoPessoaToValidate: string = '';
     
-    if (this.registrationType === 'pf' && this.pfInfoForm.valid && this.addressForm.valid && this.passwordForm.valid) {
+    const currentDate = new Date().toISOString();
+
+    if (this.registrationType === 'pf' && this.pfInfoForm.valid && this.addressForm.valid && this.planForm.valid && this.passwordForm.valid) {
       finalPayload = {
         ...this.pfInfoForm.value,
         endereco: this.addressForm.value,
         senha: this.passwordForm.get('password')?.value,
-        recaptchaToken: this.passwordForm.get('recaptcha')?.value
+        recaptchaToken: this.passwordForm.get('recaptcha')?.value,
+        plano: {
+          idPessoaFisica: 0,
+          idPessoaJuridica: 0,
+          tipoPessoa: 'F',
+          idPlano: this.planForm.get('idPlano')?.value,
+          ativo: true,
+          teste: true,
+          dataInicioTeste: currentDate,
+          diaVencimento: 0,
+          periodoTeste: 0
+        }
       };
       
       if (finalPayload.dataNascimento instanceof Date) {
@@ -138,12 +208,23 @@ export class PublicRegistration implements OnInit, OnDestroy {
       cpfCnpjToValidate = finalPayload.cpf;
       tipoPessoaToValidate = 'F';
       
-    } else if (this.registrationType === 'pj' && this.pjInfoForm.valid && this.addressForm.valid && this.passwordForm.valid) {
+    } else if (this.registrationType === 'pj' && this.pjInfoForm.valid && this.addressForm.valid && this.planForm.valid && this.passwordForm.valid) {
       finalPayload = {
         ...this.pjInfoForm.value,
         endereco: this.addressForm.value,
         senha: this.passwordForm.get('password')?.value,
-        recaptchaToken: this.passwordForm.get('recaptcha')?.value
+        recaptchaToken: this.passwordForm.get('recaptcha')?.value,
+        plano: {
+          idPessoaFisica: 0,
+          idPessoaJuridica: 0,
+          tipoPessoa: 'J',
+          idPlano: this.planForm.get('idPlano')?.value,
+          ativo: true,
+          teste: true,
+          dataInicioTeste: currentDate,
+          diaVencimento: 0,
+          periodoTeste: 0
+        }
       };
       
       endpoint = `${this.baseUrl}/api/v1/publica/pessoa-juridica/cadastrar`;
