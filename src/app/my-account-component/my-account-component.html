@@ -199,36 +199,54 @@
 
         <mat-tab label="Planos" *ngIf="isManager()">
           <div class="tab-content">
-            <mat-card class="info-card">
+            <mat-card class="info-card" *ngIf="currentPlan">
               <mat-card-header>
                 <mat-card-title>Plano Atual</mat-card-title>
               </mat-card-header>
               <mat-card-content>
-                <p><strong>Plano:</strong> {{ planDetails.planoAtual }}</p>
-                <p><strong>Valor:</strong> R$ {{ planDetails.valor | number:'1.2-2' }} / {{ planDetails.ciclo }}</p>
-                <p><strong>Próxima Renovação:</strong> {{ planDetails.proximaRenovacao }}</p>
+                <p><strong>Plano:  </strong> <span [ngClass]="{'bronze-color': currentPlan.plano === 'Bronze', 'prata-color': currentPlan.plano === 'Prata', 'ouro-color': currentPlan.plano === 'Ouro'}">{{ currentPlan.plano }}</span></p>
+                <p><strong>Usuários:</strong> {{ currentPlan.usuarios }}</p>
               </mat-card-content>
               <mat-card-actions align="end" *ngIf="isManager()">
-                <button mat-button color="primary">Gerenciar Assinatura</button>
+                <button mat-button color="primary" (click)="openUpgradeDialog()">Gerenciar minha assinatura</button>
               </mat-card-actions>
             </mat-card>
+            <div *ngIf="!currentPlan" class="no-plan-message">
+              <p>Nenhum plano associado à conta no momento.</p>
+            </div>
           </div>
         </mat-tab>
 
         <mat-tab label="Usuários Vinculados" *ngIf="isManager()">
           <div class="tab-content">
-            <mat-list>
+            <div class="user-management-header">
+              <mat-form-field appearance="outline" class="search-field">
+                <mat-label>Pesquisar</mat-label>
+                <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" placeholder="Nome ou E-mail">
+                <mat-icon matSuffix>search</mat-icon>
+              </mat-form-field>
+              <button mat-raised-button color="primary" (click)="openCreateUserDialog()" class="add-user-button">
+                <mat-icon>add</mat-icon>
+                Adicionar novo usuário
+              </button>
+            </div>
+            <mat-list *ngIf="users.length > 0">
               <h3 mat-subheader>Usuários Vinculados à Sua Conta</h3>
-              <mat-list-item *ngFor="let user of linkedUsers">
+              <mat-list-item *ngFor="let user of users">
                 <mat-icon matListItemIcon>account_circle</mat-icon>
-                <div matListItemTitle>{{ user.nome }}</div>
-                <div matListItemLine>{{ user.email }}</div>
-                <div matListItemLine>Status: {{ user.status }}</div>
+                <div matListItemTitle>{{ user.fullName }}</div>
+                <div matListItemLine>{{ user.userName }}</div>
+                <div matListItemLine>Status: {{ user.enabled ? 'Ativo' : 'Inativo' }}</div>
+                <div matListItemLine>Atualizado: {{ user.dataAtualizacao | date:'dd/MM/yyyy HH:mm' }}</div>
                 <button mat-icon-button matListItemMeta>
                   <mat-icon>more_vert</mat-icon>
                 </button>
               </mat-list-item>
             </mat-list>
+            <div *ngIf="users.length === 0" class="no-users-message">
+              <p>Nenhum usuário vinculado encontrado.</p>
+            </div>
+            <mat-paginator [length]="totalUsers" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" (page)="onPageChange($event)" *ngIf="users.length > 0"></mat-paginator>
           </div>
         </mat-tab>
 
@@ -241,3 +259,63 @@
     </mat-card-content>
   </mat-card>
 </div>
+
+<ng-template #upgradeDialog>
+  <h2 mat-dialog-title>Gerenciar Assinatura</h2>
+  <mat-dialog-content>
+    <div *ngIf="upgradeOptions.length > 0" class="upgrade-options">
+      <mat-card class="upgrade-card" *ngFor="let option of upgradeOptions" (click)="selectUpgradeOption(option.idPlano)" [ngClass]="{'selected': selectedUpgradeId === option.idPlano}">
+        <mat-card-header>
+          <mat-card-title><span [ngClass]="{'bronze-color': option.plano === 'Bronze', 'prata-color': option.plano === 'Prata', 'ouro-color': option.plano === 'Ouro'}">{{ option.plano }}</span></mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p><strong>Usuários:</strong> {{ option.usuarios }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div *ngIf="upgradeOptions.length === 0" class="no-upgrade-message">
+      <p>Não existem planos disponíveis para upgrade.</p>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeUpgradeDialog()">Cancelar</button>
+    <button mat-raised-button color="primary" *ngIf="selectedUpgradeId" (click)="performUpgrade()" [disabled]="!selectedUpgradeId">Upgrade</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #createUserDialog>
+  <h2 mat-dialog-title>Adicionar Novo Usuário</h2>
+  <mat-dialog-content>
+    <form [formGroup]="createUserForm" class="form-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>E-mail do Usuário</mat-label>
+        <input matInput formControlName="username" required>
+        <mat-error *ngIf="createUserForm.get('username')?.hasError('required')">
+          E-mail é obrigatório
+        </mat-error>
+        <mat-error *ngIf="createUserForm.get('username')?.hasError('email')">
+          E-mail inválido
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nome Completo</mat-label>
+        <input matInput formControlName="fullName" required>
+        <mat-error *ngIf="createUserForm.get('fullName')?.hasError('required')">
+          Nome completo é obrigatório
+        </mat-error>
+      </mat-form-field>
+      <mat-radio-group formControlName="role" class="role-selection" required>
+        <mat-radio-button value="MANAGER">Gerente</mat-radio-button>
+        <mat-radio-button value="APPROVER">Aprovador</mat-radio-button>
+        <mat-radio-button value="TECHNICAL">Técnico</mat-radio-button>
+      </mat-radio-group>
+      <mat-error *ngIf="createUserForm.get('role')?.hasError('required')">
+        Uma permissão deve ser selecionada
+      </mat-error>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeCreateUserDialog()" class="bg-red-300 text-white hover:bg-red-400">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="createUser()" [disabled]="createUserForm.invalid" class="bg-green-500 text-white hover:bg-green-600">Criar</button>
+  </mat-dialog-actions>
+</ng-template>

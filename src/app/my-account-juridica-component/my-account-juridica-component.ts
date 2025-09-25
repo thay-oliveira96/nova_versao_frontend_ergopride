@@ -371,6 +371,8 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
 
   performUpgrade(): void {
     if (this.userId && this.selectedUpgradeId) {
+      const today = new Date();
+      const formattedDate = today.toISOString();
       const payload: PessoaPlanoDTO = {
         idPessoaFisica: 0,
         idPessoaJuridica: this.userId,
@@ -378,14 +380,14 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
         idPlano: this.selectedUpgradeId,
         ativo: true,
         teste: false,
-        dataInicioTeste: "null",
+        dataInicioTeste: formattedDate,
         diaVencimento: 1,
         periodoTeste: 0
       };
       this.http.put<PessoaPlanoDTO>(`${this.baseUrl}/api/v1/pessoa-plano/upgrade`, payload).subscribe({
         next: (response) => {
           this.snackBar.open('Upgrade realizado com sucesso!', 'Fechar', { duration: 3000 });
-          this.loadCurrentPlan();
+          this.loadCurrentPlan(); // Refresh the plan data immediately
           this.closeUpgradeDialog();
         },
         error: (err) => {

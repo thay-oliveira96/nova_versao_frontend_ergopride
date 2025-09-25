@@ -30,7 +30,7 @@ export class AuthService {
   // Sujeito para a role do usuário
   private userRoleSubject = new BehaviorSubject<string | null>(null);
 
-  // NOVO: Sujeito para o nome completo do usuário
+  // Sujeito para o nome completo do usuário
   private fullnameSubject = new BehaviorSubject<string | null>(null);
 
   private tipoPessoa = new BehaviorSubject<string | null>(null);
@@ -44,7 +44,6 @@ export class AuthService {
       this.loggedIn.next(this.hasAccessToken());
       const initialRole = this.getRoleFromToken();
       this.userRoleSubject.next(initialRole);
-      // NOVO: Inicializa o nome completo ao carregar a página
       const initialFullname = this.getFullnameFromToken();
       this.fullnameSubject.next(initialFullname);
       const initTipoPessoa = this.getTipoPessoaFromAccessToken();
@@ -60,7 +59,6 @@ export class AuthService {
     return this.userRoleSubject.asObservable();
   }
 
-  // NOVO: Expõe o nome completo do usuário como um Observable
   public getFullname(): Observable<string | null> {
     return this.fullnameSubject.asObservable();
   }
@@ -83,13 +81,11 @@ export class AuthService {
     return null;
   }
   
-  // NOVO: Método privado para obter o nome completo do token
   private getFullnameFromToken(): string | null {
     const token = this.getAccessToken();
     if (token) {
       try {
         const decoded: any = jwtDecode(token);
-        // AQUI: Lê o campo 'fullname' do seu payload
         return decoded.fullname || null;
       } catch (e) {
         console.error('Erro ao decodificar token para obter o nome completo:', e);
@@ -127,6 +123,21 @@ export class AuthService {
     return null;
   }
 
+  // NEW: Método para obter o tenant do token
+  public getTenantFromAccessToken(): string | null {
+    const token = this.getAccessToken();
+    if (token) {
+      try {
+        const decoded: any = jwtDecode(token);
+        return decoded.tenant || null; // Ajuste o campo 'tenant' conforme o payload do seu JWT
+      } catch (e) {
+        console.error('Erro ao decodificar token para obter o tenant:', e);
+        return null;
+      }
+    }
+    return null;
+  }
+
   login(credentials: any): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/auth/signin`, credentials).pipe(
       tap(response => {
@@ -141,11 +152,9 @@ export class AuthService {
           this.userRoleSubject.next(userRole);
           console.log(`AuthService: Usuário logado com a role: ${userRole}`);
           
-          // NOVO: Emite o nome completo do usuário para todos os inscritos
           const userFullname = this.getFullnameFromToken();
           this.fullnameSubject.next(userFullname);
 
-          // NOVO: Emite o tipo de pessoa do usuário para todos os inscritos
           const userTipoPessoa = this.getTipoPessoaFromAccessToken();
           this.tipoPessoa.next(userTipoPessoa);
 
@@ -174,8 +183,8 @@ export class AuthService {
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     this.loggedIn.next(false);
     this.userRoleSubject.next(null);
-    this.fullnameSubject.next(null); // NOVO: Notifica que o nome completo foi removido
-    this.tipoPessoa.next(null); // NOVO: Notifica que o tipo de pessoa foi removido
+    this.fullnameSubject.next(null);
+    this.tipoPessoa.next(null);
     this.router.navigate(['/login']);
     this.snackBar.open('Logout realizado.', 'Fechar', { duration: 3000 });
   }
