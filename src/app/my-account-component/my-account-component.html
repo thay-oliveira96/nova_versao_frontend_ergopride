@@ -204,7 +204,7 @@
                 <mat-card-title>Plano Atual</mat-card-title>
               </mat-card-header>
               <mat-card-content>
-                <p><strong>Plano:  </strong> <span [ngClass]="{'bronze-color': currentPlan.plano === 'Bronze', 'prata-color': currentPlan.plano === 'Prata', 'ouro-color': currentPlan.plano === 'Ouro'}">{{ currentPlan.plano }}</span></p>
+                <p><strong>Plano:</strong> <span [ngClass]="{'bronze-color': currentPlan.plano === 'Bronze', 'prata-color': currentPlan.plano === 'Prata', 'ouro-color': currentPlan.plano === 'Ouro'}">{{ currentPlan.plano }}</span></p>
                 <p><strong>Usuários:</strong> {{ currentPlan.usuarios }}</p>
               </mat-card-content>
               <mat-card-actions align="end" *ngIf="isManager()">
@@ -236,11 +236,21 @@
                 <mat-icon matListItemIcon>account_circle</mat-icon>
                 <div matListItemTitle>{{ user.fullName }}</div>
                 <div matListItemLine>{{ user.userName }}</div>
+                <div matListItemLine>Permissão: {{ getUserRoleLabel(user.roles) }}</div>
                 <div matListItemLine>Status: {{ user.enabled ? 'Ativo' : 'Inativo' }}</div>
                 <div matListItemLine>Atualizado: {{ user.dataAtualizacao | date:'dd/MM/yyyy HH:mm' }}</div>
-                <button mat-icon-button matListItemMeta>
+                <button mat-icon-button [matMenuTriggerFor]="userMenu" matListItemMeta>
                   <mat-icon>more_vert</mat-icon>
                 </button>
+                <mat-menu #userMenu="matMenu">
+                  <button mat-menu-item (click)="blockUser(user.id)" *ngIf="user.enabled && user.id !== userId">Bloquear usuário</button>
+                  <button mat-menu-item (click)="unblockUser(user.id)" *ngIf="!user.enabled && user.id !== userId">Desbloqueio de usuário</button>
+                  <!-- Promover Gerente comentado para uso futuro -->
+                  <!-- <button mat-menu-item (click)="promoteToManager(user.id)" *ngIf="!user.roles.includes('MANAGER') && user.id !== userId">Promover Gerente</button> -->
+                  <button mat-menu-item (click)="promoteToApprover(user.id)" *ngIf="!user.roles.includes('APPROVER') && user.id !== userId">Promover Aprovador</button>
+                  <button mat-menu-item (click)="promoteToTechnical(user.id)" *ngIf="!user.roles.includes('TECHNICAL') && user.id !== userId">Promover Técnico</button>
+                  <button mat-menu-item (click)="deleteUser(user.id)" *ngIf="user.id !== userId">Deletar usuário</button>
+                </mat-menu>
               </mat-list-item>
             </mat-list>
             <div *ngIf="users.length === 0" class="no-users-message">

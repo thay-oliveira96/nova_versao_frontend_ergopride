@@ -16,9 +16,9 @@
             <form [formGroup]="cadastralForm" class="form-container">
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Razão Social</mat-label>
-                <input matInput formControlName="razaoSocial">
+                <input matInput formControlName="razaoSocial" [readonly]="!isEditMode">
                 <mat-icon matSuffix>domain</mat-icon>
-                <mat-error *ngIf="cadastralForm.get('razaoSocial')?.hasError('required')">
+                <mat-error *ngIf="cadastralForm.get('razaoSocial')?.hasError('required') && isEditMode">
                   Razão Social é obrigatória
                 </mat-error>
               </mat-form-field>
@@ -26,9 +26,9 @@
               <ng-container *ngIf="isPessoaJuridica()">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Nome Fantasia</mat-label>
-                  <input matInput formControlName="nomeFantasia">
+                  <input matInput formControlName="nomeFantasia" [readonly]="!isEditMode">
                   <mat-icon matSuffix>badge</mat-icon>
-                  <mat-error *ngIf="cadastralForm.get('nomeFantasia')?.hasError('required')">
+                  <mat-error *ngIf="cadastralForm.get('nomeFantasia')?.hasError('required') && isEditMode">
                     Nome Fantasia é obrigatório
                   </mat-error>
                 </mat-form-field>
@@ -37,33 +37,33 @@
                   <mat-label>CNPJ</mat-label>
                   <input matInput formControlName="cnpj" readonly>
                   <mat-icon matSuffix>fingerprint</mat-icon>
-                  <mat-error *ngIf="cadastralForm.get('cnpj')?.hasError('required')">
+                  <mat-error *ngIf="cadastralForm.get('cnpj')?.hasError('required') && isEditMode">
                     CNPJ é obrigatório
                   </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Inscrição Estadual</mat-label>
-                  <input matInput formControlName="inscricaoEstatual">
+                  <input matInput formControlName="inscricaoEstatual" [readonly]="!isEditMode">
                   <mat-icon matSuffix>badge</mat-icon>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Inscrição Municipal</mat-label>
-                  <input matInput formControlName="inscricaoMunicipal">
+                  <input matInput formControlName="inscricaoMunicipal" [readonly]="!isEditMode">
                   <mat-icon matSuffix>badge</mat-icon>
                 </mat-form-field>
               </ng-container>
 
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Telefone</mat-label>
-                <input matInput formControlName="telefone">
+                <input matInput formControlName="telefone" [readonly]="!isEditMode">
                 <mat-icon matSuffix>phone</mat-icon>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Celular</mat-label>
-                <input matInput formControlName="celular">
+                <input matInput formControlName="celular" [readonly]="!isEditMode">
                 <mat-icon matSuffix>smartphone</mat-icon>
               </mat-form-field>
 
@@ -71,10 +71,10 @@
                 <mat-label>E-mail</mat-label>
                 <input matInput formControlName="email" readonly>
                 <mat-icon matSuffix>mail_outline</mat-icon>
-                <mat-error *ngIf="cadastralForm.get('email')?.hasError('required')">
+                <mat-error *ngIf="cadastralForm.get('email')?.hasError('required') && isEditMode">
                   E-mail é obrigatório
                 </mat-error>
-                <mat-error *ngIf="cadastralForm.get('email')?.hasError('email')">
+                <mat-error *ngIf="cadastralForm.get('email')?.hasError('email') && isEditMode">
                   E-mail inválido
                 </mat-error>
               </mat-form-field>
@@ -82,60 +82,60 @@
               <h3>Endereço</h3>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>CEP</mat-label>
-                <input matInput formControlName="cep">
+                <input matInput formControlName="cep" [readonly]="!isEditMode">
                 <mat-icon matSuffix>location_on</mat-icon>
-                <mat-error *ngIf="cadastralForm.get('cep')?.hasError('required')">
+                <mat-error *ngIf="cadastralForm.get('cep')?.hasError('required') && isEditMode">
                   CEP é obrigatório
                 </mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Logradouro</mat-label>
-                <input matInput formControlName="logradouro">
+                <input matInput formControlName="logradouro" [readonly]="!isEditMode">
                 <mat-icon matSuffix>location_city</mat-icon>
-                <mat-error *ngIf="cadastralForm.get('logradouro')?.hasError('required')">
+                <mat-error *ngIf="cadastralForm.get('logradouro')?.hasError('required') && isEditMode">
                   Logradouro é obrigatório
                 </mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Número</mat-label>
-                <input matInput formControlName="numero">
+                <input matInput formControlName="numero" [readonly]="!isEditMode">
                 <mat-icon matSuffix>numbers</mat-icon>
-                <mat-error *ngIf="cadastralForm.get('numero')?.hasError('required')">
+                <mat-error *ngIf="cadastralForm.get('numero')?.hasError('required') && isEditMode">
                   Número é obrigatório
                 </mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Complemento</mat-label>
-                <input matInput formControlName="complemento">
+                <input matInput formControlName="complemento" [readonly]="!isEditMode">
                 <mat-icon matSuffix>apartment</mat-icon>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Bairro</mat-label>
-                <input matInput formControlName="bairro">
+                <input matInput formControlName="bairro" [readonly]="!isEditMode">
                 <mat-icon matSuffix>signpost</mat-icon>
-                <mat-error *ngIf="cadastralForm.get('bairro')?.hasError('required')">
+                <mat-error *ngIf="cadastralForm.get('bairro')?.hasError('required') && isEditMode">
                   Bairro é obrigatório
                 </mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Cidade</mat-label>
-                <input matInput formControlName="cidade">
+                <input matInput formControlName="cidade" [readonly]="!isEditMode">
                 <mat-icon matSuffix>business</mat-icon>
-                <mat-error *ngIf="cadastralForm.get('cidade')?.hasError('required')">
+                <mat-error *ngIf="cadastralForm.get('cidade')?.hasError('required') && isEditMode">
                   Cidade é obrigatória
                 </mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Estado</mat-label>
-                <input matInput formControlName="estado">
+                <input matInput formControlName="estado" [readonly]="!isEditMode">
                 <mat-icon matSuffix>map</mat-icon>
-                <mat-error *ngIf="cadastralForm.get('estado')?.hasError('required')">
+                <mat-error *ngIf="cadastralForm.get('estado')?.hasError('required') && isEditMode">
                   Estado é obrigatório
                 </mat-error>
               </mat-form-field>
@@ -206,7 +206,7 @@
           </div>
         </mat-tab>
 
-        <mat-tab label="Planos">
+        <mat-tab label="Plano" *ngIf="isManager()">
           <div class="tab-content">
             <mat-card class="info-card" *ngIf="currentPlan">
               <mat-card-header>
@@ -226,24 +226,50 @@
           </div>
         </mat-tab>
 
-        <mat-tab label="Usuários Vinculados">
+        <mat-tab label="Usuários Vinculados" *ngIf="isManager()">
           <div class="tab-content">
-            <mat-list>
+            <div class="user-management-header">
+              <mat-form-field appearance="outline" class="search-field">
+                <mat-label>Pesquisar</mat-label>
+                <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" placeholder="Nome ou E-mail">
+                <mat-icon matSuffix>search</mat-icon>
+              </mat-form-field>
+              <button mat-raised-button color="primary" (click)="openCreateUserDialog()" class="add-user-button">
+                <mat-icon>add</mat-icon>
+                Adicionar novo usuário
+              </button>
+            </div>
+            <mat-list *ngIf="users.length > 0">
               <h3 mat-subheader>Usuários Vinculados à Sua Conta</h3>
-              <mat-list-item *ngFor="let user of linkedUsers">
+              <mat-list-item *ngFor="let user of users">
                 <mat-icon matListItemIcon>account_circle</mat-icon>
-                <div matListItemTitle>{{ user.nome }}</div>
-                <div matListItemLine>{{ user.email }}</div>
-                <div matListItemLine>Status: {{ user.status }}</div>
-                <button mat-icon-button matListItemMeta>
+                <div matListItemTitle>{{ user.fullName }}</div>
+                <div matListItemLine>{{ user.userName }}</div>
+                <div matListItemLine>Permissão: {{ getUserRoleLabel(user.roles) }}</div>
+                <div matListItemLine>Status: {{ user.enabled ? 'Ativo' : 'Inativo' }}</div>
+                <div matListItemLine>Atualizado: {{ user.dataAtualizacao | date:'dd/MM/yyyy HH:mm' }}</div>
+                <button mat-icon-button [matMenuTriggerFor]="userMenu" matListItemMeta>
                   <mat-icon>more_vert</mat-icon>
                 </button>
+                <mat-menu #userMenu="matMenu">
+                  <button mat-menu-item (click)="blockUser(user.id)" *ngIf="user.enabled && !isPrimaryUser(user.id)">Bloquear usuário</button>
+                  <button mat-menu-item (click)="unblockUser(user.id)" *ngIf="!user.enabled && !isPrimaryUser(user.id)">Desbloqueio de usuário</button>
+                  <!-- Promover Gerente comentado para uso futuro -->
+                  <!-- <button mat-menu-item (click)="promoteToManager(user.id)" *ngIf="!user.roles.includes('MANAGER') && !isPrimaryUser(user.id)">Promover Gerente</button> -->
+                  <button mat-menu-item (click)="promoteToApprover(user.id)" *ngIf="!user.roles.includes('APPROVER') && !isPrimaryUser(user.id)">Promover Aprovador</button>
+                  <button mat-menu-item (click)="promoteToTechnical(user.id)" *ngIf="!user.roles.includes('TECHNICAL') && !isPrimaryUser(user.id)">Promover Técnico</button>
+                  <button mat-menu-item (click)="deleteUser(user.id)" *ngIf="!isPrimaryUser(user.id)">Deletar usuário</button>
+                </mat-menu>
               </mat-list-item>
             </mat-list>
+            <div *ngIf="users.length === 0" class="no-users-message">
+              <p>Nenhum usuário vinculado encontrado.</p>
+            </div>
+            <mat-paginator [length]="totalUsers" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" (page)="onPageChange($event)" *ngIf="users.length > 0"></mat-paginator>
           </div>
         </mat-tab>
 
-        <mat-tab label="Outras Configurações">
+        <mat-tab label="Outras Configurações" *ngIf="isManager()">
           <div class="tab-content">
             <p>Esta aba está reservada para futuras funcionalidades.</p>
           </div>
@@ -273,5 +299,42 @@
   <mat-dialog-actions align="end">
     <button mat-button (click)="closeUpgradeDialog()">Cancelar</button>
     <button mat-raised-button color="primary" *ngIf="selectedUpgradeId" (click)="performUpgrade()" [disabled]="!selectedUpgradeId">Upgrade</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #createUserDialog>
+  <h2 mat-dialog-title>Adicionar Novo Usuário</h2>
+  <mat-dialog-content>
+    <form [formGroup]="createUserForm" class="form-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>E-mail do Usuário</mat-label>
+        <input matInput formControlName="username" required>
+        <mat-error *ngIf="createUserForm.get('username')?.hasError('required')">
+          E-mail é obrigatório
+        </mat-error>
+        <mat-error *ngIf="createUserForm.get('username')?.hasError('email')">
+          E-mail inválido
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nome Completo</mat-label>
+        <input matInput formControlName="fullName" required>
+        <mat-error *ngIf="createUserForm.get('fullName')?.hasError('required')">
+          Nome completo é obrigatório
+        </mat-error>
+      </mat-form-field>
+      <mat-radio-group formControlName="role" class="role-selection" required>
+        <mat-radio-button value="MANAGER">Gerente</mat-radio-button>
+        <mat-radio-button value="APPROVER">Aprovador</mat-radio-button>
+        <mat-radio-button value="TECHNICAL">Técnico</mat-radio-button>
+      </mat-radio-group>
+      <mat-error *ngIf="createUserForm.get('role')?.hasError('required')">
+        Uma permissão deve ser selecionada
+      </mat-error>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeCreateUserDialog()" class="bg-red-300 text-white hover:bg-red-400">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="createUser()" [disabled]="createUserForm.invalid" class="bg-green-500 text-white hover:bg-green-600">Criar</button>
   </mat-dialog-actions>
 </ng-template>

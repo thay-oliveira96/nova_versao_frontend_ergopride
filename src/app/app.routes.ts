@@ -21,6 +21,7 @@ export const routes: Routes = [
     children: [
       { path: 'home', component: HomeComponent },
       { path: 'departamentos', loadChildren: () => import('./departamento/departamento.module').then(m => m.DepartamentoModule) },
+      { path: 'segmento', loadChildren: () => import('./segmento/segmento.module').then(m => m.SegmentoModule) },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   },

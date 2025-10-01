@@ -17,10 +17,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatSelectModule } from '@angular/material/select'; // Added for mat-option and mat-select
+import { MatSelectModule } from '@angular/material/select';
 import { environment } from '../../environments/environments';
 import { PageEvent } from '@angular/material/paginator';
 import { jwtDecode } from 'jwt-decode';
+import { MatMenuModule } from '@angular/material/menu';
 
 // Interfaces
 interface EnderecoPublicoResponseDTO {
@@ -125,7 +126,8 @@ interface AccountCredentialsDTO {
     MatDialogModule,
     MatPaginatorModule,
     MatRadioModule,
-    MatSelectModule // Added to resolve mat-option error
+    MatSelectModule,
+    MatMenuModule
   ],
   templateUrl: './my-account-component.html',
   styleUrl: './my-account-component.scss'
@@ -357,7 +359,7 @@ export class MyAccountComponent implements OnInit, OnDestroy {
           console.log('API Response:', data); // Debug log
           this.linkedUsers = [...data]; // Ensure a new array reference
           this.totalUsers = data.length;
-          this.onSearch();
+          this.onSearch(); // Reapply search and pagination
         },
         error: (err) => {
           console.error('Erro ao carregar usuários:', err); // Debug log
@@ -595,5 +597,72 @@ export class MyAccountComponent implements OnInit, OnDestroy {
     this.totalUsers = this.users.length;
     const startIndex = this.pageIndex * this.pageSize;
     this.users = this.users.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  blockUser(id: number): void {
+    this.http.put(`${this.baseUrl}/api/v1/users/bloquear/${id}`, {}).subscribe({
+      next: () => {
+        this.snackBar.open('Usuário bloqueado com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadUsers(); // Reload users to reflect the change
+      },
+      error: (err) => this.snackBar.open('Erro ao bloquear usuário.', 'Fechar', { duration: 5000 })
+    });
+  }
+
+  unblockUser(id: number): void {
+    this.http.put(`${this.baseUrl}/api/v1/users/desbloquear/${id}`, {}).subscribe({
+      next: () => {
+        this.snackBar.open('Usuário desbloqueado com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadUsers(); // Reload users to reflect the change
+      },
+      error: (err) => this.snackBar.open('Erro ao desbloquear usuário.', 'Fechar', { duration: 5000 })
+    });
+  }
+
+  promoteToApprover(id: number): void {
+    this.http.put(`${this.baseUrl}/api/v1/users/promover/aprovador/${id}`, {}).subscribe({
+      next: () => {
+        this.snackBar.open('Usuário promovido a Aprovador com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadUsers(); // Reload and reapply search/pagination
+        this.onSearch(); // Ensure immediate UI update
+      },
+      error: (err) => {
+        console.error('Erro ao promover a Aprovador:', err);
+        const errorMessage = err.error?.message || 'Erro ao promover a Aprovador.';
+        this.snackBar.open(errorMessage, 'Fechar', { duration: 5000 });
+      }
+    });
+  }
+
+  promoteToTechnical(id: number): void {
+    this.http.put(`${this.baseUrl}/api/v1/users/promover/tecnico/${id}`, {}).subscribe({
+      next: () => {
+        this.snackBar.open('Usuário promovido a Técnico com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadUsers(); // Reload and reapply search/pagination
+        this.onSearch(); // Ensure immediate UI update
+      },
+      error: (err) => {
+        console.error('Erro ao promover a Técnico:', err);
+        const errorMessage = err.error?.message || 'Erro ao promover a Técnico.';
+        this.snackBar.open(errorMessage, 'Fechar', { duration: 5000 });
+      }
+    });
+  }
+
+  deleteUser(id: number): void {
+    this.http.put(`${this.baseUrl}/api/v1/users/deletar/${id}`, {}).subscribe({
+      next: () => {
+        this.snackBar.open('Usuário deletado com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadUsers(); // Reload users to reflect the change
+      },
+      error: (err) => this.snackBar.open('Erro ao deletar usuário.', 'Fechar', { duration: 5000 })
+    });
+  }
+
+  getUserRoleLabel(roles: string[]): string {
+    if (roles.includes('MANAGER')) return 'Permissão: Gerente';
+    if (roles.includes('APPROVER')) return 'Permissão: Aprovador';
+    if (roles.includes('TECHNICAL')) return 'Permissão: Técnico';
+    return 'Permissão: Não definida';
   }
 }

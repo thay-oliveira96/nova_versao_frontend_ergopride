@@ -1,20 +1,27 @@
+import { Component, OnInit, OnDestroy, inject, ViewChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
-import { environment } from '../../environments/environments';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { environment } from '../../environments/environments';
+import { PageEvent } from '@angular/material/paginator';
+import { jwtDecode } from 'jwt-decode';
+import { MatMenuModule } from '@angular/material/menu';
 
 // Interfaces
 interface EnderecoPublicoResponseDTO {
@@ -79,12 +86,37 @@ interface PlanOption {
   usuarios: number;
 }
 
+interface UserDTO {
+  id: number;
+  userName: string;
+  fullName: string;
+  enabled: boolean;
+  tenant: string;
+  idPessoaFisica: number;
+  idPessoaJuridica: number;
+  tipoPessoa: string;
+  dataAtualizacao: string;
+  roles: string[];
+}
+
+interface AccountCredentialsDTO {
+  username: string;
+  password: string;
+  fullname: string;
+  role: string;
+  idPessoaFisica: number;
+  idPessoaJuridica: number;
+  tipoPessoa: string;
+  tenant: string;
+}
+
 @Component({
   selector: 'app-my-account-juridica',
   standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     MatCardModule,
     MatTabsModule,
     MatFormFieldModule,
@@ -93,7 +125,11 @@ interface PlanOption {
     MatIconModule,
     MatListModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatPaginatorModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatMenuModule
   ],
   templateUrl: './my-account-juridica-component.html',
   styleUrl: './my-account-juridica-component.scss'
@@ -113,6 +149,7 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
 
   cadastralForm!: FormGroup;
   passwordForm!: FormGroup;
+  createUserForm!: FormGroup;
   isEditMode = false;
   showPasswordForm = false;
   userId: number | null = null;
@@ -139,12 +176,16 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
   upgradeOptions: PlanOption[] = [];
   selectedUpgradeId: number | null = null;
 
-  linkedUsers = [
-    { nome: 'Maria Silva', email: 'maria.silva@exemplo.com', status: 'Ativo' },
-    { nome: 'Pedro Souza', email: 'pedro.souza@exemplo.com', status: 'Inativo' }
-  ];
+  linkedUsers: UserDTO[] = [];
+  users: UserDTO[] = [];
+  totalUsers = 0;
+  pageIndex = 0;
+  pageSize = 5;
+  searchTerm = '';
 
   @ViewChild('upgradeDialog') upgradeDialog!: TemplateRef<any>;
+  @ViewChild('createUserDialog') createUserDialog!: TemplateRef<any>;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(private authService: AuthService) {}
 
@@ -173,6 +214,12 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
       confirmacaoNovaSenha: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });
 
+    this.createUserForm = this.fb.group({
+      username: ['', [Validators.required, Validators.email]],
+      fullName: ['', Validators.required],
+      role: ['', Validators.required]
+    });
+
     this.tipoPessoaSubscription = this.authService.getTipoPessoa().subscribe(tipoPessoa => {
       this.tipoPessoa = tipoPessoa;
       if (tipoPessoa === 'J') {
@@ -183,11 +230,47 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
     this.userRoleSubscription = this.authService.getUserRole().subscribe(role => {
       this.userRole = role;
     });
+
+    this.initializeFromToken();
   }
 
   ngOnDestroy(): void {
     if (this.tipoPessoaSubscription) this.tipoPessoaSubscription.unsubscribe();
     if (this.userRoleSubscription) this.userRoleSubscription.unsubscribe();
+  }
+
+  private initializeFromToken(): void {
+    const token = this.authService.getAccessToken();
+    if (token) {
+      try {
+        const decoded: any = jwtDecode(token);
+        this.tipoPessoa = decoded.tipoPessoa || null;
+        this.userId = decoded.idPessoaJuridica || this.getUserIdFromToken();
+        console.log('Initialized - tipoPessoa:', this.tipoPessoa, 'userId:', this.userId);
+
+        if (this.userId) {
+          this.loadUsers();
+        } else {
+          this.loadPessoaJuridicaData();
+        }
+      } catch (e) {
+        console.error('Error decoding token:', e);
+      }
+    }
+  }
+
+  private getUserIdFromToken(): number | null {
+    const token = this.authService.getAccessToken();
+    if (token) {
+      try {
+        const decoded: any = jwtDecode(token);
+        return decoded.idPessoaJuridica || null;
+      } catch (e) {
+        console.error('Erro ao decodificar token para obter userId:', e);
+        return null;
+      }
+    }
+    return null;
   }
 
   private loadPessoaJuridicaData(): void {
@@ -216,6 +299,7 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
           }
           this.cadastralForm.patchValue(this.userProfile);
           this.loadCurrentPlan();
+          this.loadUsers();
         },
         error: (err) => {
           console.error('Erro ao buscar dados de Pessoa Jurídica:', err);
@@ -246,6 +330,40 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
     }
   }
 
+  private loadUsers(): void {
+    if (!this.userId) {
+      this.userId = this.getUserIdFromToken();
+    }
+    if (!this.userId) {
+      console.error('userId is null, cannot load users');
+      this.snackBar.open('Erro: ID da Pessoa Jurídica não encontrado.', 'Fechar', { duration: 5000 });
+      return;
+    }
+    const tenant = this.authService.getTenantFromAccessToken();
+    if (!tenant) {
+      console.error('Tenant is null, cannot proceed with API call');
+      this.snackBar.open('Erro: Tenant não encontrado.', 'Fechar', { duration: 5000 });
+      return;
+    }
+    const url = `${this.baseUrl}/api/v1/users/pessoa-juridica?idPessoaJuridica=${this.userId}&tenant=${tenant}`;
+    this.http.get<UserDTO[]>(url).subscribe({
+      next: (data) => {
+        if (Array.isArray(data)) {
+          this.linkedUsers = [...data];
+          this.totalUsers = data.length;
+          this.onSearch();
+        } else {
+          console.error('Unexpected response format:', data);
+          this.snackBar.open('Erro: Resposta inválida ao carregar usuários.', 'Fechar', { duration: 5000 });
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao carregar usuários:', err);
+        this.snackBar.open('Erro ao carregar usuários vinculados.', 'Fechar', { duration: 5000 });
+      }
+    });
+  }
+
   private passwordMatchValidator(form: FormGroup) {
     const novaSenha = form.get('novaSenha')?.value;
     const confirmacaoNovaSenha = form.get('confirmacaoNovaSenha')?.value;
@@ -260,7 +378,9 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
   onEditProfile(): void {
     this.isEditMode = true;
     Object.keys(this.cadastralForm.controls).forEach(key => {
-      if (key !== 'email' && key !== 'cnpj') this.cadastralForm.get(key)?.enable();
+      if (key !== 'email' && key !== 'cnpj') {
+        this.cadastralForm.get(key)?.enable();
+      }
     });
   }
 
@@ -313,7 +433,9 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
 
   togglePasswordForm(): void {
     this.showPasswordForm = !this.showPasswordForm;
-    if (!this.showPasswordForm) this.passwordForm.reset();
+    if (!this.showPasswordForm) {
+      this.passwordForm.reset();
+    }
   }
 
   onSavePassword(): void {
@@ -387,7 +509,7 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
       this.http.put<PessoaPlanoDTO>(`${this.baseUrl}/api/v1/pessoa-plano/upgrade`, payload).subscribe({
         next: (response) => {
           this.snackBar.open('Upgrade realizado com sucesso!', 'Fechar', { duration: 3000 });
-          this.loadCurrentPlan(); // Refresh the plan data immediately
+          this.loadCurrentPlan();
           this.closeUpgradeDialog();
         },
         error: (err) => {
@@ -396,5 +518,138 @@ export class MyAccountJuridicaComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  openCreateUserDialog(): void {
+    this.createUserForm.reset();
+    this.dialog.open(this.createUserDialog, { width: '400px' });
+  }
+
+  closeCreateUserDialog(): void {
+    this.dialog.closeAll();
+  }
+
+  createUser(): void {
+    if (this.createUserForm.valid && this.userId) {
+      const tenant = this.authService.getTenantFromAccessToken();
+      if (!tenant) {
+        this.snackBar.open('Erro: Tenant não encontrado.', 'Fechar', { duration: 5000 });
+        return;
+      }
+
+      const payload: AccountCredentialsDTO = {
+        username: this.createUserForm.get('username')?.value,
+        password: 'Temp1234',
+        fullname: this.createUserForm.get('fullName')?.value,
+        role: this.createUserForm.get('role')?.value,
+        idPessoaFisica: 0,
+        idPessoaJuridica: this.userId,
+        tipoPessoa: 'J',
+        tenant: tenant
+      };
+      this.http.post<AccountCredentialsDTO>(`${this.baseUrl}/api/v1/users/createUser`, payload).subscribe({
+        next: (response) => {
+          this.snackBar.open('Usuário criado com sucesso!', 'Fechar', { duration: 3000 });
+          this.closeCreateUserDialog();
+          this.loadUsers();
+          this.onSearch(); // Refresh UI after creating a user
+        },
+        error: (err) => {
+          console.error('Erro ao criar usuário:', err);
+          this.snackBar.open(err.error?.message || 'Erro ao criar usuário. Tente novamente.', 'Fechar', { duration: 5000 });
+        }
+      });
+    }
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.onSearch();
+  }
+
+  onSearch(): void {
+    this.users = this.linkedUsers.filter(user =>
+      user.fullName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      user.userName.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+    this.totalUsers = this.users.length;
+    const startIndex = this.pageIndex * this.pageSize;
+    this.users = this.users.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  blockUser(id: number): void {
+    this.http.put(`${this.baseUrl}/api/v1/users/bloquear/${id}`, {}).subscribe({
+      next: () => {
+        this.snackBar.open('Usuário bloqueado com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadUsers();
+        this.onSearch(); // Refresh UI after blocking
+      },
+      error: (err) => this.snackBar.open('Erro ao bloquear usuário.', 'Fechar', { duration: 5000 })
+    });
+  }
+
+  unblockUser(id: number): void {
+    this.http.put(`${this.baseUrl}/api/v1/users/desbloquear/${id}`, {}).subscribe({
+      next: () => {
+        this.snackBar.open('Usuário desbloqueado com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadUsers();
+        this.onSearch(); // Refresh UI after unblocking
+      },
+      error: (err) => this.snackBar.open('Erro ao desbloquear usuário.', 'Fechar', { duration: 5000 })
+    });
+  }
+
+  promoteToApprover(id: number): void {
+    this.http.put(`${this.baseUrl}/api/v1/users/promover/aprovador/${id}`, {}).subscribe({
+      next: () => {
+        this.snackBar.open('Usuário promovido a Aprovador com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadUsers();
+        this.onSearch(); // Refresh UI after promotion
+      },
+      error: (err) => {
+        console.error('Erro ao promover a Aprovador:', err);
+        const errorMessage = err.error?.message || 'Erro ao promover a Aprovador.';
+        this.snackBar.open(errorMessage, 'Fechar', { duration: 5000 });
+      }
+    });
+  }
+
+  promoteToTechnical(id: number): void {
+    this.http.put(`${this.baseUrl}/api/v1/users/promover/tecnico/${id}`, {}).subscribe({
+      next: () => {
+        this.snackBar.open('Usuário promovido a Técnico com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadUsers();
+        this.onSearch(); // Refresh UI after promotion
+      },
+      error: (err) => {
+        console.error('Erro ao promover a Técnico:', err);
+        const errorMessage = err.error?.message || 'Erro ao promover a Técnico.';
+        this.snackBar.open(errorMessage, 'Fechar', { duration: 5000 });
+      }
+    });
+  }
+
+  deleteUser(id: number): void {
+    this.http.put(`${this.baseUrl}/api/v1/users/deletar/${id}`, {}).subscribe({
+      next: () => {
+        this.snackBar.open('Usuário deletado com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadUsers();
+        this.onSearch(); // Refresh UI after deletion
+      },
+      error: (err) => this.snackBar.open('Erro ao deletar usuário.', 'Fechar', { duration: 5000 })
+    });
+  }
+
+  isPrimaryUser(userIdToCheck: number): boolean {
+    console.log('Checking if userId', userIdToCheck, 'is primary. Current userId:', this.userId);
+    return this.userId !== null && userIdToCheck === this.userId;
+  }
+
+  getUserRoleLabel(roles: string[]): string {
+    if (roles.includes('MANAGER')) return 'Gerente';
+    if (roles.includes('APPROVER')) return 'Aprovador';
+    if (roles.includes('TECHNICAL')) return 'Técnico';
+    return 'Permissão: Não definida';
   }
 }

@@ -55,6 +55,7 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   navItems: NavItem[] = [
     { name: 'Home', nameKey: 'layout.menu.home', route: '/home', icon: 'home' },
     { name: 'Departamentos', nameKey: 'layout.menu.departments', route: '/departamentos', icon: 'business' },
+    { name: 'Segmento', nameKey: 'layout.menu.segmentos', route: '/segmento', icon: 'accessibility_new' }
     // Adicione outros itens de cadastro aqui no futuro como itens separados
   ];
 
