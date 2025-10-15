@@ -9,6 +9,9 @@
 // Include the common styles for Angular Material
 @include mat.core();
 
+$white-text: #FFFFFF;
+$text-color: #333;
+
 /* Global Styles */
 * {
   box-sizing: border-box;
@@ -179,4 +182,40 @@ a:hover {
   body {
     font-size: 12px;
   }
+}
+
+/* --- Correções de Estilo para Overlays (Menus, Selects, Paginator, Datepicker) --- */
+
+// Garante o fundo branco para painéis de menu e selects
+// O painel do select de linguagem, paginação e menus flutuantes usam estas classes.
+.mat-mdc-select-panel,
+.mat-mdc-menu-panel,
+.mat-mdc-snack-bar-container,
+.mat-datepicker-content {
+  // Use a cor de fundo padrão para contraste
+  background-color: #{$white-text} !important; 
+  // Garante que o texto seja a cor padrão (ou preto)
+  color: #333 !important; 
+}
+
+// Garante que os itens de menu e opções de select tenham a cor de texto correta
+.mat-mdc-menu-item,
+.mat-mdc-option,
+.mat-datepicker-content,
+.mat-datepicker-content .mat-calendar-body-cell-content,
+.mat-datepicker-content .mat-calendar-table-header th,
+.mat-datepicker-content .mat-calendar-period-button,
+.mat-datepicker-content .mat-calendar-previous-button,
+.mat-datepicker-content .mat-calendar-next-button {
+  color: #333 !important;
+}
+
+// Ajuste para o paginator (se não estiver em tema escuro)
+.mat-mdc-paginator {
+  background-color: #f8f9fa !important; // Cor de fundo levemente diferente para contraste
+  color: #333 !important;
+}
+
+.mat-mdc-paginator .mat-mdc-icon-button {
+  color: #333 !important; // Cor dos ícones do paginator
 }

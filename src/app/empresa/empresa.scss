@@ -8,7 +8,7 @@ $text-color: #3A3D40;
 $white-text: #FFFFFF;
 $card-background: $white-text;
 
-.segmento-container {
+.empresa-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px;
@@ -36,7 +36,7 @@ $card-background: $white-text;
   font-size: 32px;
   width: 32px;
   height: 32px;
-  color: $secondary-button-color; // Azul sereno
+  color: $secondary-button-color;
 }
 
 .title-section h1 {
@@ -54,8 +54,8 @@ $card-background: $white-text;
   border-radius: 8px;
   font-weight: 600;
   transition: all 0.3s ease;
-  background-color: $primary-button-color; // Verde calmo
-  color: $white-text;
+  background-color: $primary-button-color !important;
+  color: $white-text !important;
 
   &:hover {
     transform: translateY(-2px);
@@ -76,7 +76,7 @@ $card-background: $white-text;
 }
 
 .form-card mat-card-header {
-  background-color: $secondary-button-color; // Azul sereno
+  background-color: $secondary-button-color;
   color: $white-text;
   margin: -16px -16px 16px -16px;
   padding: 20px 24px;
@@ -123,7 +123,7 @@ $card-background: $white-text;
 }
 
 .submit-button {
-  background-color: $primary-button-color; // Verde calmo
+  background-color: $primary-button-color;
   color: $white-text;
   font-weight: 600;
 
@@ -215,7 +215,7 @@ $card-background: $white-text;
 
 .mat-mdc-cell {
   padding: 16px 12px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0e0;
   color: $text-color;
   font-size: 14px;
 }
@@ -239,11 +239,11 @@ $card-background: $white-text;
 }
 
 .action-buttons button:first-child {
-  color: $secondary-button-color; // Editar em azul sereno
+  color: $secondary-button-color;
 }
 
 .action-buttons button:last-child {
-  color: #f44336; // Excluir em vermelho para alerta
+  color: #f44336;
 }
 
 mat-paginator {

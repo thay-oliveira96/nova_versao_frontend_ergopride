@@ -47,19 +47,15 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    console.log('LoginComponent: Form submitted');
     if (this.loginForm.valid) {
-      console.log('LoginComponent: Form is valid, starting login');
       // Use setTimeout to avoid ExpressionChangedAfterItHasBeenCheckedError
       setTimeout(() => {
         this.loading = true;
       }, 0);
       
       const { username, password } = this.loginForm.value;
-      console.log('LoginComponent: Calling authService.login');
       this.authService.login({ username, password }).subscribe({
         next: (response) => {
-          console.log('LoginComponent: Login successful, response:', response);
           this.loading = false;
         },
         error: (err) => {
@@ -77,7 +73,6 @@ export class LoginComponent {
         }
       });
     } else {
-      console.log('LoginComponent: Form is invalid');
       this.snackBar.open('Preencha usuário e senha.', 'Fechar', { duration: 3000, panelClass: ['snackbar-warning'] });
     }
   }

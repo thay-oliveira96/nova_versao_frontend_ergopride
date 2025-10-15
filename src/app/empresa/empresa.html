@@ -1,0 +1,255 @@
+<div class="empresa-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="title-icon">domain</mat-icon>
+        <h1>{{'empresas.titulo' | transloco }}</h1>
+      </div>
+      <button mat-raised-button color="primary" (click)="showCreateForm()" class="add-button">
+        <mat-icon>add</mat-icon>
+        {{'empresas.btnNovo' | transloco }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <div class="form-section" *ngIf="showForm">
+    <mat-card class="form-card">
+      <mat-card-header>
+        <mat-card-title>
+          {{ editingId ? ('empresas.editar' | transloco) : ('empresas.novo' | transloco) }}
+          {{ 'empresas.tituloForm' | transloco }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="empresaForm" (ngSubmit)="onSubmit()" class="form">
+          <!-- Campo Nome -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'empresas.nome' | transloco}}</mat-label>
+              <input matInput formControlName="nome" placeholder="{{'empresas.placeholderNome' | transloco}}">
+              <mat-error *ngIf="empresaForm.get('nome')?.hasError('required')">
+                {{ getErrorMessage('nome') }}
+              </mat-error>
+              <mat-error *ngIf="empresaForm.get('nome')?.hasError('minlength')">
+                {{ getErrorMessage('nome') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Campo CNPJ -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'empresas.cnpj' | transloco}}</mat-label>
+              <input matInput formControlName="cnpj" placeholder="{{'empresas.placeholderCnpj' | transloco}}">
+              <mat-error *ngIf="empresaForm.get('cnpj')?.hasError('required')">
+                {{ getErrorMessage('cnpj') }}
+              </mat-error>
+              <mat-error *ngIf="empresaForm.get('cnpj')?.hasError('minlength')">
+                {{ getErrorMessage('cnpj') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Campo Endereço -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'empresas.endereco' | transloco}}</mat-label>
+              <input matInput formControlName="endereco" placeholder="{{'empresas.placeholderEndereco' | transloco}}">
+              <mat-error *ngIf="empresaForm.get('endereco')?.hasError('minlength')">
+                {{ getErrorMessage('endereco') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Campo Número -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'empresas.numero' | transloco}}</mat-label>
+              <input matInput type="number" formControlName="numero" placeholder="{{'empresas.placeholderNumero' | transloco}}">
+              <mat-error *ngIf="empresaForm.get('numero')?.hasError('min')">
+                {{ getErrorMessage('numero') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Campo Bairro -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'empresas.bairro' | transloco}}</mat-label>
+              <input matInput formControlName="bairro" placeholder="{{'empresas.placeholderBairro' | transloco}}">
+              <mat-error *ngIf="empresaForm.get('bairro')?.hasError('minlength')">
+                {{ getErrorMessage('bairro') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Campo CEP -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'empresas.cep' | transloco}}</mat-label>
+              <input matInput formControlName="cep" placeholder="{{'empresas.placeholderCep' | transloco}}">
+              <mat-error *ngIf="empresaForm.get('cep')?.hasError('required')">
+                {{ getErrorMessage('cep') }}
+              </mat-error>
+              <mat-error *ngIf="empresaForm.get('cep')?.hasError('minlength')">
+                {{ getErrorMessage('cep') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Campo Município -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'empresas.municipio' | transloco}}</mat-label>
+              <input matInput formControlName="municipio" placeholder="{{'empresas.placeholderMunicipio' | transloco}}">
+              <mat-error *ngIf="empresaForm.get('municipio')?.hasError('required')">
+                {{ getErrorMessage('municipio') }}
+              </mat-error>
+              <mat-error *ngIf="empresaForm.get('municipio')?.hasError('minlength')">
+                {{ getErrorMessage('municipio') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Campo Estado -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'empresas.estado' | transloco}}</mat-label>
+              <input matInput formControlName="estado" placeholder="{{'empresas.placeholderEstado' | transloco}}">
+              <mat-error *ngIf="empresaForm.get('estado')?.hasError('required')">
+                {{ getErrorMessage('estado') }}
+              </mat-error>
+              <mat-error *ngIf="empresaForm.get('estado')?.hasError('minlength')">
+                {{ getErrorMessage('estado') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Campo Trabalhadores -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'empresas.trabalhadores' | transloco}}</mat-label>
+              <input matInput type="number" formControlName="trabalhadores" placeholder="{{'empresas.placeholderTrabalhadores' | transloco}}">
+              <mat-error *ngIf="empresaForm.get('trabalhadores')?.hasError('min')">
+                {{ getErrorMessage('trabalhadores') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Campo Atividade -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'empresas.atividade' | transloco}}</mat-label>
+              <input matInput formControlName="atividade" placeholder="{{'empresas.placeholderAtividade' | transloco}}">
+              <mat-error *ngIf="empresaForm.get('atividade')?.hasError('minlength')">
+                {{ getErrorMessage('atividade') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" mat-button (click)="cancelForm()" class="cancel-button">
+              {{'empresas.btnCancelar' | transloco}}
+            </button>
+            <button type="submit" mat-raised-button color="primary" 
+                    [disabled]="empresaForm.invalid" class="submit-button">
+              {{ editingId ? ('global.btnAtualizar' | transloco) : ('global.btnCriar' | transloco) }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Data Table Section -->
+  <div class="table-section">
+    <mat-card class="table-card">
+      <mat-card-content>
+        <!-- Search and Actions Bar -->
+        <div class="table-header">
+          <div class="search-section">
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>{{'empresas.buscar' | transloco}}</mat-label>
+              <input matInput (keyup)="applyFilter($event)" [placeholder]="'empresas.digite' | transloco">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+          </div>
+          <div class="table-info">
+            <span class="total-count">{{ totalElements }} {{'empresas.countEmpresas' | transloco}}</span>
+          </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-container" *ngIf="loading">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>{{'empresas.carregando' | transloco}}</p>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-container" *ngIf="!loading">
+          <table mat-table [dataSource]="dataSource" matSort class="data-table">
+            <!-- ID Column -->
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'empresas.id' | transloco}} </th>
+              <td mat-cell *matCellDef="let row"> {{ row.id }} </td>
+            </ng-container>
+
+            <!-- Nome Column -->
+            <ng-container matColumnDef="nome">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'empresas.nome' | transloco}} </th>
+              <td mat-cell *matCellDef="let row"> {{ row.nome }} </td>
+            </ng-container>
+
+            <!-- CNPJ Column -->
+            <ng-container matColumnDef="cnpj">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'empresas.cnpj' | transloco}} </th>
+              <td mat-cell *matCellDef="let row"> {{ row.cnpj }} </td>
+            </ng-container>
+
+            <!-- Ações Column -->
+            <ng-container matColumnDef="acoes">
+              <th mat-header-cell *matHeaderCellDef> {{'empresas.acoes' | transloco}} </th>
+              <td mat-cell *matCellDef="let row">
+                <div class="action-buttons">
+                  <button mat-icon-button color="primary" 
+                          (click)="showEditForm(row)" 
+                          matTooltip="Editar empresa">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" 
+                          *ngIf="canDelete"
+                          (click)="deleteEmpresa(row.id!)" 
+                          matTooltip="Excluir empresa">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+          <mat-paginator [pageSizeOptions]="[5, 10, 25]" 
+                         [length]="totalElements"
+                         [pageSize]="pageSize"
+                         [pageIndex]="pageIndex"
+                         (page)="onPageChange($event)"
+                         showFirstLastButtons 
+                         aria-label="Selecione a página de empresas">
+          </mat-paginator>
+
+          <div class="no-data" *ngIf="dataSource.data.length === 0 && !loading">
+            <mat-icon>domain_off</mat-icon>
+            <p>{{'empresas.nenhum' | transloco}}</p>
+            <button mat-raised-button color="primary" (click)="showCreateForm()">
+              {{'empresas.criarPrimeira' | transloco}}
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

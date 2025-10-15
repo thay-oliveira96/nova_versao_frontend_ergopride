@@ -10,22 +10,46 @@
     <div class="sidenav-header">
       <div class="brand-container">
         <mat-icon class="brand-icon">business</mat-icon>
-        <span class="brand-text">{{ 'layout.brandName' | transloco }}</span> </div>
+        <span class="brand-text">{{ 'layout.brandName' | transloco }}</span>
+      </div>
     </div>
 
-    <!-- Lista de navegação com os itens do menu -->
+    <!-- Lista de navegação com itens e expansão para Cadastro -->
     <mat-nav-list class="nav-list">
-      <!-- O menu foi simplificado para listar todos os itens diretamente -->
+      <!-- Flat item for Home -->
       <a mat-list-item 
-        *ngFor="let item of navItems" 
-        [routerLink]="item.route"
-        routerLinkActive="active-link"
-        class="nav-item"
-        (click)="closeSidenav()">
-        <mat-icon matListItemIcon>{{item.icon}}</mat-icon>
-        <span matListItemTitle>{{item.nameKey | transloco}}</span>
+         *ngIf="navItems[0].route" 
+         [routerLink]="navItems[0].route"
+         routerLinkActive="active-link"
+         class="nav-item"
+         (click)="closeSidenav()">
+        <mat-icon matListItemIcon>{{navItems[0].icon}}</mat-icon>
+        <span matListItemTitle>{{navItems[0].nameKey | transloco}}</span>
       </a>
     </mat-nav-list>
+    <mat-accordion class="nav-accordion" multi>
+      <!-- Expansion panel for Cadastro -->
+      <mat-expansion-panel *ngIf="navItems[1]" class="nav-panel" (opened)="closeSidenav()">
+        <mat-expansion-panel-header>
+          <mat-panel-title class="panel-title">
+            <mat-icon matListItemIcon>{{navItems[1].icon}}</mat-icon>
+            <span matListItemTitle class="panel-title-text">{{navItems[1].nameKey | transloco}}</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <!-- Renderiza subitens se existirem -->
+        <mat-nav-list *ngIf="navItems[1].children">
+          <a mat-list-item 
+             *ngFor="let child of navItems[1].children" 
+             [routerLink]="child.route"
+             routerLinkActive="active-link"
+             class="nav-item"
+             (click)="closeSidenav()">
+            <mat-icon matListItemIcon>{{child.icon}}</mat-icon>
+            <span matListItemTitle>{{child.nameKey | transloco}}</span>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-accordion>
   </mat-sidenav>
 
   <!-- Conteúdo principal, onde as rotas são renderizadas -->
@@ -72,7 +96,8 @@
         </button>
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
-          <span>{{ 'layout.userMenu.logout' | transloco }}</span> </button>
+          <span>{{ 'layout.userMenu.logout' | transloco }}</span>
+        </button>
       </mat-menu>
     </mat-toolbar>
 

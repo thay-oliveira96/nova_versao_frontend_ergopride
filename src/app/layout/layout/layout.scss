@@ -16,18 +16,18 @@ $white-text: #FFFFFF;
   width: 250px;
   background-color: $menu-bar-color;
   border-right: none;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 0 4px rgba(0, 0, 0, 0.05); // Reduced shadow for less prominence
 }
 
 .sidenav-header {
-  padding: 20px;
+  padding: 16px; // Reduced padding
   background-color: rgba(255, 255, 255, 0.05);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   .brand-container {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px; // Reduced gap
   }
 
   .brand-icon, .brand-text {
@@ -35,26 +35,27 @@ $white-text: #FFFFFF;
   }
 
   .brand-icon {
-    font-size: 28px;
-    width: 28px;
-    height: 28px;
+    font-size: 24px; // Slightly reduced size
+    width: 24px;
+    height: 24px;
   }
 
   .brand-text {
-    font-size: 20px;
+    font-size: 18px; // Slightly reduced size
     font-weight: 600;
     letter-spacing: 0.5px;
   }
 }
 
 .nav-list {
-  padding: 16px 0;
+  padding: 8px 0; // Reduced padding
 }
 
 .nav-item {
-  margin: 4px 16px;
-  border-radius: 8px;
+  margin: 2px 8px; // Reduced margin
+  border-radius: 4px; // Reduced radius
   transition: all 0.2s ease;
+  padding-left: 12px; // Reduced padding, matches icon alignment
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
@@ -62,7 +63,7 @@ $white-text: #FFFFFF;
   }
 
   &.active-link {
-    background-color: rgba(255, 255, 255, 0.15); // Transparência suave para manter o foco
+    background-color: rgba(255, 255, 255, 0.15);
     color: $white-text;
 
     mat-icon {
@@ -76,12 +77,52 @@ $white-text: #FFFFFF;
 
   mat-icon {
     color: rgba(255, 255, 255, 0.8);
-    margin-right: 12px;
+    margin-right: 8px; // Reduced margin
   }
 
   span {
     color: rgba(255, 255, 255, 0.9);
     font-weight: 500;
+  }
+}
+
+.nav-accordion {
+  padding: 0;
+}
+
+.nav-panel {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  &.mat-expanded {
+    background-color: rgba(255, 255, 255, 0.05); // Subtle highlight
+  }
+
+  .mat-expansion-panel-header {
+    padding: 4px 8px; // Reduced padding
+    height: 40px; // Reduced height
+
+    .mat-expansion-indicator {
+      color: $white-text; // White arrow
+      margin-left: 8px; // Adjusted spacing
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      padding-left: 12px; // Matches nav-item padding to align icon with "Inicio"
+
+      mat-icon {
+        margin-right: 8px; // Space between icon and text
+      }
+
+      .panel-title-text {
+        margin-left: 0; // Reset margin, spacing handled by flex
+      }
+    }
+  }
+
+  .mat-expansion-panel-body {
+    padding: 0 8px; // Reduced padding
   }
 }
 
@@ -96,24 +137,24 @@ $white-text: #FFFFFF;
   z-index: 1000;
   background-color: $menu-bar-color;
   color: $white-text;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 0 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); // Reduced shadow
+  padding: 0 12px; // Reduced padding
 
   display: flex;
   align-items: center;
 
   .toolbar-title {
-    font-size: 18px;
+    font-size: 16px; // Reduced size
     font-weight: 600;
-    margin-left: 16px;
+    margin-left: 12px; // Reduced margin
     flex-grow: 1;
   }
 
   .language-selector {
-    width: 120px;
-    margin-right: 16px;
-    margin-top: 25px;
-    margin-bottom: 10px;
+    width: 100px; // Reduced width
+    margin-right: 12px; // Reduced margin
+    margin-top: 20px; // Adjusted margin
+    margin-bottom: 8px; // Adjusted margin
 
     .mat-mdc-text-field-wrapper {
       background-color: transparent !important;
@@ -136,7 +177,7 @@ $white-text: #FFFFFF;
   .user-greeting {
     color: $white-text;
     font-weight: 500;
-    margin-right: 16px;
+    margin-right: 12px; // Reduced margin
     display: none;
 
     @media (min-width: 601px) {
@@ -156,7 +197,7 @@ $white-text: #FFFFFF;
 
 .content-container {
   flex: 1;
-  padding: 24px;
+  padding: 16px; // Reduced padding
   overflow-y: auto;
   background-color: $background-color;
   color: $text-color;
@@ -165,8 +206,8 @@ $white-text: #FFFFFF;
 .mat-mdc-menu-panel,
 .mat-mdc-select-panel {
   background-color: $white-text !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); // Reduced shadow
+  border-radius: 4px; // Reduced radius
 
   .mat-mdc-menu-item,
   .mat-mdc-option {
@@ -176,21 +217,21 @@ $white-text: #FFFFFF;
 
 @media (max-width: 600px) {
   .sidenav {
-    width: 280px;
+    width: 240px; // Slightly reduced width
   }
 
   .content-container {
-    padding: 16px;
+    padding: 12px; // Reduced padding
   }
 
   .toolbar-title {
-    font-size: 16px;
+    font-size: 14px; // Reduced size
     margin-left: 8px;
   }
 
   .toolbar {
     .language-selector {
-      width: 100px;
+      width: 90px; // Reduced width
       margin-right: 8px;
     }
   }

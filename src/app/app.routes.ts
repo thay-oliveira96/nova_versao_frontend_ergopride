@@ -22,6 +22,7 @@ export const routes: Routes = [
       { path: 'home', component: HomeComponent },
       { path: 'departamentos', loadChildren: () => import('./departamento/departamento.module').then(m => m.DepartamentoModule) },
       { path: 'segmento', loadChildren: () => import('./segmento/segmento.module').then(m => m.SegmentoModule) },
+      { path: 'empresa', loadChildren: () => import('./empresa/empresa.module').then(m => m.EmpresaModule) },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   },

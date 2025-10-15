@@ -46,6 +46,10 @@ $card-background: $white-text;
   color: $text-color;
 }
 
+// No arquivo: departamento.scss
+
+// ... (seus estilos anteriores)
+
 .add-button {
   display: flex;
   align-items: center;
@@ -54,11 +58,16 @@ $card-background: $white-text;
   border-radius: 8px;
   font-weight: 600;
   transition: all 0.3s ease;
-  background-color: $primary-button-color; // Verde calmo
-  color: $white-text;
+  
+  // *** ALTERAÇÃO AQUI: Garante que a cor de fundo sobreponha o 'color="primary"' ***
+  // Use um seletor mais específico ou force a cor de fundo com !important 
+  // (Embora não seja o ideal, é a forma mais rápida de resolver o conflito)
+  background-color: $primary-button-color !important; // <-- Adicionado !important
+  color: $white-text !important; // <-- Adicionado !important
 
   &:hover {
     transform: translateY(-2px);
+    // Use a cor de fundo base na sombra para o efeito de destaque
     box-shadow: 0 8px 16px rgba(123, 196, 127, 0.3);
   }
 }

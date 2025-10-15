@@ -110,13 +110,13 @@ export class SegmentoComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dataSource.data = this.segmentos;
         this.loading = false;
         this.cdr.detectChanges();
-        this.snackBar.open(this.translocoService.translate('Segmentos.SegmentoCarregadoSucesso'), this.translocoService.translate('global.fechar'), { duration: 2000 });
+        this.snackBar.open(this.translocoService.translate('segmento.segmentoCarregadoSucesso'), this.translocoService.translate('global.fechar'), { duration: 2000 });
       },
       error: (err) => {
-        console.error(this.translocoService.translate('Segmentos.erroCarregar'), err);
+        console.error(this.translocoService.translate('segmento.erroCarregar'), err);
         this.loading = false;
         this.cdr.detectChanges();
-        this.snackBar.open(this.translocoService.translate('Segmentos.erroCarregaConexao'), this.translocoService.translate('global.fechar'), { duration: 5000, panelClass: ['snackbar-error'] });
+        this.snackBar.open(this.translocoService.translate('segmento.erroCarregaConexao'), this.translocoService.translate('global.fechar'), { duration: 5000, panelClass: ['snackbar-error'] });
       }
     });
   }
@@ -211,7 +211,7 @@ export class SegmentoComponent implements OnInit, AfterViewInit, OnDestroy {
   deleteSegmento(id: number): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
-      data: { title: this.translocoService.translate('Segmentos.confirmarExclusao'), message: this.translocoService.translate('Segmentos.mensagemExclusao')}
+      data: { title: this.translocoService.translate('segmento.confirmarExclusao'), message: this.translocoService.translate('segmento.mensagemExclusao')}
     });
 
     dialogRef.afterClosed().subscribe(result => {

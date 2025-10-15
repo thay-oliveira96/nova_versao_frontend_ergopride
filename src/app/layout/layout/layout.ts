@@ -18,12 +18,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-// A interface foi simplificada para remover a propriedade 'children'
+// Define the NavItem interface to support children
 export interface NavItem {
   name: string;
   nameKey: string;
   route?: string;
   icon: string;
+  children?: NavItem[];
 }
 
 @Component({
@@ -51,12 +52,19 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
   mobileQuery: MediaQueryList;
 
-  // A nova estrutura de dados para o menu, agora uma lista plana
+  // Updated navItems with "Home" as flat and "Cadastro" with nested items
   navItems: NavItem[] = [
-    { name: 'Home', nameKey: 'layout.menu.home', route: '/home', icon: 'home' },
-    { name: 'Departamentos', nameKey: 'layout.menu.departments', route: '/departamentos', icon: 'business' },
-    { name: 'Segmento', nameKey: 'layout.menu.segmentos', route: '/segmento', icon: 'accessibility_new' }
-    // Adicione outros itens de cadastro aqui no futuro como itens separados
+    { name: 'Home', nameKey: 'layout.menu.home', route: '/home', icon: 'home' }, // Flat item
+    {
+      name: ' Cadastro',
+      nameKey: 'layout.menu.cadastro',
+      icon: 'assignment',
+      children: [
+        { name: 'Departamentos', nameKey: 'layout.menu.departments', route: '/departamentos', icon: 'business' },
+        { name: 'Empresas', nameKey: 'layout.menu.empresas', route: '/empresa', icon: 'business_center' },
+        { name: 'Segmento Corporal', nameKey: 'layout.menu.segmentos', route: '/segmento', icon: 'accessibility_new' }
+      ]
+    }
   ];
 
   private _mobileQueryListener: () => void;
@@ -94,7 +102,6 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.tipoPessoaSubscription = this.authService.getTipoPessoa().subscribe(tipoPessoa => {
       this.tipoPessoa = tipoPessoa;
-      console.log("Tipo Pessoa: " + tipoPessoa);
     });
   }
 
@@ -106,7 +113,6 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.fullnameSubscription) {
       this.fullnameSubscription.unsubscribe();
     }
-    // Adicionando a subscrição do tipoPessoa para ser removida
     if (this.tipoPessoaSubscription) {
       this.tipoPessoaSubscription.unsubscribe();
     }

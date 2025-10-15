@@ -87,7 +87,6 @@ export class DepartamentoComponent implements OnInit, AfterViewInit, OnDestroy {
     ).subscribe(role => {
       // Quando a role estiver disponível, a permissão é definida
       this.canDelete = (role !== 'APPROVER');
-      console.log('Permissão de deletar atualizada:', this.canDelete);
 
       // Carrega os departamentos apenas depois que o login é confirmado
       this.loadDepartamentos();

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ViewChild, TemplateRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
@@ -138,6 +138,7 @@ export class MyAccountComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
+  private cdr = inject(ChangeDetectorRef); // Inject ChangeDetectorRef
   private readonly baseUrl = environment.apiUrl;
 
   tipoPessoa: string | null = null;
@@ -168,7 +169,7 @@ export class MyAccountComponent implements OnInit, OnDestroy {
     cep: 'Carregando...'
   };
 
-  currentPlan: { plano: string; usuarios: number } | null = null;
+  currentPlan: { plano: string; usuarios: number } = { plano: '', usuarios: 0 }; // Initialize with default
   upgradeOptions: PlanOption[] = [];
   selectedUpgradeId: number | null = null;
 
@@ -216,7 +217,6 @@ export class MyAccountComponent implements OnInit, OnDestroy {
 
     // Subscribe to tipoPessoa and log the value
     this.tipoPessoaSubscription = this.authService.getTipoPessoa().subscribe(tipoPessoa => {
-      console.log('tipoPessoa updated to:', tipoPessoa); // Debug log
       this.tipoPessoa = tipoPessoa;
       if (tipoPessoa === 'F') {
         this.loadUsers(); // Trigger loadUsers on tipoPessoa update
@@ -242,17 +242,13 @@ export class MyAccountComponent implements OnInit, OnDestroy {
     if (token) {
       try {
         const decoded: any = jwtDecode(token);
-        console.log('Decoded token payload:', decoded); // Debug full payload
         this.tipoPessoa = decoded.tipoPessoa || null;
         this.userId = decoded.idPessoaFisica || this.getUserIdFromToken(); // Try both fields
         const tenant = this.authService.getTenantFromAccessToken();
 
-        console.log('Initialized - tipoPessoa:', this.tipoPessoa, 'userId:', this.userId, 'tenant:', tenant);
-
         if (this.userId && tenant) {
           this.loadUsers(); // Load users immediately if data is available
         } else {
-          console.log('Missing userId or tenant, delaying user load');
           this.loadPessoaFisicaData(); // Fallback to fetch userId
         }
 
@@ -283,13 +279,11 @@ export class MyAccountComponent implements OnInit, OnDestroy {
 
   private loadPessoaFisicaData(): void {
     const email = this.authService.getUsernameFromAccessToken();
-    console.log('Loading pessoa fisica data for email:', email); // Debug log
     if (email) {
       const url = `${this.baseUrl}/api/v1/pessoa-fisica/buscar/email/${email}`;
       this.http.get<PessoaFisicaPublicaReponseDTO>(url).subscribe({
         next: (data) => {
           this.userId = data.id;
-          console.log('User ID set to:', this.userId); // Debug log
           this.userProfile.nomeCompleto = `${data.nome} ${data.sobrenome}`;
           this.userProfile.email = data.email;
           this.userProfile.cpf = data.cpf;
@@ -330,11 +324,13 @@ export class MyAccountComponent implements OnInit, OnDestroy {
             2: { plano: 'Prata', usuarios: 10 },
             3: { plano: 'Ouro', usuarios: 20 }
           };
-          this.currentPlan = planMap[data.idPlano] || null;
+          this.currentPlan = planMap[data.idPlano] || { plano: '', usuarios: 0 }; // Use default if no match
+          this.cdr.detectChanges(); // Trigger change detection manually
         },
         error: (err) => {
           console.error('Erro ao buscar plano:', err);
-          this.currentPlan = null;
+          this.currentPlan = { plano: '', usuarios: 0 }; // Default on error
+          this.cdr.detectChanges(); // Trigger change detection manually
           this.snackBar.open('Erro ao carregar plano atual.', 'Fechar', { duration: 5000 });
         }
       });
@@ -343,20 +339,16 @@ export class MyAccountComponent implements OnInit, OnDestroy {
 
   private loadUsers(): void {
     if (!this.userId) {
-      console.log('userId is null, attempting to fetch from token');
       this.userId = this.getUserIdFromToken();
     }
     if (this.userId) {
       const tenant = this.authService.getTenantFromAccessToken();
-      console.log('Loading users with userId:', this.userId, 'and tenant:', tenant); // Debug log
       if (!tenant) {
-        console.log('Tenant is null, cannot proceed with API call');
         return;
       }
       const url = `${this.baseUrl}/api/v1/users/pessoa-fisica?idPessoaFisica=${this.userId}&tenant=${tenant}`;
       this.http.get<UserDTO[]>(url).subscribe({
         next: (data) => {
-          console.log('API Response:', data); // Debug log
           this.linkedUsers = [...data]; // Ensure a new array reference
           this.totalUsers = data.length;
           this.onSearch(); // Reapply search and pagination
