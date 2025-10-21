@@ -1,0 +1,157 @@
+<div class="objeto-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="title-icon">view_in_ar</mat-icon>
+        <h1>{{'objeto.titulo' | transloco }}</h1>
+      </div>
+      <button mat-raised-button color="primary" (click)="showCreateForm()" class="add-button">
+        <mat-icon>add</mat-icon>
+        {{'objeto.btnNovo' | transloco }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <div class="form-section" *ngIf="showForm">
+    <mat-card class="form-card">
+      <mat-card-header>
+        <mat-card-title>
+          {{ editingId ? ('objeto.editar' | transloco) : ('objeto.novo' | transloco) }}
+          {{ 'objeto.tituloForm' | transloco }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="objetoForm" (ngSubmit)="onSubmit()" class="form">
+          <!-- Campo Descrição -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'objeto.descricao' | transloco}}</mat-label>
+              <textarea matInput formControlName="descricao" rows="3" 
+                        placeholder="{{'objeto.placeholderDescricao' | transloco}}"></textarea>
+              <mat-error *ngIf="objetoForm.get('descricao')?.hasError('required')">
+                {{ getErrorMessage('descricao') }}
+              </mat-error>
+              <mat-error *ngIf="objetoForm.get('descricao')?.hasError('minlength')">
+                {{ getErrorMessage('descricao') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Campo Observação -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'objeto.observacao' | transloco}}</mat-label>
+              <input matInput formControlName="observacao" placeholder="{{'objeto.placeholderObservacao' | transloco}}">
+              <mat-error *ngIf="objetoForm.get('observacao')?.hasError('required')">
+                {{ getErrorMessage('observacao') }}
+              </mat-error>
+              <mat-error *ngIf="objetoForm.get('observacao')?.hasError('minlength')">
+                {{ getErrorMessage('observacao') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" mat-button (click)="cancelForm()" class="cancel-button">
+              {{'objeto.btnCancelar' | transloco}}
+            </button>
+            <button type="submit" mat-raised-button color="primary" 
+                    [disabled]="objetoForm.invalid" class="submit-button">
+              {{ editingId ? ('global.btnAtualizar' | transloco) : ('global.btnCriar' | transloco) }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Data Table Section -->
+  <div class="table-section">
+    <mat-card class="table-card">
+      <mat-card-content>
+        <!-- Search and Actions Bar -->
+        <div class="table-header">
+          <div class="search-section">
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>{{'objeto.buscar' | transloco}}</mat-label>
+              <input matInput (keyup)="applyFilter($event)" [placeholder]="'objeto.digite' | transloco">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+          </div>
+          <div class="table-info">
+            <span class="total-count">{{ dataSource.data.length }} {{'objeto.countObjetos' | transloco}}</span>
+          </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-container" *ngIf="loading">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>{{'objeto.carregando' | transloco}}</p>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-container" *ngIf="!loading">
+          <table mat-table [dataSource]="dataSource" matSort class="data-table">
+            <!-- ID Column -->
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'objeto.id' | transloco}} </th>
+              <td mat-cell *matCellDef="let row"> {{ row.id }} </td>
+            </ng-container>
+
+            <!-- Descrição Column -->
+            <ng-container matColumnDef="descricao">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'objeto.descricao' | transloco}} </th>
+              <td mat-cell *matCellDef="let row"> {{ row.descricao }} </td>
+            </ng-container>
+
+            <!-- Observação Column -->
+            <ng-container matColumnDef="observacao">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'objeto.observacao' | transloco}} </th>
+              <td mat-cell *matCellDef="let row"> {{ row.observacao }} </td>
+            </ng-container>
+
+            <!-- Ações Column -->
+            <ng-container matColumnDef="acoes">
+              <th mat-header-cell *matHeaderCellDef> {{'objeto.acoes' | transloco}} </th>
+              <td mat-cell *matCellDef="let row">
+                <div class="action-buttons">
+                  <button mat-icon-button class="edit-button" 
+                          (click)="showEditForm(row)" 
+                          matTooltip="{{'objeto.editarTooltip' | transloco}}">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button class="delete-button" 
+                          *ngIf="canDelete"
+                          (click)="deleteObjeto(row.id!)" 
+                          matTooltip="{{'objeto.excluirTooltip' | transloco}}">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+          <!-- Paginator -->
+          <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" 
+                         showFirstLastButtons 
+                         aria-label="{{'objeto.paginatorLabel' | transloco}}">
+          </mat-paginator>
+
+          <!-- No Data Message -->
+          <div class="no-data" *ngIf="dataSource.data.length === 0 && !loading">
+            <mat-icon>inventory_off</mat-icon>
+            <p>{{'objeto.nenhum' | transloco}}</p>
+            <button mat-raised-button color="primary" (click)="showCreateForm()">
+              {{'objeto.criarPrimeiro' | transloco}}
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
