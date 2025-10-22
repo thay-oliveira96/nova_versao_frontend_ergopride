@@ -63,7 +63,8 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
         { name: 'Departamentos', nameKey: 'layout.menu.departments', route: '/departamentos', icon: 'business' },
         { name: 'Empresas', nameKey: 'layout.menu.empresas', route: '/empresa', icon: 'business_center' },
         { name: 'Segmento Corporal', nameKey: 'layout.menu.segmentos', route: '/segmento', icon: 'accessibility_new' },
-        { name: 'Objeto', nameKey: 'layout.menu.objeto', route: '/objeto', icon: 'view_in_ar' }
+        { name: 'Objeto', nameKey: 'layout.menu.objeto', route: '/objeto', icon: 'view_in_ar' },
+        { name: 'Função', nameKey: 'layout.menu.funcao', route: '/funcao', icon: 'engineering' }
       ]
     }
   ];

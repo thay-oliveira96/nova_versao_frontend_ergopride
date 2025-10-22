@@ -1,14 +1,14 @@
-<div class="segmento-container">
+<div class="funcao-container">
     <!-- Header Section -->
     <div class="header-section">
       <div class="header-content">
         <div class="title-section">
-          <mat-icon class="title-icon">accessibility_new</mat-icon>
-          <h1>{{'segmento.titulo' | transloco }}</h1>
+          <mat-icon class="title-icon">engineering</mat-icon>
+          <h1>{{'funcao.titulo' | transloco }}</h1>
         </div>
         <button mat-raised-button color="primary" (click)="showCreateForm()" class="add-button">
           <mat-icon>add</mat-icon>
-          {{'segmento.btnNovo' | transloco }}
+          {{'funcao.btnNovo' | transloco }}
         </button>
       </div>
     </div>
@@ -18,22 +18,22 @@
       <mat-card class="form-card">
         <mat-card-header>
           <mat-card-title>
-            {{ editingId ? ('segmento.editar' | transloco) : ('segmento.novo' | transloco) }}
-            {{ 'segmento.tituloForm' | transloco }}
+            {{ editingId ? ('funcao.editar' | transloco) : ('funcao.novo' | transloco) }}
+            {{ 'funcao.tituloForm' | transloco }}
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <form [formGroup]="segmentoForm" (ngSubmit)="onSubmit()" class="form">
+          <form [formGroup]="funcaoForm" (ngSubmit)="onSubmit()" class="form">
             <!-- Campo Descrição -->
             <div class="form-row">
               <mat-form-field appearance="outline" class="form-field">
-                <mat-label>{{'segmento.descricao' | transloco}}</mat-label>
+                <mat-label>{{'funcao.descricao' | transloco}}</mat-label>
                 <textarea matInput formControlName="descricao" rows="3" 
                           placeholder="Descreva as responsabilidades do departamento"></textarea>
-                <mat-error *ngIf="segmentoForm.get('descricao')?.hasError('required')">
+                <mat-error *ngIf="funcaoForm.get('descricao')?.hasError('required')">
                   {{ getErrorMessage('descricao') }}
                 </mat-error>
-                <mat-error *ngIf="segmentoForm.get('descricao')?.hasError('minlength')">
+                <mat-error *ngIf="funcaoForm.get('descricao')?.hasError('minlength')">
                   {{ getErrorMessage('descricao') }}
                 </mat-error>
               </mat-form-field>
@@ -44,10 +44,10 @@
               <mat-form-field appearance="outline" class="form-field">
                 <mat-label>Observação</mat-label>
                 <input matInput formControlName="observacao" placeholder="Observações adicionais">
-                <mat-error *ngIf="segmentoForm.get('observacao')?.hasError('required')">
+                <mat-error *ngIf="funcaoForm.get('observacao')?.hasError('required')">
                   {{ getErrorMessage('observacao') }}
                 </mat-error>
-                <mat-error *ngIf="segmentoForm.get('observacao')?.hasError('minlength')">
+                <mat-error *ngIf="funcaoForm.get('observacao')?.hasError('minlength')">
                   {{ getErrorMessage('observacao') }}
                 </mat-error>
               </mat-form-field>
@@ -58,7 +58,7 @@
                 Cancelar
               </button>
               <button type="submit" mat-raised-button color="primary" 
-                      [disabled]="segmentoForm.invalid" class="submit-button">
+                      [disabled]="funcaoForm.invalid" class="submit-button">
                 {{ editingId ? ('global.btnAtualizar' | transloco) : ('global.btnCriar' | transloco) }}
               </button>
             </div>
@@ -75,20 +75,20 @@
           <div class="table-header">
             <div class="search-section">
               <mat-form-field appearance="outline" class="search-field">
-                <mat-label>{{'segmento.buscar' | transloco}}</mat-label>
-                <input matInput (keyup)="applyFilter($event)" [placeholder]="'segmento.digite' | transloco">
+                <mat-label>{{'funcao.buscar' | transloco}}</mat-label>
+                <input matInput (keyup)="applyFilter($event)" [placeholder]="'funcao.digite' | transloco">
                 <mat-icon matSuffix>search</mat-icon>
               </mat-form-field>
             </div>
             <div class="table-info">
-              <span class="total-count">{{ dataSource.data.length }} {{'segmento.countSegmento' | transloco}}</span>
+              <span class="total-count">{{ dataSource.data.length }} {{'funcao.countFuncao' | transloco}}</span>
             </div>
           </div>
   
           <!-- Loading Spinner -->
           <div class="loading-container" *ngIf="loading">
             <mat-spinner diameter="40"></mat-spinner>
-            <p>{{'segmento.carrgeando' | transloco}}</p>
+            <p>{{'funcao.carrgeando' | transloco}}</p>
           </div>
   
           <!-- Data Table -->
@@ -102,19 +102,19 @@
   
               <!-- Descrição Column -->
               <ng-container matColumnDef="descricao">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'segmento.descricao' | transloco}} </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'funcao.descricao' | transloco}} </th>
                 <td mat-cell *matCellDef="let row"> {{ row.descricao }} </td>
               </ng-container>
   
               <!-- Observação Column -->
               <ng-container matColumnDef="observacao">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'segmento.observacao' | transloco}} </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'funcao.observacao' | transloco}} </th>
                 <td mat-cell *matCellDef="let row"> {{ row.observacao }} </td>
               </ng-container>
   
               <!-- Ações Column -->
               <ng-container matColumnDef="acoes">
-                <th mat-header-cell *matHeaderCellDef> {{'segmento.acoes' | transloco}} </th>
+                <th mat-header-cell *matHeaderCellDef> {{'funcao.acoes' | transloco}} </th>
                 <td mat-cell *matCellDef="let row">
                   <div class="action-buttons">
                     <button mat-icon-button color="primary" 
@@ -124,7 +124,7 @@
                     </button>
                     <button mat-icon-button color="warn" 
                     *ngIf="canDelete"
-                            (click)="deleteSegmento(row.id!)" 
+                            (click)="deletefuncao(row.id!)" 
                             matTooltip="Excluir departamento">
                       <mat-icon>delete</mat-icon>
                     </button>
@@ -139,15 +139,15 @@
             <!-- Paginator -->
             <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" 
                            showFirstLastButtons 
-                           aria-label="Selecione a página de segmento">
+                           aria-label="Selecione a página de Funcção">
             </mat-paginator>
   
             <!-- No Data Message -->
             <div class="no-data" *ngIf="dataSource.data.length === 0 && !loading">
-              <mat-icon>accessibility_new</mat-icon>
-              <p>{{'segmento.nenhum' | transloco}}</p>
+              <mat-icon>engineering</mat-icon>
+              <p>{{'funcao.nenhum' | transloco}}</p>
               <button mat-raised-button color="primary" (click)="showCreateForm()">
-                {{'segmento.criarPrimeiro' | transloco}}
+                {{'funcao.criarPrimeiro' | transloco}}
               </button>
             </div>
           </div>

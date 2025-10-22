@@ -24,6 +24,7 @@ export const routes: Routes = [
       { path: 'segmento', loadChildren: () => import('./segmento/segmento.module').then(m => m.SegmentoModule) },
       { path: 'empresa', loadChildren: () => import('./empresa/empresa.module').then(m => m.EmpresaModule) },
       { path: 'objeto', loadChildren: () => import('./objeto/objeto.module').then(m => m.objetotoModule)},
+      { path: 'funcao', loadChildren: () => import('./funcao/funcao.module').then(m => m.FuncaoModule)},
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   },

@@ -1,5 +1,5 @@
 export interface SegmentoDTO {
-  id?: number; // Opcional para criação, presente para atualização e leitura
+  id?: number;
   descricao: string;
-  observacao: string; // Campo 'observacao' adicionado, 'nome', 'responsavel' e 'dataCriacao' removidos
+  observacao: string; 
 }
