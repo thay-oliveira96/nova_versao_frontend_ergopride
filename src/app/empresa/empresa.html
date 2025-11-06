@@ -24,6 +24,62 @@
       </mat-card-header>
       <mat-card-content>
         <form [formGroup]="empresaForm" (ngSubmit)="onSubmit()" class="form">
+          
+          <!-- Seção de Upload de Logo -->
+          <div class="logo-upload-section">
+            <div class="logo-label">
+              <mat-icon>add_photo_alternate</mat-icon>
+              <span>{{'empresas.logoEmpresa' | transloco}}</span>
+            </div>
+            
+            <!-- Preview do Logo -->
+            <div class="logo-preview-container" *ngIf="logoPreview">
+              <img [src]="logoPreview" alt="Logo Preview" class="logo-preview">
+              <div class="logo-actions">
+                <button type="button" 
+                        mat-icon-button 
+                        color="warn" 
+                        (click)="removerLogoPreview()"
+                        *ngIf="!editingId || logoFile"
+                        matTooltip="{{'empresas.removerPreview' | transloco}}">
+                  <mat-icon>close</mat-icon>
+                </button>
+                <button type="button" 
+                        mat-icon-button 
+                        color="warn" 
+                        (click)="removerLogoServidor()"
+                        *ngIf="editingId && !logoFile && logoAtualUrl"
+                        matTooltip="{{'empresas.removerLogoServidor' | transloco}}">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- Input de Arquivo -->
+            <div class="file-input-container">
+              <input 
+                type="file" 
+                id="logoInput"
+                accept="image/jpeg,image/jpg,image/png,image/gif"
+                (change)="onFileSelected($event)"
+                #fileInput
+                style="display: none;">
+              <button type="button" 
+                      mat-raised-button 
+                      color="accent"
+                      (click)="fileInput.click()"
+                      class="upload-button">
+                <mat-icon>cloud_upload</mat-icon>
+                {{ logoPreview ? ('empresas.alterarLogo' | transloco) : ('empresas.selecionarLogo' | transloco) }}
+              </button>
+              <small class="file-hint">
+                {{'empresas.logoFormatos' | transloco}} JPG, PNG, GIF - {{'empresas.logoTamanhoMax' | transloco}} 5MB
+              </small>
+            </div>
+          </div>
+
+          <mat-divider class="form-divider"></mat-divider>
+
           <!-- Campo Nome -->
           <div class="form-row">
             <mat-form-field appearance="outline" class="form-field">

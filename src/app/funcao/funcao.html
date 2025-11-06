@@ -1,157 +1,157 @@
 <div class="funcao-container">
-    <!-- Header Section -->
-    <div class="header-section">
-      <div class="header-content">
-        <div class="title-section">
-          <mat-icon class="title-icon">engineering</mat-icon>
-          <h1>{{'funcao.titulo' | transloco }}</h1>
-        </div>
-        <button mat-raised-button color="primary" (click)="showCreateForm()" class="add-button">
-          <mat-icon>add</mat-icon>
-          {{'funcao.btnNovo' | transloco }}
-        </button>
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="title-icon">engineering</mat-icon>
+        <h1>{{'funcao.titulo' | transloco }}</h1>
       </div>
+      <button mat-raised-button color="primary" (click)="showCreateForm()" class="add-button">
+        <mat-icon>add</mat-icon>
+        {{'funcao.btnNovo' | transloco }}
+      </button>
     </div>
-  
-    <!-- Form Section -->
-    <div class="form-section" *ngIf="showForm">
-      <mat-card class="form-card">
-        <mat-card-header>
-          <mat-card-title>
-            {{ editingId ? ('funcao.editar' | transloco) : ('funcao.novo' | transloco) }}
-            {{ 'funcao.tituloForm' | transloco }}
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="funcaoForm" (ngSubmit)="onSubmit()" class="form">
-            <!-- Campo Descrição -->
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>{{'funcao.descricao' | transloco}}</mat-label>
-                <textarea matInput formControlName="descricao" rows="3" 
-                          placeholder="Descreva as responsabilidades do departamento"></textarea>
-                <mat-error *ngIf="funcaoForm.get('descricao')?.hasError('required')">
-                  {{ getErrorMessage('descricao') }}
-                </mat-error>
-                <mat-error *ngIf="funcaoForm.get('descricao')?.hasError('minlength')">
-                  {{ getErrorMessage('descricao') }}
-                </mat-error>
-              </mat-form-field>
-            </div>
-  
-            <!-- Campo Observação -->
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>Observação</mat-label>
-                <input matInput formControlName="observacao" placeholder="Observações adicionais">
-                <mat-error *ngIf="funcaoForm.get('observacao')?.hasError('required')">
-                  {{ getErrorMessage('observacao') }}
-                </mat-error>
-                <mat-error *ngIf="funcaoForm.get('observacao')?.hasError('minlength')">
-                  {{ getErrorMessage('observacao') }}
-                </mat-error>
-              </mat-form-field>
-            </div>
-  
-            <div class="form-actions">
-              <button type="button" mat-button (click)="cancelForm()" class="cancel-button">
-                Cancelar
-              </button>
-              <button type="submit" mat-raised-button color="primary" 
-                      [disabled]="funcaoForm.invalid" class="submit-button">
-                {{ editingId ? ('global.btnAtualizar' | transloco) : ('global.btnCriar' | transloco) }}
-              </button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  
-    <!-- Data Table Section -->
-    <div class="table-section">
-      <mat-card class="table-card">
-        <mat-card-content>
-          <!-- Search and Actions Bar -->
-          <div class="table-header">
-            <div class="search-section">
-              <mat-form-field appearance="outline" class="search-field">
-                <mat-label>{{'funcao.buscar' | transloco}}</mat-label>
-                <input matInput (keyup)="applyFilter($event)" [placeholder]="'funcao.digite' | transloco">
-                <mat-icon matSuffix>search</mat-icon>
-              </mat-form-field>
-            </div>
-            <div class="table-info">
-              <span class="total-count">{{ dataSource.data.length }} {{'funcao.countFuncao' | transloco}}</span>
-            </div>
+  </div>
+
+  <!-- Form Section -->
+  <div class="form-section" *ngIf="showForm">
+    <mat-card class="form-card">
+      <mat-card-header>
+        <mat-card-title>
+          {{ editingId ? ('funcao.editar' | transloco) : ('funcao.novo' | transloco) }}
+          {{ 'funcao.tituloForm' | transloco }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="funcaoForm" (ngSubmit)="onSubmit()" class="form">
+          <!-- Campo Descrição -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'funcao.descricao' | transloco}}</mat-label>
+              <textarea matInput formControlName="descricao" rows="3" 
+                        placeholder="Descreva as responsabilidades do departamento"></textarea>
+              <mat-error *ngIf="funcaoForm.get('descricao')?.hasError('required')">
+                {{ getErrorMessage('descricao') }}
+              </mat-error>
+              <mat-error *ngIf="funcaoForm.get('descricao')?.hasError('minlength')">
+                {{ getErrorMessage('descricao') }}
+              </mat-error>
+            </mat-form-field>
           </div>
-  
-          <!-- Loading Spinner -->
-          <div class="loading-container" *ngIf="loading">
-            <mat-spinner diameter="40"></mat-spinner>
-            <p>{{'funcao.carrgeando' | transloco}}</p>
+
+          <!-- Campo Observação -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{'funcao.observacao' | transloco}}</mat-label>
+              <input matInput formControlName="observacao" placeholder="{{'funcao.placeholderObservacao' | transloco}}">
+              <mat-error *ngIf="funcaoForm.get('observacao')?.hasError('required')">
+                {{ getErrorMessage('observacao') }}
+              </mat-error>
+              <mat-error *ngIf="funcaoForm.get('observacao')?.hasError('minlength')">
+                {{ getErrorMessage('observacao') }}
+              </mat-error>
+            </mat-form-field>
           </div>
-  
-          <!-- Data Table -->
-          <div class="table-container" *ngIf="!loading">
-            <table mat-table [dataSource]="dataSource" matSort class="data-table">
-              <!-- ID Column -->
-              <ng-container matColumnDef="id">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-                <td mat-cell *matCellDef="let row"> {{ row.id }} </td>
-              </ng-container>
-  
-              <!-- Descrição Column -->
-              <ng-container matColumnDef="descricao">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'funcao.descricao' | transloco}} </th>
-                <td mat-cell *matCellDef="let row"> {{ row.descricao }} </td>
-              </ng-container>
-  
-              <!-- Observação Column -->
-              <ng-container matColumnDef="observacao">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'funcao.observacao' | transloco}} </th>
-                <td mat-cell *matCellDef="let row"> {{ row.observacao }} </td>
-              </ng-container>
-  
-              <!-- Ações Column -->
-              <ng-container matColumnDef="acoes">
-                <th mat-header-cell *matHeaderCellDef> {{'funcao.acoes' | transloco}} </th>
-                <td mat-cell *matCellDef="let row">
-                  <div class="action-buttons">
-                    <button mat-icon-button color="primary" 
-                            (click)="showEditForm(row)" 
-                            matTooltip="Editar departamento">
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button mat-icon-button color="warn" 
-                    *ngIf="canDelete"
-                            (click)="deletefuncao(row.id!)" 
-                            matTooltip="Excluir departamento">
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </div>
-                </td>
-              </ng-container>
-  
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-  
-            <!-- Paginator -->
-            <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" 
-                           showFirstLastButtons 
-                           aria-label="Selecione a página de Funcção">
-            </mat-paginator>
-  
-            <!-- No Data Message -->
-            <div class="no-data" *ngIf="dataSource.data.length === 0 && !loading">
-              <mat-icon>engineering</mat-icon>
-              <p>{{'funcao.nenhum' | transloco}}</p>
-              <button mat-raised-button color="primary" (click)="showCreateForm()">
-                {{'funcao.criarPrimeiro' | transloco}}
-              </button>
-            </div>
+
+          <div class="form-actions">
+            <button type="button" mat-button (click)="cancelForm()" class="cancel-button">
+              {{'funcao.btnCancelar' | transloco}}
+            </button>
+            <button type="submit" mat-raised-button color="primary" 
+                    [disabled]="funcaoForm.invalid" class="submit-button">
+              {{ editingId ? ('global.btnAtualizar' | transloco) : ('global.btnCriar' | transloco) }}
+            </button>
           </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  </div>  
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Data Table Section -->
+  <div class="table-section">
+    <mat-card class="table-card">
+      <mat-card-content>
+        <!-- Search and Actions Bar -->
+        <div class="table-header">
+          <div class="search-section">
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>{{'funcao.buscar' | transloco}}</mat-label>
+              <input matInput (keyup)="applyFilter($event)" [placeholder]="'funcao.digite' | transloco">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+          </div>
+          <div class="table-info">
+            <span class="total-count">{{ dataSource.data.length }} {{'funcao.countFuncao' | transloco}}</span>
+          </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-container" *ngIf="loading">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>{{'funcao.carregando' | transloco}}</p> <!-- Fixed typo from 'carrgeando' -->
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-container" *ngIf="!loading">
+          <table mat-table [dataSource]="dataSource" matSort class="data-table">
+            <!-- ID Column -->
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+              <td mat-cell *matCellDef="let row"> {{ row.id }} </td>
+            </ng-container>
+
+            <!-- Descrição Column -->
+            <ng-container matColumnDef="descricao">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'funcao.descricao' | transloco}} </th>
+              <td mat-cell *matCellDef="let row"> {{ row.descricao }} </td>
+            </ng-container>
+
+            <!-- Observação Column -->
+            <ng-container matColumnDef="observacao">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'funcao.observacao' | transloco}} </th>
+              <td mat-cell *matCellDef="let row"> {{ row.observacao }} </td>
+            </ng-container>
+
+            <!-- Ações Column -->
+            <ng-container matColumnDef="acoes">
+              <th mat-header-cell *matHeaderCellDef> {{'funcao.acoes' | transloco}} </th>
+              <td mat-cell *matCellDef="let row">
+                <div class="action-buttons">
+                  <button mat-icon-button color="primary" 
+                          (click)="showEditForm(row)" 
+                          matTooltip="{{'funcao.editarTooltip' | transloco}}">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" 
+                          *ngIf="canDelete"
+                          (click)="deleteFuncao(row.id!)" 
+                          matTooltip="{{'funcao.excluirTooltip' | transloco}}">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+          <!-- Paginator -->
+          <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" 
+                         showFirstLastButtons 
+                         aria-label="{{'funcao.paginatorLabel' | transloco}}">
+          </mat-paginator>
+
+          <!-- No Data Message -->
+          <div class="no-data" *ngIf="dataSource.data.length === 0 && !loading">
+            <mat-icon>engineering</mat-icon>
+            <p>{{'funcao.nenhum' | transloco}}</p>
+            <button mat-raised-button color="primary" (click)="showCreateForm()">
+              {{'funcao.criarPrimeiro' | transloco}}
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

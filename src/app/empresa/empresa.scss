@@ -96,6 +96,108 @@ $card-background: $white-text;
   gap: 20px;
 }
 
+// Estilos para a seção de upload de logo
+.logo-upload-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  padding: 24px;
+  border: 2px dashed #dee2e6;
+  margin-bottom: 16px;
+
+  .logo-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-color;
+    margin-bottom: 16px;
+
+    mat-icon {
+      color: $secondary-button-color;
+    }
+  }
+
+  .logo-preview-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 16px;
+
+    .logo-preview {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border: 3px solid $white-text;
+      display: block;
+    }
+
+    .logo-actions {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+      button {
+        width: 32px;
+        height: 32px;
+        
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+          line-height: 18px;
+        }
+      }
+    }
+  }
+
+  .file-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .upload-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background-color: $secondary-button-color !important;
+      color: $white-text !important;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3);
+      }
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .file-hint {
+      color: #6c757d;
+      font-size: 13px;
+      font-style: italic;
+    }
+  }
+}
+
+.form-divider {
+  margin: 24px 0 !important;
+  border-top-color: #e0e0e0 !important;
+}
+
 .form-row {
   display: flex;
   gap: 16px;
@@ -305,5 +407,19 @@ mat-paginator {
 
   &:hover {
     background: #a8a8a8;
+  }
+}
+
+// Responsividade para a seção de logo
+@media (max-width: 768px) {
+  .logo-upload-section {
+    padding: 16px;
+
+    .logo-preview-container {
+      .logo-preview {
+        max-width: 150px;
+        max-height: 150px;
+      }
+    }
   }
 }

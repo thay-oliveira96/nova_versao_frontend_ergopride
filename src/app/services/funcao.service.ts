@@ -1,9 +1,7 @@
-// src/app/services/Segmento.service.ts
-
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environments'; // Importe seu arquivo de ambiente
+import { environment } from '../../environments/environments';
 import { FuncaoDTO } from '../models/funcao.model';
 
 @Injectable({
@@ -15,21 +13,27 @@ export class FuncaoService {
 
   constructor() { }
 
-  getAllFuncoes(): Observable<FuncaoDTO[]> {
-    return this.http.get<FuncaoDTO[]>(this.apiUrl);
+  // Option 1: Paginated response (if API supports it)
+  getAllFuncoes(page: number = 0, size: number = 10): Observable<{ content: FuncaoDTO[], totalElements: number }> {
+    return this.http.get<{ content: FuncaoDTO[], totalElements: number }>(`${this.apiUrl}?page=${page}&size=${size}`);
   }
+
+  // Option 2: Plain array (if API returns FuncaoDTO[])
+  // getAllFuncoes(): Observable<FuncaoDTO[]> {
+  //   return this.http.get<FuncaoDTO[]>(this.apiUrl);
+  // }
 
   getFuncaoById(id: number): Observable<FuncaoDTO> {
     return this.http.get<FuncaoDTO>(`${this.apiUrl}/${id}`);
   }
 
-  createFuncao(Funcao: FuncaoDTO): Observable<FuncaoDTO> {
-    const { id, ...SegmentoToCreate } = Funcao; // Não envia o ID para criação
-    return this.http.post<FuncaoDTO>(this.apiUrl, SegmentoToCreate);
+  createFuncao(funcao: FuncaoDTO): Observable<FuncaoDTO> {
+    const { id, ...funcaoToCreate } = funcao;
+    return this.http.post<FuncaoDTO>(this.apiUrl, funcaoToCreate);
   }
 
-  updateFuncao(id: number, Funcao: FuncaoDTO): Observable<FuncaoDTO> {
-    return this.http.put<FuncaoDTO>(`${this.apiUrl}/${id}`, Funcao);
+  updateFuncao(id: number, funcao: FuncaoDTO): Observable<FuncaoDTO> {
+    return this.http.put<FuncaoDTO>(`${this.apiUrl}/${id}`, funcao);
   }
 
   deleteFuncao(id: number): Observable<void> {
