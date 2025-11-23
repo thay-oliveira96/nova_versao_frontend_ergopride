@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { Funcao } from './funcao';
+import { FuncaoComponent } from './funcao';
 
 const routes: Routes = [
-  { path: '', component: Funcao }
+  { path: '', component: FuncaoComponent }
 ];
 
 @NgModule({

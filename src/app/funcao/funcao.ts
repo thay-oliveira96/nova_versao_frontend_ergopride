@@ -43,7 +43,7 @@ import { ConfirmationDialogComponent } from '../shared/confirmation-dialog/confi
   templateUrl: './funcao.html',
   styleUrl: './funcao.scss'
 })
-export class Funcao implements OnInit, AfterViewInit, OnDestroy {
+export class FuncaoComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 

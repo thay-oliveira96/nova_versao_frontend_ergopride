@@ -66,7 +66,8 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
         { name: 'Objeto', nameKey: 'layout.menu.objeto', route: '/objeto', icon: 'view_in_ar' },
         { name: 'Função', nameKey: 'layout.menu.funcao', route: '/funcao', icon: 'engineering' }
       ]
-    }
+    },
+    { name: 'Aet', nameKey: 'layout.menu.aetEmpresa', route: '/aet-empresa', icon: 'add_chart' }
   ];
 
   private _mobileQueryListener: () => void;

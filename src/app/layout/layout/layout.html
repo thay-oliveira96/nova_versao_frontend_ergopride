@@ -1,12 +1,12 @@
 <!-- Componente de layout principal com um sidenav e a barra de ferramentas -->
 <mat-sidenav-container class="sidenav-container">
-  
+
   <!-- Sidenav lateral para o menu de navegação -->
   <mat-sidenav #drawer class="sidenav" fixedInViewport
       [attr.role]="(mobileQuery.matches ? 'dialog' : 'navigation')"
       [mode]="(mobileQuery.matches ? 'over' : 'side')"
       [opened]="false">
-    
+
     <div class="sidenav-header">
       <div class="brand-container">
         <mat-icon class="brand-icon">business</mat-icon>
@@ -14,60 +14,63 @@
       </div>
     </div>
 
-    <!-- Lista de navegação com itens e expansão para Cadastro -->
+    <!-- ======================================== -->
+    <!-- ITENS SIMPLES (sem filhos) -->
+    <!-- ======================================== -->
     <mat-nav-list class="nav-list">
-      <!-- Flat item for Home -->
-      <a mat-list-item 
-         *ngIf="navItems[0].route" 
-         [routerLink]="navItems[0].route"
-         routerLinkActive="active-link"
-         class="nav-item"
-         (click)="closeSidenav()">
-        <mat-icon matListItemIcon>{{navItems[0].icon}}</mat-icon>
-        <span matListItemTitle>{{navItems[0].nameKey | transloco}}</span>
-      </a>
+      <ng-container *ngFor="let item of navItems">
+        <a mat-list-item
+           *ngIf="!item.children && item.route"
+           [routerLink]="item.route"
+           routerLinkActive="active-link"
+           class="nav-item"
+           (click)="closeSidenav()">
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.nameKey | transloco }}</span>
+        </a>
+      </ng-container>
     </mat-nav-list>
+
+    <!-- ======================================== -->
+    <!-- GRUPOS EXPANSÍVEIS (com children) -->
+    <!-- ======================================== -->
     <mat-accordion class="nav-accordion" multi>
-      <!-- Expansion panel for Cadastro -->
-      <mat-expansion-panel *ngIf="navItems[1]" class="nav-panel" (opened)="closeSidenav()">
-        <mat-expansion-panel-header>
-          <mat-panel-title class="panel-title">
-            <mat-icon matListItemIcon>{{navItems[1].icon}}</mat-icon>
-            <span matListItemTitle class="panel-title-text">{{navItems[1].nameKey | transloco}}</span>
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <!-- Renderiza subitens se existirem -->
-        <mat-nav-list *ngIf="navItems[1].children">
-          <a mat-list-item 
-             *ngFor="let child of navItems[1].children" 
-             [routerLink]="child.route"
-             routerLinkActive="active-link"
-             class="nav-item"
-             (click)="closeSidenav()">
-            <mat-icon matListItemIcon>{{child.icon}}</mat-icon>
-            <span matListItemTitle>{{child.nameKey | transloco}}</span>
-          </a>
-        </mat-nav-list>
-      </mat-expansion-panel>
+      <ng-container *ngFor="let item of navItems">
+        <mat-expansion-panel *ngIf="item.children" class="nav-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="panel-title">
+              <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+              <span matListItemTitle class="panel-title-text">{{ item.nameKey | transloco }}</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <mat-nav-list>
+            <a mat-list-item
+               *ngFor="let child of item.children"
+               [routerLink]="child.route"
+               routerLinkActive="active-link"
+               class="nav-item child-item"
+               (click)="closeSidenav()">
+              <mat-icon matListItemIcon>{{ child.icon }}</mat-icon>
+              <span matListItemTitle>{{ child.nameKey | transloco }}</span>
+            </a>
+          </mat-nav-list>
+        </mat-expansion-panel>
+      </ng-container>
     </mat-accordion>
+
   </mat-sidenav>
 
-  <!-- Conteúdo principal, onde as rotas são renderizadas -->
+  <!-- Conteúdo principal -->
   <mat-sidenav-content class="sidenav-content">
     <mat-toolbar color="primary" class="toolbar">
-      <!-- Botão para abrir/fechar o menu lateral em telas menores -->
-      <button
-        type="button"
-        aria-label="Toggle sidenav"
-        mat-icon-button
-        (click)="drawer.toggle()"
-        class="menu-toggle-button">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" class="menu-toggle-button">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      
-      <!-- Título da barra de ferramentas -->
-      <span class="toolbar-title">{{ 'layout.toolbarTitle' | transloco }}</span> <span class="toolbar-spacer"></span>
-      
+
+      <span class="toolbar-title">{{ 'layout.toolbarTitle' | transloco }}</span>
+      <span class="toolbar-spacer"></span>
+
       <!-- Seletor de idioma -->
       <mat-form-field class="language-selector">
         <mat-select [value]="activeLang" (selectionChange)="changeLanguage($event.value)">
@@ -76,16 +79,15 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      
-      <!-- Saudação e nome do usuário, visível apenas se o nome estiver disponível -->
+
+      <!-- Saudação -->
       <span class="user-greeting" *ngIf="fullname">Olá, {{ fullname }}</span>
 
-      <!-- Botão para o menu do usuário (perfil e logout) -->
+      <!-- Menu do usuário -->
       <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-button">
         <mat-icon>account_circle</mat-icon>
       </button>
       <mat-menu #userMenu="matMenu">
-        <!-- Oculta/Exibe o botão dependendo do tipo de pessoa -->
         <button mat-menu-item routerLink="/my-account" *ngIf="verificaTipoPessoa()">
           <mat-icon>account_circle</mat-icon>
           <span>Minha Conta</span>
@@ -101,7 +103,6 @@
       </mat-menu>
     </mat-toolbar>
 
-    <!-- Container para o conteúdo das páginas -->
     <div class="content-container">
       <router-outlet></router-outlet>
     </div>

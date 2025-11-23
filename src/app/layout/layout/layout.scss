@@ -290,3 +290,8 @@ $white-text: #FFFFFF;
 .mat-paginator-container .mat-icon-button {
   color: #fff !important;
 }
+
+.child-item {
+  padding-left: 48px !important; // Indenta os itens filhos
+  font-size: 0.95rem;
+}
