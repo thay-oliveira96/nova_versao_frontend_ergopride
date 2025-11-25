@@ -1,6 +1,6 @@
 // src/app/aet-setor/aet-setor.ts
 
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -51,7 +51,7 @@ import { AuthService } from '../auth/auth.service';
   templateUrl: './aet-setor.html',
   styleUrl: './aet-setor.scss'
 })
-export class AetSetorComponent implements OnInit {
+export class AetSetorComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   aetEmpresaId!: number;
@@ -120,6 +120,19 @@ export class AetSetorComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+
+    // Custom filter predicate
+    this.dataSource.filterPredicate = (data: AetSetorDTO, filter: string) => {
+      const dataStr = 
+        this.getDepartamentoNome(data.departamentosId) +
+        data.jornadaTrabalho +
+        data.ritmoTrabalho;
+      return dataStr.toLowerCase().includes(filter);
+    };
+  }
+
   // MÉTODO NOVO: Busca o nome da empresa via AET → Empresa
   private carregarNomeEmpresa(): void {
     this.aetEmpresaService.getAetEmpresaById(this.aetEmpresaId).subscribe({
@@ -157,7 +170,6 @@ export class AetSetorComponent implements OnInit {
     this.aetSetorService.getAllAetSetores(this.aetEmpresaId).subscribe({
       next: (data) => {
         this.dataSource.data = data;
-        this.dataSource.sort = this.sort;
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -241,5 +253,9 @@ export class AetSetorComponent implements OnInit {
 
   voltarParaAetEmpresa(): void {
     this.router.navigate(['/aet-empresa']);
+  }
+
+  abrirFuncao(aetEmpresaId: number, aetSetorId: number) {
+    this.router.navigate(['/aet-empresa', aetEmpresaId, 'setor', aetSetorId, 'funcao']);
   }
 }

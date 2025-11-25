@@ -1,0 +1,185 @@
+/* src/app/aet-funcao/aet-funcao.scss */
+$background-color: #F5F7FA;
+$menu-bar-color: #4A90E2;
+$primary-button-color: #7BC47F;
+$secondary-button-color: #4A90E2;
+$highlight-color: #F5A623;
+$text-color: #3A3D40;
+$white-text: #FFFFFF;
+$card-background: $white-text;
+$text-light-color: #666;
+
+.aet-funcao-container {
+  padding: 2rem;
+  background-color: $background-color;
+  min-height: 100vh;
+}
+
+.header-section {
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .title-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .back-button {
+      margin-right: 0.5rem;
+    }
+
+    .title-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      color: $secondary-button-color;
+    }
+
+    .titulo-principal {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 500;
+      color: $text-color;
+
+      .empresa-subtitle {
+        display: block;
+        font-size: 1rem;
+        font-weight: 300;
+        margin-top: 0.25rem;
+      }
+    }
+  }
+
+  .add-button {
+    height: 50px;
+  }
+}
+
+.stepper-card {
+  margin-bottom: 2rem;
+}
+
+.step-content {
+  padding: 1.5rem 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+
+  &.full-width {
+    mat-form-field {
+      width: 100%;
+    }
+  }
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.step-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.image-upload-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+  }
+  
+  .image-upload-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px dashed #ccc;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+  
+    label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+  
+    .image-preview {
+      max-width: 150px;
+      max-height: 150px;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+    }
+  
+    input[type="file"] {
+      max-width: 100%;
+    }
+  }
+
+.table-card {
+  mat-card-content {
+    padding: 0 !important;
+  }
+}
+
+.loading-container, .no-data {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  color: $text-light-color;
+
+  mat-icon {
+    font-size: 4rem;
+    width: auto;
+    height: auto;
+    margin-bottom: 1rem;
+  }
+}
+
+.data-table {
+  width: 100%;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.search-section {
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-field {
+  width: 100%;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.edit-button {
+  color: $secondary-button-color;
+}
+
+.delete-button {
+  color: #f44336;
+}
+
+.action-buttons button:hover {
+  transform: scale(1.1);
+}

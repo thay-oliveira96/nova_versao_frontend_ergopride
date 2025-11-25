@@ -6,6 +6,7 @@
         <button mat-icon-button 
               color="primary" 
               (click)="voltarParaAetEmpresa()" 
+             
               matTooltip="Voltar para AET Empresas"
               class="back-button">
         <mat-icon>arrow_back</mat-icon>
@@ -233,10 +234,16 @@
             <ng-container matColumnDef="acoes">
               <th mat-header-cell *matHeaderCellDef>Ações</th>
               <td mat-cell *matCellDef="let row">
-                <button mat-icon-button (click)="showEditForm(row)" matTooltip="Editar">
+                <button mat-icon-button (click)="showEditForm(row)" matTooltip="Editar" class="edit-button">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button *ngIf="canDelete" (click)="deleteAetSetor(row.id!)" matTooltip="Excluir" class="delete-btn">
+                <button mat-icon-button class="engineering-button" 
+                  (click)="abrirFuncao(aetEmpresaId, row.id!)"
+                  matTooltip="Funções">
+                  <mat-icon>engineering</mat-icon>
+                </button>
+                <button 
+                mat-icon-button *ngIf="canDelete" (click)="deleteAetSetor(row.id!)" matTooltip="Excluir" class="delete-button">
                   <mat-icon>delete</mat-icon>
                 </button>
               </td>

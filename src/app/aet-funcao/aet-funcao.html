@@ -1,0 +1,261 @@
+<!-- src/app/aet-funcao/aet-funcao.html -->
+<div class="aet-funcao-container">
+  <!-- Header -->
+  <div class="header-section">
+    <div class="header-content">
+      <div class="title-section">
+        <button mat-icon-button color="primary" (click)="voltarParaSetores()" matTooltip="Voltar para Setores">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <mat-icon class="title-icon">engineering</mat-icon>
+        <h1 class="titulo-principal">
+          {{ 'aetFuncao.titulo' | transloco }}
+          <small class="empresa-subtitle">(Empresa: {{ empresaNome }} | Setor: {{ setorNome }})</small>
+        </h1>
+      </div>
+      <button mat-raised-button color="primary" (click)="showCreateForm()" class="add-button">
+        <mat-icon>add</mat-icon>
+        {{ 'aetFuncao.btnNovo' | transloco }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulário com Stepper -->
+  <div class="stepper-section" *ngIf="showForm">
+    <mat-card class="stepper-card">
+      <mat-card-header>
+        <mat-card-title>{{ editingId ? 'Editar Função' : 'Nova Função' }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="funcaoForm" (ngSubmit)="onSubmit()">
+          <mat-stepper linear #stepper>
+
+            <!-- Etapa 1: Dados Gerais -->
+            <mat-step label="Dados Gerais">
+              <div class="step-content">
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Função</mat-label>
+                    <mat-select formControlName="funcaoId">
+                      <mat-option *ngFor="let f of funcoes" [value]="f.id">{{ f.descricao }}</mat-option>
+                    </mat-select>
+                    <mat-error>Campo obrigatório</mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="form-row">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Posto de Trabalho</mat-label>
+                        <input matInput formControlName="postoTrabalho">
+                        <mat-error>Campo obrigatório</mat-error>
+                      </mat-form-field>
+                </div>
+                <div class="form-row">
+                    <mat-form-field appearance="outline" class="full-width">
+                      <mat-label>Descrição da Tarefa</mat-label>
+                      <textarea matInput rows="3" formControlName="descricaoTarefa"></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="form-row">
+                    <mat-form-field appearance="outline" class="full-width">
+                      <mat-label>Serviço Desenvolvido</mat-label>
+                      <textarea matInput rows="3" formControlName="servicoDesenvolvido"></textarea>
+                    </mat-form-field>
+                </div>
+
+                <div class="step-actions">
+                  <button type="button" mat-stroked-button (click)="cancelForm()">Cancelar</button>
+                  <button type="button" mat-raised-button color="primary" matStepperNext>Próximo</button>
+                </div>
+              </div>
+            </mat-step>
+
+            <!-- Etapa 2: Objetos e Descrições -->
+            <mat-step label="Objetos e Ferramentas">
+              <div class="step-content">
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Objeto/Ferramenta 1</mat-label>
+                    <mat-select formControlName="objeto1Id">
+                      <mat-option *ngFor="let o of objetos" [value]="o.id">{{ o.descricao }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Descrição do Objeto 1</mat-label>
+                    <input matInput formControlName="descricaoObjeto1">
+                  </mat-form-field>
+                </div>
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Objeto/Ferramenta 2</mat-label>
+                    <mat-select formControlName="objeto2Id">
+                      <mat-option *ngFor="let o of objetos" [value]="o.id">{{ o.descricao }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Descrição do Objeto 2</mat-label>
+                    <input matInput formControlName="descricaoObjeto2">
+                  </mat-form-field>
+                </div>
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Objeto/Ferramenta 3</mat-label>
+                    <mat-select formControlName="objeto3Id">
+                      <mat-option *ngFor="let o of objetos" [value]="o.id">{{ o.descricao }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Descrição do Objeto 3</mat-label>
+                    <input matInput formControlName="descricaoObjeto3">
+                  </mat-form-field>
+                </div>
+                <div class="step-actions">
+                  <button type="button" mat-stroked-button matStepperPrevious>Voltar</button>
+                  <button type="button" mat-raised-button color="primary" matStepperNext>Próximo</button>
+                </div>
+              </div>
+            </mat-step>
+
+            <!-- Etapa 3: Imagens -->
+            <mat-step label="Imagens do Posto">
+              <div class="step-content image-upload-container">
+                <div class="image-upload-box">
+                  <label>Imagem 1</label>
+                  <img [src]="imagePreviews['imagem1']" *ngIf="imagePreviews['imagem1']" class="image-preview">
+                  <input type="file" (change)="onFileSelected($event, 'imagem1')">
+                </div>
+                <div class="image-upload-box">
+                  <label>Imagem 2</label>
+                  <img [src]="imagePreviews['imagem2']" *ngIf="imagePreviews['imagem2']" class="image-preview">
+                  <input type="file" (change)="onFileSelected($event, 'imagem2')">
+                </div>
+                <div class="image-upload-box">
+                  <label>Imagem 3</label>
+                  <img [src]="imagePreviews['imagem3']" *ngIf="imagePreviews['imagem3']" class="image-preview">
+                  <input type="file" (change)="onFileSelected($event, 'imagem3')">
+                </div>
+                <div class="image-upload-box">
+                  <label>Imagem 4</label>
+                  <img [src]="imagePreviews['imagem4']" *ngIf="imagePreviews['imagem4']" class="image-preview">
+                  <input type="file" (change)="onFileSelected($event, 'imagem4')">
+                </div>
+                <div class="step-actions">
+                    <button type="button" mat-stroked-button matStepperPrevious>Voltar</button>
+                    <button type="button" mat-raised-button color="primary" matStepperNext>Próximo</button>
+                  </div>
+              </div>
+            </mat-step>
+
+             <!-- Etapa 4: Análise Detalhada -->
+             <mat-step label="Análise Detalhada">
+                <div class="step-content">
+                  <div class="form-row full-width">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Análise da População Trabalhadora</mat-label>
+                      <textarea matInput rows="3" formControlName="analisePopulacaoTrabalhadora"></textarea>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-row full-width">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Manifestações dos Trabalhadores</mat-label>
+                      <textarea matInput rows="3" formControlName="manifestacoesTrabalhadores"></textarea>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-row full-width">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Ciclo de Trabalho</mat-label>
+                      <textarea matInput rows="3" formControlName="cicloTrabalho"></textarea>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-row full-width">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Descrição da Atividade</mat-label>
+                      <textarea matInput rows="3" formControlName="descricaoDaAtividade"></textarea>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-row full-width">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Pré-Diagnóstico</mat-label>
+                      <textarea matInput rows="3" formControlName="preDiagnostico"></textarea>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-row full-width">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Análise Sistemática</mat-label>
+                      <textarea matInput rows="3" formControlName="analiseSistematica"></textarea>
+                    </mat-form-field>
+                  </div>
+  
+                  <div class="step-actions">
+                    <button mat-stroked-button matStepperPrevious>Voltar</button>
+                    <button type="button" mat-stroked-button (click)="cancelForm()">Cancelar</button>
+                    <button mat-raised-button color="primary" type="submit" [disabled]="funcaoForm.invalid">
+                      {{ editingId ? 'Atualizar' : 'Criar' }} Função
+                    </button>
+                  </div>
+                </div>
+              </mat-step>
+
+          </mat-stepper>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Tabela de Funções -->
+  <div class="table-section">
+    <mat-card class="table-card">
+      <mat-card-content>
+        <div class="table-header">
+          <div class="search-section">
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Buscar</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Digite para buscar...">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="loading-container" *ngIf="loading">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+
+        <div class="table-container" *ngIf="!loading">
+          <table mat-table [dataSource]="dataSource" matSort class="data-table">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+              <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+            </ng-container>
+            <ng-container matColumnDef="funcao">
+              <th mat-header-cell *matHeaderCellDef>Função</th>
+              <td mat-cell *matCellDef="let row">{{ getFuncaoNome(row.funcaoId) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="postoTrabalho">
+              <th mat-header-cell *matHeaderCellDef>Posto de Trabalho</th>
+              <td mat-cell *matCellDef="let row">{{ row.postoTrabalho }}</td>
+            </ng-container>
+            <ng-container matColumnDef="acoes">
+              <th mat-header-cell *matHeaderCellDef>Ações</th>
+              <td mat-cell *matCellDef="let row">
+                <button mat-icon-button (click)="showEditForm(row)" matTooltip="Editar" class="edit-button">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button *ngIf="canDelete" (click)="deleteAetFuncao(row.id!)" matTooltip="Excluir" class="delete-button">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+          <div class="no-data" *ngIf="dataSource.data.length === 0">
+            <mat-icon>engineering</mat-icon>
+            <p>Nenhuma função cadastrada para este setor.</p>
+            <button mat-raised-button color="primary" (click)="showCreateForm()">Criar primeira função</button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

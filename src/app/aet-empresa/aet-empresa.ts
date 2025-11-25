@@ -114,6 +114,13 @@ export class AetEmpresaComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+
+    // Custom filter predicate
+    this.dataSource.filterPredicate = (data: AetEmpresaDTO, filter: string) => {
+      const dataStr = this.getEmpresaNome(data.empresaId) + data.status;
+      return dataStr.toLowerCase().includes(filter);
+    };
+    
     this.cdr.detectChanges();
   }
 
@@ -316,7 +323,7 @@ export class AetEmpresaComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Ação temporária
   abrirAetSetor(aetEmpresaId: number): void {
-    this.router.navigate(['aet-empresa', aetEmpresaId, 'setor']);
+    this.router.navigate(['/aet-empresa', aetEmpresaId, 'setor']);
   }
 
   abrirRelatorio(): void {

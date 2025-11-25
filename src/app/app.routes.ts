@@ -7,6 +7,8 @@ import { PublicRegistration } from './public-registration/public-registration';
 import { PublicRegistrationValidationComponent } from './public-registration-validation/public-registration-validation';
 import { MyAccountComponent } from './my-account-component/my-account-component';
 import { MyAccountJuridicaComponent } from './my-account-juridica-component/my-account-juridica-component';
+import { AetSetorComponent } from './aet-setor/aet-setor';
+import { AetFuncaoComponent } from './aet-funcao/aet-funcao';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -29,6 +31,8 @@ export const routes: Routes = [
         path: 'aet-empresa',
         loadChildren: () => import('./aet-empresa/aet-empresa.module').then(m => m.AetEmpresaModule)
       },
+      { path: 'aet-empresa/:aetEmpresaId/setor', component: AetSetorComponent },
+      { path: 'aet-empresa/:aetEmpresaId/setor/:aetSetorId/funcao', component: AetFuncaoComponent },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   },
